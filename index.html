@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIリモコン v0.2</title>
+    <title>AIリモコン v0.3</title>
     <style>
+/* ─── リセット & 変数 ─── */
 :root {
-    --bg-color: #f2f2f7;
-    --text-color: #1c1c1e;
-    --card-bg: #ffffff;
-    --primary: #0071e3;
+    --bg: #f2f2f7;
+    --text: #1c1c1e;
+    --sub-text: #636366;
+    --card: #ffffff;
     --border: #e5e5ea;
-    --radius: 16px;
-    --thick-bg: #eef3ff;
-    --thick-border: #c7d8f8;
-    --silly-bg: #f0fff4;
-    --silly-border: #b2dfcb;
+    --primary: #0071e3;
+    --primary-dark: #0060c7;
+    --radius-lg: 18px;
+    --radius-md: 14px;
+    --radius-pill: 28px;
+    --shadow: 0 1px 5px rgba(0,0,0,0.07);
+    --shadow-btn: 0 4px 14px rgba(0,113,227,0.28);
 }
 
 * {
@@ -26,17 +29,16 @@
     touch-action: manipulation;
 }
 
-html {
-    height: 100%;
-}
+html { height: 100%; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+                 "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
     min-height: 100dvh;
-    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
 }
 
 #app {
@@ -47,22 +49,21 @@ body {
     flex-direction: column;
 }
 
+/* ─── ヘッダー ─── */
 header {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    background-color: var(--bg-color);
+    padding: 10px 16px;
+    background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 10;
     border-bottom: 1px solid var(--border);
 }
 
-header.hidden {
-    display: none;
-}
+header.hidden { display: none; }
 
-.icon-btn {
+.back-btn {
     background: none;
     border: none;
     color: var(--primary);
@@ -74,176 +75,180 @@ header.hidden {
     min-height: 44px;
     display: flex;
     align-items: center;
+    gap: 4px;
 }
 
 .breadcrumb {
     font-size: 13px;
-    color: #636366;
+    color: var(--sub-text);
     margin-left: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* ─── メイン ─── */
 main {
     flex: 1;
-    padding: 20px 16px;
+    padding: 20px 16px 0;
 }
 
 .screen {
     display: none;
-    animation: fadeIn 0.25s ease;
+    animation: fadeIn 0.22s ease;
 }
 
-.screen.active {
-    display: block;
-}
+.screen.active { display: block; }
 
-.screen-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
+/* ─── トップ画面 ─── */
+.top-header {
     text-align: center;
-    letter-spacing: -0.3px;
+    margin-bottom: 22px;
 }
 
-/* ── カテゴリグリッド ── */
-.category-grid {
+.top-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--text);
+}
+
+.top-subtitle {
+    font-size: 13px;
+    color: var(--sub-text);
+    margin-top: 4px;
+}
+
+/* ─── 8ボタングリッド ─── */
+.handy-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
-.category-btn {
+.handy-btn {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 12px;
-    background-color: var(--card-bg);
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 16px 16px 14px;
+    background: var(--card);
     border: 1.5px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-    text-align: center;
-    min-height: 110px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: transform 0.12s, opacity 0.12s, box-shadow 0.12s;
+    min-height: 108px;
+    box-shadow: var(--shadow);
     user-select: none;
+    position: relative;
+    overflow: hidden;
 }
 
-.category-btn:active {
+.handy-btn:active {
     transform: scale(0.95);
     opacity: 0.85;
 }
 
-.category-btn.thick {
-    background-color: var(--thick-bg);
-    border-color: var(--thick-border);
-}
-
-.category-btn.silly {
-    background-color: var(--silly-bg);
-    border-color: var(--silly-border);
-}
-
-.category-icon {
-    font-size: 36px;
-    margin-bottom: 10px;
+.handy-icon {
+    font-size: 34px;
     line-height: 1;
+    margin-bottom: 10px;
+    display: block;
 }
 
-.category-title {
+.handy-label {
     font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--text-color);
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text);
+    text-align: left;
 }
 
-/* ── リスト ── */
-.list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* カラーアクセント（左上の細いライン） */
+.handy-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+    background: transparent;
 }
 
-.list-item {
-    padding: 18px 20px;
-    background-color: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    user-select: none;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
+.handy-btn[data-id="困った"]::before  { background: #ff6b6b; }
+.handy-btn[data-id="暇"]::before      { background: #51cf66; }
+.handy-btn[data-id="ほんと"]::before  { background: #fcc419; }
+.handy-btn[data-id="何が"]::before    { background: #ff922b; }
+.handy-btn[data-id="だから"]::before  { background: #cc5de8; }
+.handy-btn[data-id="教えて"]::before  { background: #339af0; }
+.handy-btn[data-id="悩み"]::before    { background: #20c997; }
+.handy-btn[data-id="英語"]::before    { background: #f06595; }
+
+/* ─── 結果画面 ─── */
+.result-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+    letter-spacing: -0.3px;
 }
 
-.list-item:active {
-    transform: scale(0.97);
-    opacity: 0.8;
-}
-
-/* ── 結果画面 ── */
 .result-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
 }
 
 .prompt-box {
-    background-color: var(--card-bg);
+    background: var(--card);
     padding: 20px;
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     border: 1.5px solid var(--border);
     font-size: 15px;
-    line-height: 1.7;
+    line-height: 1.75;
     white-space: pre-wrap;
-    min-height: 160px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    min-height: 180px;
+    box-shadow: var(--shadow);
     color: #3a3a3c;
 }
 
-.primary-btn {
-    background-color: var(--primary);
-    color: white;
+.copy-btn {
+    background: var(--primary);
+    color: #fff;
     border: none;
-    border-radius: 28px;
+    border-radius: var(--radius-pill);
     padding: 18px;
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
-    transition: background-color 0.15s, transform 0.1s;
+    transition: background 0.15s, transform 0.1s;
     letter-spacing: 0.3px;
-    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+    box-shadow: var(--shadow-btn);
     user-select: none;
     min-height: 56px;
     width: 100%;
     display: block;
 }
 
-.primary-btn:active {
+.copy-btn:active {
     transform: scale(0.97);
-    background-color: #0060c7;
+    background: var(--primary-dark);
 }
 
-/* ── 外部AIリンクセクション ── */
+/* ─── 外部AIリンク ─── */
 .ai-links-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-top: 4px;
+    gap: 10px;
+    padding-top: 2px;
 }
 
 .ai-links-label {
     font-size: 13px;
-    color: #636366;
+    color: var(--sub-text);
     text-align: center;
-    line-height: 1.5;
 }
 
 .ai-links-grid {
@@ -259,16 +264,16 @@ main {
     gap: 6px;
     padding: 0 12px;
     min-height: 48px;
-    background-color: var(--card-bg);
+    background: var(--card);
     border: 1.5px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--text);
     text-decoration: none;
     cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s, background-color 0.12s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: transform 0.12s, opacity 0.12s, background 0.12s;
+    box-shadow: var(--shadow);
     user-select: none;
     text-align: center;
 }
@@ -276,7 +281,7 @@ main {
 .ai-link-btn:active {
     transform: scale(0.95);
     opacity: 0.8;
-    background-color: #f0f0f5;
+    background: #f0f0f5;
 }
 
 .ai-link-icon {
@@ -285,14 +290,24 @@ main {
     line-height: 1;
 }
 
-/* ── トースト ── */
+/* ─── フッター（トップ画面のみ） ─── */
+.top-footer {
+    margin-top: 28px;
+    padding-bottom: 8px;
+    text-align: center;
+    font-size: 11px;
+    color: #aeaeb2;
+    letter-spacing: 0.2px;
+}
+
+/* ─── トースト ─── */
 .toast {
     position: fixed;
     bottom: calc(32px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(28, 28, 30, 0.88);
-    color: white;
+    background: rgba(28,28,30,0.88);
+    color: #fff;
     padding: 12px 24px;
     border-radius: 24px;
     font-size: 14px;
@@ -303,449 +318,253 @@ main {
     white-space: nowrap;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    pointer-events: none;
 }
 
 .toast.hidden {
     opacity: 0;
-    pointer-events: none;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
 }
     </style>
 </head>
 <body>
-    <div id="app">
-        <header id="header" class="hidden">
-            <button id="back-btn" class="icon-btn">◀ 戻る</button>
-            <div id="breadcrumb" class="breadcrumb"></div>
-        </header>
+<div id="app">
 
-        <main id="main-content">
-            <section id="screen-category" class="screen active">
-                <h1 class="screen-title">今どこ？</h1>
-                <div id="category-list" class="category-grid"></div>
-            </section>
+    <!-- ヘッダー（結果画面のみ表示） -->
+    <header id="header" class="hidden">
+        <button id="back-btn" class="back-btn">◀ 戻る</button>
+        <div id="breadcrumb" class="breadcrumb"></div>
+    </header>
 
-            <section id="screen-problem" class="screen">
-                <h1 class="screen-title">何に困ってる？</h1>
-                <div id="problem-list" class="list-container"></div>
-            </section>
+    <main id="main-content">
 
-            <section id="screen-action" class="screen">
-                <h1 class="screen-title">AIに何をさせたい？</h1>
-                <div id="action-list" class="list-container"></div>
-            </section>
+        <!-- 画面1：トップ（8ボタン） -->
+        <section id="screen-top" class="screen active">
+            <div class="top-header">
+                <div class="top-title">AIリモコン v0.3</div>
+                <div class="top-subtitle">ボタンを押して、コピーして、AIに貼る</div>
+            </div>
 
-            <section id="screen-result" class="screen">
-                <h1 class="screen-title">コピーしてAIへ</h1>
-                <div class="result-container">
-                    <div id="prompt-display" class="prompt-box"></div>
-                    <button id="copy-btn" class="primary-btn">コピーする</button>
-                    <div class="ai-links-section">
-                        <p class="ai-links-label">コピーしたら、下のAIに貼ってください</p>
-                        <div class="ai-links-grid">
-                            <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
-                                <span class="ai-link-icon">🤖</span>ChatGPTを開く
-                            </a>
-                            <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
-                                <span class="ai-link-icon">✨</span>Geminiを開く
-                            </a>
-                            <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
-                                <span class="ai-link-icon">🪟</span>Copilotを開く
-                            </a>
-                            <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
-                                <span class="ai-link-icon">🌿</span>Claudeを開く
-                            </a>
-                        </div>
+            <div class="handy-grid" id="handy-grid">
+                <!-- JSで生成 -->
+            </div>
+
+            <div class="top-footer">by オノノケホールディングス😲©️</div>
+        </section>
+
+        <!-- 画面2：結果（プロンプト表示） -->
+        <section id="screen-result" class="screen">
+            <h1 class="result-title" id="result-title">コピーしてAIへ</h1>
+            <div class="result-container">
+                <div id="prompt-display" class="prompt-box"></div>
+                <button id="copy-btn" class="copy-btn">コピーする</button>
+                <div class="ai-links-section">
+                    <p class="ai-links-label">コピーしたら、下のAIに貼ってください</p>
+                    <div class="ai-links-grid">
+                        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                            <span class="ai-link-icon">🤖</span>ChatGPTを開く
+                        </a>
+                        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                            <span class="ai-link-icon">✨</span>Geminiを開く
+                        </a>
+                        <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                            <span class="ai-link-icon">🪟</span>Copilotを開く
+                        </a>
+                        <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                            <span class="ai-link-icon">🌿</span>Claudeを開く
+                        </a>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
 
-        <div id="toast" class="toast hidden">コピーしました。外部AIに貼ってください 📋</div>
-    </div>
+    </main>
 
-    <script>
-const data = {
-  categories: [
-    { id: "panic",  icon: "😵", title: "どこでもいいから困ってる", type: "thick" },
-    { id: "home",   icon: "🏠", title: "家の中",                   type: "thick" },
-    { id: "silly",  icon: "🥒", title: "くだらないことしたい",     type: "silly" },
-    { id: "train",  icon: "🚃", title: "電車・移動中",             type: "thin"  },
-    { id: "work",   icon: "🏢", title: "会社・学校・作業場",       type: "thin"  },
-    { id: "shop",   icon: "🛒", title: "店・買い物中",             type: "thin"  },
-    { id: "street", icon: "🚶", title: "外・街中",                 type: "thin"  },
-    { id: "cafe",   icon: "☕", title: "カフェ・休憩中",           type: "thin"  },
-    { id: "public", icon: "🏥", title: "病院・役所・窓口",         type: "thin"  }
-  ],
+    <div id="toast" class="toast hidden">コピーしました。外部AIに貼ってください 📋</div>
+</div>
 
-  problems: {
-    /* ── 濃い3カテゴリ ── */
-    panic: [
-      { id: "p1", text: "頭がパンクしてる" },
-      { id: "p2", text: "何から手をつければいいかわからない" },
-      { id: "p3", text: "気持ちがしんどい" },
-      { id: "p4", text: "考えすぎて動けない" },
-      { id: "p5", text: "選択肢が多すぎる" }
-    ],
-    home: [
-      { id: "h1", text: "起きたけど動けない" },
-      { id: "h2", text: "何していいかわからない" },
-      { id: "h3", text: "部屋が散らかっている" },
-      { id: "h4", text: "何食べるか決められない" },
-      { id: "h5", text: "外に出るか迷う" }
-    ],
-    silly: [
-      { id: "s1", text: "冷蔵庫を内閣にする" },
-      { id: "s2", text: "二度寝を国家事業にする" },
-      { id: "s3", text: "今日の自分を変な天気予報にする" },
-      { id: "s4", text: "謎の生き物図鑑にする" },
-      { id: "s5", text: "何も起きない怖さを作る" }
-    ],
-
-    /* ── 薄い6カテゴリ（v0.2拡充） ── */
-    train: [
-      { id: "tr1", text: "目的地まで絶妙に暇" },
-      { id: "tr2", text: "スマホを見るのに疲れた" },
-      { id: "tr3", text: "到着後に何するか決めたい" }
-    ],
-    work: [
-      { id: "w1", text: "眠すぎて作業が進まない" },
-      { id: "w2", text: "連絡文がまとまらない" },
-      { id: "w3", text: "タスクが多くて止まってる" }
-    ],
-    shop: [
-      { id: "sh1", text: "どっちを買うか迷う" },
-      { id: "sh2", text: "何を買うか忘れた" },
-      { id: "sh3", text: "レビューの見方がわからない" }
-    ],
-    street: [
-      { id: "st1", text: "頭を切り替えたい" },
-      { id: "st2", text: "外で次の行動を決めたい" },
-      { id: "st3", text: "歩くのがだるい" }
-    ],
-    cafe: [
-      { id: "c1", text: "なんとなくスマホを見てしまう" },
-      { id: "c2", text: "考えをまとめたい" },
-      { id: "c3", text: "休憩から戻れない" }
-    ],
-    public: [
-      { id: "pu1", text: "待ち時間が長い" },
-      { id: "pu2", text: "書類の意味がわからない" },
-      { id: "pu3", text: "医師や窓口への説明が不安" }
-    ]
+<script>
+/* ─── データ定義 ─── */
+const BUTTONS = [
+  {
+    id: "困った",
+    icon: "😵",
+    label: "なんか困った",
+    prompt: `これから、今困っていることを送ります。
+状況を大きくしすぎず、今できる一手を1つか2つに絞って整理してください。
+すぐに結論を決めつけず、必要なら確認したいことを1つだけ質問してください。
+まだ内容は送っていないので、次の入力を待ってください。`
   },
+  {
+    id: "暇",
+    icon: "🥒",
+    label: "なんか暇",
+    prompt: `これから、今の気分や状況を送ります。
+本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。
+ただふざけるだけではなく、聞きやすくなる形にしてください。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "ほんと",
+    icon: "🕵️",
+    label: "これほんと？",
+    prompt: `これから、気になっている情報や主張を送ります。
+断定できること・推論に留まること・確認が必要なことを分けて整理してください。
+本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "何が",
+    icon: "😲",
+    label: "何が起こったんだ",
+    prompt: `これから、気になっている出来事や現象について送ります。
+それを「何が起きたのか」「なぜそう見えるのか」「考えられる背景」「まだ分からないこと」に分けて整理してください。
+断定できることと推測を分けてください。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "だから",
+    icon: "🤯",
+    label: "だからなんだ",
+    prompt: `これから、文章・考え・状況を送ります。
+それについて、
 
-  actions: {
-    /* ── panic ── */
-    p1: [
-      { id: "a_p1_1", text: "情報を整理してほしい",
-        prompt: "今、頭がパンクしています。いろいろな情報が混ざってしまっているので、落ち着いて一つずつ整理するのを手伝ってください。まずは、私が今抱えていることを箇条書きで吐き出してもいいですか？" },
-      { id: "a_p1_2", text: "落ち着く言葉がほしい",
-        prompt: "今、頭がパンクして余裕がありません。解決策ではなく、まずは深呼吸できるような、焦らなくていいと言ってくれる優しい言葉をかけてください。" }
-    ],
-    p2: [
-      { id: "a_p2_1", text: "最初の一歩を決めてほしい",
-        prompt: "やらなきゃいけないことが多すぎて、何から手をつければいいかわかりません。状況を少し話すので、一番ハードルが低くて今すぐできる「最初の一歩」だけを提案してください。" }
-    ],
-    p3: [
-      { id: "a_p3_1", text: "ただ聞いてほしい",
-        prompt: "今、気持ちがしんどいです。アドバイスや解決策は不要なので、ただ私の話を聞いて、否定せずに受け止めてもらえませんか？少しだけ愚痴を言わせてください。" }
-    ],
-    p4: [
-      { id: "a_p4_1", text: "考えを止めてほしい",
-        prompt: "考えすぎて動けなくなっています。これ以上考えないように、頭を空っぽにするための簡単な作業や、気分転換になる小さな行動を一つ教えてください。" }
-    ],
-    p5: [
-      { id: "a_p5_1", text: "選択肢を絞ってほしい",
-        prompt: "選択肢が多すぎて選べません。私がいくつか候補を挙げるので、それぞれの良いところを簡単にまとめて、最後に「これにしてみたら？」と一つ背中を押してください。" }
-    ],
+1. だからなんだ？
+2. だからどう？
+3. それで何？
+4. ようは何が言いたい？
 
-    /* ── home ── */
-    h1: [
-      { id: "a_h1_1", text: "起き上がる理由を作ってほしい",
-        prompt: "起きたけど布団から出られません。無理やり起きるのではなく、布団から出たくなるような、ちょっとした楽しい理由や、今すぐできる小さなご褒美を提案してください。" },
-      { id: "a_h1_2", text: "布団の中でできることを教えて",
-        prompt: "起きたけどまだ動けません。あと10分くらい布団の中にいたいのですが、スマホを見ながらできる、頭の体操や軽いストレッチなど、布団の中でできることを教えてください。" }
-    ],
-    h2: [
-      { id: "a_h2_1", text: "暇つぶしのアイデアがほしい",
-        prompt: "家にいますが、何をしていいかわかりません。お金をかけずに、今すぐ家の中でできる、ちょっと変わった暇つぶしのアイデアを3つほど教えてください。" }
-    ],
-    h3: [
-      { id: "a_h3_1", text: "片付けのゲームにしてほしい",
-        prompt: "部屋が散らかっていますが、片付ける気が起きません。5分だけで終わるような、ゲーム感覚でできる片付けのミッションを1つだけ出してください。" }
-    ],
-    h4: [
-      { id: "a_h4_1", text: "今の気分からメニューを提案して",
-        prompt: "何食べるか決められません。冷蔵庫にあるものや、今の気分（例えば「さっぱり」「がっつり」など）を言うので、おすすめのメニューを1つ提案してください。" }
-    ],
-    h5: [
-      { id: "a_h5_1", text: "外に出るメリットを教えて",
-        prompt: "外に出るか迷っています。面倒くさい気持ちが勝っているのですが、今から外に出たらこんないいことがあるかも、というメリットをいくつか挙げて背中を押してください。" }
-    ],
+の4つに分けて整理してください。
+責める口調ではなく、考えを扱いやすくするための分解としてお願いします。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "教えて",
+    icon: "🦉",
+    label: "教えてください",
+    prompt: `これから、知りたいことを送ります。
+それが「やり方」「行き方」「方法」「概念定義」のどれに近いかを判断し、初心者にもわかるように説明してください。
+概念の場合は、短い定義に加えて、物語や寸劇に例えて説明してください。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "悩み",
+    icon: "🧩",
+    label: "この悩み、どう扱う？",
+    prompt: `これから、悩みや困っていることを送ります。
+感情・事実・関係性・現実的な制約・今できる一手に分けて整理してください。
+すぐに結論を決めつけず、複数の視点からどう扱うのがよさそうか考えてください。
+まだ内容は送っていないので、次の入力を待ってください。`
+  },
+  {
+    id: "英語",
+    icon: "🗣️",
+    label: "英語圏ならどう言う？",
+    prompt: `これから、日本語の言葉や文章を送ります。
+直訳ではなく、英語圏で自然に伝わる言い方にしてください。
+意味・温度感・丁寧さ・距離感ができるだけ近くなるようにしてください。
+必要なら、
 
-    /* ── silly ── */
-    s1: [
-      { id: "a_s1_1", text: "大臣を任命する",
-        prompt: "我が家の冷蔵庫を「内閣」に見立てて遊びたいです。マヨネーズや卵、余った野菜などをそれぞれの大臣に任命し、彼らの役割や派閥争いなどの設定を面白おかしく考えてください。" }
-    ],
-    s2: [
-      { id: "a_s2_1", text: "二度寝推進法案を可決する",
-        prompt: "「二度寝」を国家事業として推進する法案が可決されたという設定で、架空のニュース原稿を書いてください。二度寝がもたらす経済効果や、国民の反応などを真面目なトーンで報じてください。" }
-    ],
-    s3: [
-      { id: "a_s3_1", text: "私の今日の天気予報",
-        prompt: "今日の私の気分や体調を「変な天気予報」にして伝えてください。例えば「午後はところにより、急な眠気に襲われるでしょう」のように、クスッと笑える予報をお願いします。" }
-    ],
-    s4: [
-      { id: "a_s4_1", text: "部屋のホコリを新種にする",
-        prompt: "部屋の隅にあるホコリを、新種の謎の生き物として図鑑風に解説してください。学名、生態、特徴、そして人間との関わり方などを、もっともらしく書いてください。" }
-    ],
-    s5: [
-      { id: "a_s5_1", text: "無のホラー小説にする",
-        prompt: "「何も起きない」という状況を、なぜかとても恐ろしく感じるような、短いホラー小説風の文章を書いてください。静けさや日常の風景が、逆に不気味に思えるような描写をお願いします。" }
-    ],
+1. 自然な英語
+2. 直訳に近い英語
+3. カジュアルな英語
 
-    /* ── train（v0.2拡充） ── */
-    tr1: [
-      { id: "a_tr1_1", text: "目を閉じてできる遊び",
-        prompt: "電車に乗っていて、目的地まで少し時間があります。目を閉じたまま頭の中だけでできる、ちょっとした想像ゲームや遊びを教えてください。入力は不要です。" },
-      { id: "a_tr1_2", text: "1分で読める小話",
-        prompt: "電車の中で暇を持て余しています。1分ほどで読めるような、クスッとする短い話か、ちょっと面白い豆知識を一つ聞かせてください。" }
-    ],
-    tr2: [
-      { id: "a_tr2_1", text: "スマホを置いて楽しむ方法",
-        prompt: "電車に乗っていますが、スマホを見るのに疲れました。スマホを置いたまま、車窓や周りの風景を使って楽しめる、ちょっとした観察ゲームや暇つぶしを教えてください。" }
-    ],
-    tr3: [
-      { id: "a_tr3_1", text: "到着後の最初の一手を決める",
-        prompt: "もうすぐ目的地に着きます。到着してから最初に何をするか、まだ決まっていません。状況を少し話すので、スムーズに動き出せる「最初の一手」を一つ提案してください。" }
-    ],
-
-    /* ── work（v0.2拡充） ── */
-    w1: [
-      { id: "a_w1_1", text: "30秒でできる切り替え",
-        prompt: "作業場にいますが、眠くて集中できません。席を立たずに30秒でできる、眠気を少し飛ばすための切り替え方法を教えてください。入力は不要です。" },
-      { id: "a_w1_2", text: "今やる1つだけ決める",
-        prompt: "眠くて作業が止まっています。難しいことは考えなくていいので、今すぐ手を動かせる、一番小さな作業を1つだけ提案してください。" }
-    ],
-    w2: [
-      { id: "a_w2_1", text: "角が立たない文面を作る",
-        prompt: "連絡文がうまくまとまりません。要点だけ伝えるので、角が立たない、でも丁寧すぎない、ちょうどいい塩梅の文面の叩き台を作ってください。" }
-    ],
-    w3: [
-      { id: "a_w3_1", text: "タスクを細かく分解する",
-        prompt: "タスクが多くて止まっています。これからやるべきことを言うので、何も考えずに手を動かせるレベルまで、作業を限界まで細かく分解してください。" },
-      { id: "a_w3_2", text: "今やる1つだけ決める",
-        prompt: "タスクが多すぎて何から手をつければいいかわかりません。全部やろうとしなくていいので、今この瞬間に取りかかれる、一番小さな作業を1つだけ選んでください。" }
-    ],
-
-    /* ── shop（v0.2拡充） ── */
-    sh1: [
-      { id: "a_sh1_1", text: "比較ポイントを3つ出す",
-        prompt: "お店で2つの商品のどちらを買うか迷っています。商品の特徴を少し話すので、選ぶときに見るべきポイントを3つ挙げて、どちらが向いているか整理してください。" },
-      { id: "a_sh1_2", text: "買う条件を整理する",
-        prompt: "商品の選択で迷っています。「これを買うなら〇〇な人向け」という形で、それぞれの商品が向いている条件を整理してください。どちらが正解かではなく、自分に合う方を選べるように手伝ってください。" }
-    ],
-    sh2: [
-      { id: "a_sh2_1", text: "連想ゲームで思い出させて",
-        prompt: "お店に来たのに、何を買うか忘れました。私が思いつく断片的なキーワードを言うので、連想ゲームのように質問して、買うべきものを思い出させてください。" }
-    ],
-    sh3: [
-      { id: "a_sh3_1", text: "レビューの怪しいポイントを整理する",
-        prompt: "商品のレビューを見ていますが、どこを信じればいいかわかりません。一般的に、ネットのレビューを読むときに注意したほうがいい点や、参考になりやすいレビューの特徴を教えてください。" }
-    ],
-
-    /* ── street（v0.2拡充） ── */
-    st1: [
-      { id: "a_st1_1", text: "気分を切り替える3ステップ",
-        prompt: "外を歩いていますが、頭を切り替えたいです。歩きながらできる、気分をリセットするための簡単な3ステップを教えてください。入力は不要です。" },
-      { id: "a_st1_2", text: "歩きながらできる思考整理",
-        prompt: "外を歩いている間に、頭の中をすっきりさせたいです。歩きながら自問できる、シンプルな問いを3つほど出してください。" }
-    ],
-    st2: [
-      { id: "a_st2_1", text: "次の一手を決める",
-        prompt: "外にいますが、この後どうするか決まっていません。状況を少し話すので、今から動き出せる「次の一手」を一つ提案してください。" }
-    ],
-    st3: [
-      { id: "a_st3_1", text: "歩くのが少し楽しくなる脳内BGM",
-        prompt: "歩くのがだるいです。私の今の気分や歩くテンポに合わせた、脳内で再生できる架空のBGMのタイトルと、その曲の雰囲気を描写して、少し歩くのを楽しくしてください。入力は不要です。" }
-    ],
-
-    /* ── cafe（v0.2拡充） ── */
-    c1: [
-      { id: "a_c1_1", text: "デジタルデトックスの問い",
-        prompt: "カフェでなんとなくスマホを見てしまっています。スマホを置いて、少しだけ自分に向き合うための、シンプルな問いを1つ出してください。入力は不要です。" }
-    ],
-    c2: [
-      { id: "a_c2_1", text: "考えを整理する壁打ち相手に",
-        prompt: "カフェで考えをまとめたいです。私が思いついたことを脈絡なく書き込むので、相槌を打ちながら、時々短い質問を投げかけて、考えを引き出してください。" }
-    ],
-    c3: [
-      { id: "a_c3_1", text: "作業再開のゆるい儀式",
-        prompt: "カフェで休憩が長引いています。作業に戻るための、ちょっとした「再開の儀式」を提案してください。大げさじゃなくて、ゆるくていいです。入力は不要です。" }
-    ],
-
-    /* ── public（v0.2拡充） ── */
-    pu1: [
-      { id: "a_pu1_1", text: "待ち時間を軽くする遊び",
-        prompt: "病院か役所の待合室にいます。待ち時間が長いので、スマホ1つでできる、頭を使う軽い遊びや暇つぶしを教えてください。入力は不要です。" }
-    ],
-    pu2: [
-      { id: "a_pu2_1", text: "難しい言葉をやさしくする",
-        prompt: "書類に書いてある言葉の意味がよくわかりません。難しい言葉や項目を伝えるので、隣で優しく教えてくれるような口調で、わかりやすく説明してください。" }
-    ],
-    pu3: [
-      { id: "a_pu3_1", text: "伝えるメモを作る",
-        prompt: "医師や窓口の担当者に、うまく説明できるか不安です。伝えたいことを箇条書きで話すので、相手に伝わりやすい短いメモにまとめてください。診断や判断はしなくて大丈夫です。" }
-    ]
+の違いも短く出してください。
+まだ文章は送っていないので、次の入力を待ってください。`
   }
-};
+];
 
-/* ── アプリ本体 ── */
-document.addEventListener('DOMContentLoaded', () => {
-    const state = { category: null, problem: null, action: null, history: [] };
+/* ─── 状態 ─── */
+let currentButton = null;
 
-    const screens = {
-        category: document.getElementById('screen-category'),
-        problem:  document.getElementById('screen-problem'),
-        action:   document.getElementById('screen-action'),
-        result:   document.getElementById('screen-result')
-    };
+/* ─── DOM参照 ─── */
+const screenTop    = document.getElementById('screen-top');
+const screenResult = document.getElementById('screen-result');
+const header       = document.getElementById('header');
+const backBtn      = document.getElementById('back-btn');
+const breadcrumb   = document.getElementById('breadcrumb');
+const promptDisplay = document.getElementById('prompt-display');
+const resultTitle  = document.getElementById('result-title');
+const copyBtn      = document.getElementById('copy-btn');
+const toast        = document.getElementById('toast');
+const handyGrid    = document.getElementById('handy-grid');
 
-    const header       = document.getElementById('header');
-    const backBtn      = document.getElementById('back-btn');
-    const breadcrumb   = document.getElementById('breadcrumb');
-    const categoryList = document.getElementById('category-list');
-    const problemList  = document.getElementById('problem-list');
-    const actionList   = document.getElementById('action-list');
-    const promptDisplay= document.getElementById('prompt-display');
-    const copyBtn      = document.getElementById('copy-btn');
-    const toast        = document.getElementById('toast');
+/* ─── ボタン生成 ─── */
+BUTTONS.forEach(btn => {
+    const el = document.createElement('button');
+    el.className = 'handy-btn';
+    el.setAttribute('data-id', btn.id);
+    el.setAttribute('type', 'button');
+    el.innerHTML = `
+        <span class="handy-icon">${btn.icon}</span>
+        <span class="handy-label">${btn.label}</span>
+    `;
+    el.addEventListener('click', () => showResult(btn));
+    handyGrid.appendChild(el);
+});
 
-    renderCategories();
-    showScreen('category');
-    backBtn.addEventListener('click', goBack);
-    copyBtn.addEventListener('click', copyPrompt);
+/* ─── 画面遷移 ─── */
+function showResult(btn) {
+    currentButton = btn;
 
-    /* ── 画面切り替え ── */
-    function showScreen(screenId) {
-        Object.values(screens).forEach(s => s.classList.remove('active'));
-        screens[screenId].classList.add('active');
+    // プロンプトをセット
+    promptDisplay.textContent = btn.prompt;
+    resultTitle.textContent   = btn.icon + ' ' + btn.label;
+    breadcrumb.textContent    = '「' + btn.label + '」';
 
-        if (state.history[state.history.length - 1] !== screenId) {
-            state.history.push(screenId);
-        }
+    // 画面切替
+    screenTop.classList.remove('active');
+    screenResult.classList.add('active');
+    header.classList.remove('hidden');
 
-        if (screenId === 'category') {
-            header.classList.add('hidden');
-            state.history = ['category'];
-        } else {
-            header.classList.remove('hidden');
-            updateBreadcrumb(screenId);
-        }
-        window.scrollTo(0, 0);
-    }
+    // スクロールをトップに戻す
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
 
-    function goBack() {
-        if (state.history.length > 1) {
-            state.history.pop();
-            const prev = state.history.pop();
-            showScreen(prev);
-        }
-    }
+function showTop() {
+    screenResult.classList.remove('active');
+    screenTop.classList.add('active');
+    header.classList.add('hidden');
+    currentButton = null;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
 
-    function updateBreadcrumb(screenId) {
-        if (screenId === 'problem') {
-            const cat = data.categories.find(c => c.id === state.category);
-            breadcrumb.textContent = cat ? `「${cat.title}」のとき` : '';
-        } else if (screenId === 'action') {
-            const probs = data.problems[state.category] || [];
-            const prob  = probs.find(p => p.id === state.problem);
-            breadcrumb.textContent = prob ? `「${prob.text}」とき` : '';
-        } else if (screenId === 'result') {
-            const acts = data.actions[state.problem] || [];
-            const act  = acts.find(a => a.id === state.action);
-            breadcrumb.textContent = act ? `「${act.text}」` : '';
-        }
-    }
+backBtn.addEventListener('click', showTop);
 
-    /* ── レンダリング ── */
-    function renderCategories() {
-        categoryList.innerHTML = '';
-        data.categories.forEach(cat => {
-            const btn = document.createElement('div');
-            btn.className = `category-btn ${cat.type}`;
-            btn.innerHTML = `<div class="category-icon">${cat.icon}</div><div class="category-title">${cat.title}</div>`;
-            btn.addEventListener('click', () => {
-                state.category = cat.id;
-                renderProblems();
-                showScreen('problem');
-            });
-            categoryList.appendChild(btn);
-        });
-    }
+/* ─── コピー ─── */
+copyBtn.addEventListener('click', () => {
+    if (!currentButton) return;
+    const text = currentButton.prompt;
 
-    function renderProblems() {
-        problemList.innerHTML = '';
-        (data.problems[state.category] || []).forEach(prob => {
-            const btn = document.createElement('div');
-            btn.className = 'list-item';
-            btn.textContent = prob.text;
-            btn.addEventListener('click', () => {
-                state.problem = prob.id;
-                renderActions();
-                showScreen('action');
-            });
-            problemList.appendChild(btn);
-        });
-    }
-
-    function renderActions() {
-        actionList.innerHTML = '';
-        (data.actions[state.problem] || []).forEach(act => {
-            const btn = document.createElement('div');
-            btn.className = 'list-item';
-            btn.textContent = act.text;
-            btn.addEventListener('click', () => {
-                state.action = act.id;
-                promptDisplay.textContent = act.prompt;
-                showScreen('result');
-            });
-            actionList.appendChild(btn);
-        });
-    }
-
-    /* ── コピー ── */
-    function copyPrompt() {
-        const text = promptDisplay.textContent;
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
-        } else {
-            fallbackCopy(text);
-        }
-    }
-
-    function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try { document.execCommand('copy'); showToast(); } catch(e) {}
-        ta.remove();
-    }
-
-    function showToast() {
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 2000);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
     }
 });
-    </script>
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    showToast();
+}
+
+let toastTimer = null;
+function showToast() {
+    toast.classList.remove('hidden');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.add('hidden'), 2000);
+}
+</script>
 </body>
 </html>
