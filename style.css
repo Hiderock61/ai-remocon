@@ -1,247 +1,2572 @@
+/* ===== リセット & ベース ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
-    --bg-color: #f2f2f7;
-    --text-color: #1c1c1e;
-    --card-bg: #ffffff;
-    --primary: #0071e3;
-    --border: #e5e5ea;
-    --radius: 16px;
-    --thick-bg: #eef3ff;
-    --thick-border: #c7d8f8;
-    --silly-bg: #f0fff4;
-    --silly-border: #b2dfcb;
+  --color-bg:        #faf8f4;
+  --color-surface:   #ffffff;
+  --color-beige:     #f5f0e8;
+  --color-beige-mid: #ede5d8;
+  --color-purple:    #c9b8d8;
+  --color-purple-lt: #ede8f5;
+  --color-green:     #b8d4c0;
+  --color-green-lt:  #e8f3eb;
+  --color-text:      #3a3530;
+  --color-text-mid:  #6b5f55;
+  --color-text-lt:   #9c8f85;
+  --color-border:    #ddd5c8;
+  --color-accent:    #9b7fb5;
+  --color-accent-dk: #7a5e99;
+  --color-danger:    #c47a7a;
+  --font-main: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --transition: 0.22s ease;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-    height: 100%;
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.5;
-    padding-bottom: env(safe-area-inset-bottom, 16px);
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.7;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* ===== アプリ外枠（スマホ幅） ===== */
 #app {
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg);
 }
 
-/* ヘッダー */
-header {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    background-color: var(--bg-color);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--border);
-}
-
-header.hidden {
-    display: none;
-}
-
-.icon-btn {
-    background: none;
-    border: none;
-    color: var(--primary);
-    font-size: 15px;
-    font-weight: 600;
-    padding: 6px 12px 6px 0;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.breadcrumb {
-    font-size: 13px;
-    color: #636366;
-    margin-left: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* メインコンテンツ */
-main {
-    flex: 1;
-    padding: 20px 16px;
-}
-
+/* ===== 画面共通 ===== */
 .screen {
-    display: none;
-    animation: fadeIn 0.25s ease;
+  display: none;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: 0 0 40px;
+  animation: fadeIn 0.3s ease;
 }
 
 .screen.active {
-    display: block;
+  display: flex;
 }
 
-.screen-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-align: center;
-    letter-spacing: -0.3px;
-}
-
-/* ===== カテゴリグリッド ===== */
-.category-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.category-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 12px;
-    background-color: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-    text-align: center;
-    min-height: 110px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    user-select: none;
-}
-
-.category-btn:active {
-    transform: scale(0.95);
-    opacity: 0.85;
-}
-
-.category-btn.thick {
-    background-color: var(--thick-bg);
-    border-color: var(--thick-border);
-}
-
-.category-btn.silly {
-    background-color: var(--silly-bg);
-    border-color: var(--silly-border);
-}
-
-.category-icon {
-    font-size: 36px;
-    margin-bottom: 10px;
-    line-height: 1;
-}
-
-.category-title {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--text-color);
-}
-
-/* ===== リストアイテム ===== */
-.list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.list-item {
-    padding: 18px 20px;
-    background-color: var(--card-bg);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    user-select: none;
-}
-
-.list-item:active {
-    transform: scale(0.97);
-    opacity: 0.8;
-}
-
-/* ===== プロンプト表示 ===== */
-.result-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.prompt-box {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: var(--radius);
-    border: 1.5px solid var(--border);
-    font-size: 15px;
-    line-height: 1.7;
-    white-space: pre-wrap;
-    min-height: 160px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    color: #3a3a3c;
-}
-
-.primary-btn {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 28px;
-    padding: 18px;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.15s, transform 0.1s;
-    letter-spacing: 0.3px;
-    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
-    user-select: none;
-}
-
-.primary-btn:active {
-    transform: scale(0.97);
-    background-color: #0060c7;
-}
-
-/* ===== トースト通知 ===== */
-.toast {
-    position: fixed;
-    bottom: calc(32px + env(safe-area-inset-bottom, 0px));
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(28, 28, 30, 0.88);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 24px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 100;
-    opacity: 1;
-    transition: opacity 0.4s ease;
-    white-space: nowrap;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.toast.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* ===== アニメーション ===== */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== ヘッダーバー ===== */
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.header-bar .app-logo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-accent-dk);
+  letter-spacing: 0.02em;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-mid);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+.back-btn:hover, .back-btn:active {
+  background: var(--color-beige);
+}
+
+/* ===== プログレスバー ===== */
+.progress-wrap {
+  padding: 10px 20px 0;
+  background: var(--color-surface);
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: var(--color-text-lt);
+  margin-bottom: 4px;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--color-beige-mid);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-purple), var(--color-accent));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ===== コンテンツ領域 ===== */
+.screen-content {
+  flex: 1;
+  padding: 28px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== トップ画面 ===== */
+.top-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 20px 32px;
+  gap: 12px;
+}
+
+.obasan-icon {
+  font-size: 4.5rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-accent-dk);
+  letter-spacing: 0.04em;
+}
+
+.app-tagline {
+  font-size: 1.0rem;
+  color: var(--color-text-mid);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.top-desc-card {
+  background: var(--color-beige);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 0 20px;
+}
+
+.top-desc-card p {
+  font-size: 0.92rem;
+  color: var(--color-text-mid);
+  line-height: 1.8;
+  text-align: center;
+}
+
+.top-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px;
+  margin-top: 8px;
+}
+
+/* ===== ボタン ===== */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 1.0rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition);
+  line-height: 1.4;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dk));
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover, .btn-primary:active {
+  filter: brightness(1.07);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-accent-dk);
+  border: 1.5px solid var(--color-purple);
+}
+
+.btn-secondary:hover, .btn-secondary:active {
+  background: var(--color-purple-lt);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-lt);
+  border: 1.5px solid var(--color-border);
+  font-weight: 500;
+}
+
+.btn-ghost:hover, .btn-ghost:active {
+  background: var(--color-beige);
+  color: var(--color-text-mid);
+}
+
+.btn-green {
+  background: linear-gradient(135deg, var(--color-green), #8fbe9a);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-green:hover, .btn-green:active {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  border-radius: var(--radius-sm);
+}
+
+/* ===== セクションタイトル ===== */
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.section-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-lt);
+  margin-top: 4px;
+}
+
+/* ===== 選択カード ===== */
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.choice-card:hover, .choice-card:active {
+  border-color: var(--color-purple);
+  background: var(--color-purple-lt);
+  box-shadow: var(--shadow-sm);
+}
+
+.choice-card.selected {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+  box-shadow: 0 0 0 2px rgba(155,127,181,0.25);
+}
+
+.choice-card .choice-title {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 3px;
+}
+
+.choice-card .choice-desc {
+  font-size: 0.82rem;
+  color: var(--color-text-mid);
+  line-height: 1.5;
+}
+
+.choice-card .choice-check {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: transparent;
+  transition: all var(--transition);
+}
+
+.choice-card.selected .choice-check {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* ===== おばちゃん度カード ===== */
+.obasan-level-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.level-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 18px 18px 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.level-card:hover {
+  border-color: var(--color-purple);
+  background: var(--color-purple-lt);
+}
+
+.level-card.selected {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+  box-shadow: 0 0 0 3px rgba(155,127,181,0.2);
+}
+
+.level-card .level-num {
+  font-size: 0.75rem;
+  color: var(--color-text-lt);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.level-card .level-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.level-card .level-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-mid);
+  line-height: 1.5;
+}
+
+.level-meter {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.level-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-beige-mid);
+}
+
+.level-dot.on {
+  background: var(--color-accent);
+}
+
+/* ===== おばさん吹き出し ===== */
+.obasan-speech {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 20px 20px;
+}
+
+.obasan-face {
+  font-size: 3.8rem;
+  line-height: 1;
+}
+
+.speech-bubble {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  border-bottom-left-radius: 4px;
+  padding: 20px 22px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  max-width: 100%;
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 28px;
+  border: 8px solid transparent;
+  border-bottom-color: var(--color-border);
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% - 1px);
+  left: 29px;
+  border: 7px solid transparent;
+  border-bottom-color: var(--color-surface);
+}
+
+.speech-bubble p {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.85;
+}
+
+.speech-bubble p + p {
+  margin-top: 10px;
+}
+
+.speech-note {
+  font-size: 0.82rem;
+  color: var(--color-text-lt);
+  text-align: center;
+  padding: 0 4px;
+  line-height: 1.6;
+}
+
+/* ===== 聞き取りモード ===== */
+.question-block {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 20px 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.question-num {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.question-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.option-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chip {
+  padding: 8px 14px;
+  border-radius: 99px;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg);
+  font-size: 0.88rem;
+  color: var(--color-text-mid);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-main);
+}
+
+.chip:hover, .chip:active {
+  border-color: var(--color-purple);
+  background: var(--color-purple-lt);
+  color: var(--color-accent-dk);
+}
+
+.chip.selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.free-input {
+  width: 100%;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  resize: none;
+  min-height: 64px;
+  transition: border-color var(--transition);
+  margin-top: 4px;
+}
+
+.free-input:focus {
+  outline: none;
+  border-color: var(--color-purple);
+  background: var(--color-surface);
+}
+
+.free-input::placeholder {
+  color: var(--color-text-lt);
+}
+
+.q-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+/* ===== 台帳メモ ===== */
+.ledger-header {
+  text-align: center;
+  padding: 24px 20px 0;
+}
+
+.ledger-header .obasan-face {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+.ledger-header p {
+  font-size: 0.92rem;
+  color: var(--color-text-mid);
+  line-height: 1.7;
+}
+
+.ledger-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.ledger-block {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ledger-block-label {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.ledger-block-value {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.ledger-memo-block {
+  background: var(--color-beige);
+  border: 1px solid var(--color-beige-mid);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin: 0 20px;
+}
+
+.ledger-memo-label {
+  font-size: 0.75rem;
+  color: var(--color-text-lt);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.ledger-memo-value {
+  font-size: 0.88rem;
+  color: var(--color-text-mid);
+  line-height: 1.7;
+}
+
+.ledger-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+  margin-top: 4px;
+}
+
+/* ===== 完了画面 ===== */
+.complete-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px 32px;
+  text-align: center;
+  gap: 16px;
+}
+
+.complete-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.complete-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.complete-desc {
+  font-size: 0.92rem;
+  color: var(--color-text-mid);
+  line-height: 1.8;
+  max-width: 300px;
+}
+
+.complete-stamp {
+  background: var(--color-green-lt);
+  border: 2px solid var(--color-green);
+  border-radius: var(--radius-md);
+  padding: 14px 24px;
+  font-size: 0.88rem;
+  color: var(--color-text-mid);
+  line-height: 1.6;
+  width: 100%;
+  max-width: 320px;
+}
+
+.complete-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 8px;
+}
+
+/* ===== 補足テキスト ===== */
+.note-text {
+  font-size: 0.82rem;
+  color: var(--color-text-lt);
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 4px;
+}
+
+/* ===== 区切り線 ===== */
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 0;
+}
+
+/* ===== スクロール ===== */
+.screen {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== アクセシビリティ ===== */
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ===== タッチ改善 ===== */
+@media (hover: none) {
+  .btn:active {
+    filter: brightness(0.93);
+    transform: scale(0.98);
+  }
+  .choice-card:active,
+  .level-card:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ===== 完了スタンプアニメーション ===== */
+.complete-icon {
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ===== 質問ブロック スライドイン ===== */
+.question-block {
+  animation: slideUp 0.25s ease both;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ===== 台帳ブロック ===== */
+.ledger-block {
+  animation: fadeIn 0.3s ease both;
+}
+
+/* ===== セーフエリア対応 ===== */
+.screen {
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
+.top-buttons {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===== レスポンシブ（デスクトップ表示時） ===== */
+@media (min-width: 431px) {
+  body {
+    background: #e8e2da;
+    padding: 24px 0;
+  }
+
+  #app {
+    border-radius: 28px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    min-height: auto;
+    max-height: 860px;
+    overflow: hidden;
+  }
+
+  .screen {
+    max-height: 860px;
+  }
+}
+
+
+/* ============================================================
+   お引き合わせシミュレーター Ver.0.1
+   ============================================================ */
+
+/* ----- ヘッダー内バージョン表示 ----- */
+.room-version {
+  font-size: 0.72rem;
+  color: var(--color-text-lt);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  width: 48px;
+  text-align: right;
+}
+
+/* ----- おばさん状態バー ----- */
+.room-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  background: var(--color-purple-lt);
+  border-bottom: 1px solid var(--color-purple);
+  font-size: 0.85rem;
+  color: var(--color-accent-dk);
+  font-weight: 600;
+  min-height: 40px;
+  transition: background var(--transition);
+}
+
+.room-status-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.room-status-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* ----- チャットコンテナ ----- */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--color-bg);
+}
+
+/* ----- メッセージ共通 ----- */
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 88%;
+  animation: fadeIn 0.28s ease both;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.message-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.message-label {
+  font-size: 0.75rem;
+  color: var(--color-text-lt);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.message-body {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ----- おばさんのメッセージ ----- */
+.message-obasan {
+  align-self: flex-start;
+}
+
+.message-obasan .message-body {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text);
+  border-bottom-left-radius: 4px;
+}
+
+/* おばさん退室中は薄く */
+.message-obasan.obasan-away .message-body {
+  opacity: 0.45;
+}
+
+/* ----- 自分のメッセージ ----- */
+.message-me {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.message-me .message-header {
+  flex-direction: row-reverse;
+}
+
+.message-me .message-body {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dk));
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* ----- お相手のメッセージ ----- */
+.message-partner {
+  align-self: flex-start;
+}
+
+.message-partner .message-body {
+  background: var(--color-beige);
+  border: 1.5px solid var(--color-beige-mid);
+  color: var(--color-text);
+  border-bottom-left-radius: 4px;
+}
+
+/* ----- 「おばさんを呼ぶ」ボタンラッパー ----- */
+.call-obasan-wrap {
+  padding: 6px 12px 4px;
+  background: var(--color-bg);
+}
+
+/* ----- 「おばさんを呼ぶ」ボタン ----- */
+.call-obasan-button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: 1.5px solid var(--color-purple);
+  border-radius: var(--radius-md);
+  background: var(--color-purple-lt);
+  color: var(--color-accent-dk);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition);
+}
+
+.call-obasan-button:hover,
+.call-obasan-button:active {
+  background: var(--color-purple);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.call-obasan-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ----- 選択肢リスト ----- */
+#screen-room .room-choice-list.hidden {
+  display: none !important;
+}
+.room-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 16px 6px;
+  background: var(--color-bg);
+}
+
+.room-choice-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition);
+}
+
+.room-choice-btn:hover,
+.room-choice-btn:active {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+  color: var(--color-accent-dk);
+}
+
+/* ----- 自分の入力エリア ----- */
+.room-input-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 6px 12px 8px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.room-input-textarea {
+  flex: 1;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: var(--font-main);
+  font-size: 16px; /* iPhoneズームイン防止のため16px固定 */
+  color: var(--color-text);
+  background: var(--color-bg);
+  resize: none;
+  min-height: 44px;
+  max-height: 96px;
+  transition: border-color var(--transition);
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+}
+
+.room-input-textarea:focus {
+  outline: none;
+  border-color: var(--color-purple);
+  background: var(--color-surface);
+}
+
+.room-input-textarea::placeholder {
+  color: var(--color-text-lt);
+}
+
+.room-send-btn {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dk));
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  min-width: 56px;
+  align-self: flex-end;
+  height: 44px;
+}
+
+.room-send-btn:hover,
+.room-send-btn:active {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* ----- 終了エリア ----- */
+.room-end-area {
+  padding: 10px 16px 16px;
+  background: var(--color-bg);
+}
+
+/* ----- hidden ユーティリティ（クラスで制御） ----- */
+.hidden {
+  display: none !important;
+}
+
+/* ----- screen-room のレイアウト調整 ----- */
+/* .screenのmin-height:100dvhをリセットし、入力欄を画面内に固定 */
+#screen-room {
+  min-height: 0 !important;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-bottom: 0 !important;
+}
+
+/* chat-containerは残りの高さを全て占有し、スクロール可能に */
+#screen-room .chat-container {
+  flex: 1 1 0 !important;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* 入力エリア・おばちゃんボタンは縮まないよう固定 */
+#screen-room .room-input-area,
+#screen-room .call-obasan-wrap,
+#screen-room .room-choice-list,
+#screen-room .room-end-area {
+  flex-shrink: 0;
+}
+
+/* ----- デスクトップ時の高さ調整 ----- */
+@media (min-width: 431px) {
+  #screen-room {
+    height: 860px;
+    max-height: 860px;
+  }
+}
+
+
+/* ============================================================
+   YUUEKi.com Ver.0.2 — 追加スタイル
+   ============================================================ */
+
+/* ----- YUUEKiロゴ ----- */
+.yuueki-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.yuueki-logo-main {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--color-accent-dk);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.yuueki-logo-sub {
+  font-size: 0.85rem;
+  color: var(--color-text-mid);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.yuueki-copy {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* ----- スポンサーバー ----- */
+.sponsor-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: var(--color-beige);
+  border-top: 1px solid var(--color-beige-mid);
+  margin-top: auto;
+}
+
+.sponsor-bar-room {
+  margin-top: 0;
+  border-top: none;
+  border-bottom: 1px solid var(--color-beige-mid);
+}
+
+.sponsor-label {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-lt);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  letter-spacing: 0.06em;
+  background: var(--color-surface);
+}
+
+.sponsor-text {
+  font-size: 0.78rem;
+  color: var(--color-text-lt);
+  line-height: 1.5;
+}
+
+/* ----- 仮想相手プリセットカード ----- */
+.partner-preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.partner-preset-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.partner-preset-card:hover,
+.partner-preset-card:active {
+  border-color: var(--color-purple);
+  background: var(--color-purple-lt);
+  box-shadow: var(--shadow-sm);
+}
+
+.partner-preset-card.selected {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+  box-shadow: 0 0 0 2px rgba(155,127,181,0.25);
+}
+
+.partner-preset-check {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: transparent;
+  transition: all var(--transition);
+}
+
+.partner-preset-card.selected .partner-preset-check {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.partner-preset-emoji {
+  font-size: 2.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.partner-preset-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.partner-preset-name {
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 3px;
+}
+
+.partner-preset-desc {
+  font-size: 0.84rem;
+  color: var(--color-text-mid);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.partner-preset-ok {
+  font-size: 0.78rem;
+  color: var(--color-accent-dk);
+  background: var(--color-purple-lt);
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+  margin-bottom: 3px;
+}
+
+.partner-preset-ng {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  background: #fdf0f0;
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+}
+
+/* ----- ルーム情報バー ----- */
+.room-info-bar {
+  display: flex;
+  gap: 0;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.room-info-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-right: 1px solid var(--color-border);
+}
+
+.room-info-item:last-child {
+  border-right: none;
+}
+
+.room-info-label {
+  font-size: 0.68rem;
+  color: var(--color-text-lt);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.room-info-value {
+  font-size: 0.78rem;
+  color: var(--color-text-mid);
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: initial;
+  word-break: keep-all;
+}
+
+.room-info-ng {
+  color: var(--color-danger);
+}
+
+/* ----- ふりかえりフォーム ----- */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-question {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.review-q-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.review-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.review-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* ----- メッセージ（userタイプ → message-user） ----- */
+.message-user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.message-user .message-header {
+  flex-direction: row-reverse;
+}
+
+.message-user .message-body {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dk));
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* ----- screen-room のスポンサーバー非表示制御 ----- */
+#screen-room .sponsor-bar.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   YUUEKi.com Ver.0.3-A — ふりかえり画面スタイル
+   ============================================================ */
+
+/* ----- ステップインジケーター ----- */
+.review-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px 8px;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.review-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background var(--transition), transform var(--transition);
+  flex-shrink: 0;
+}
+
+.review-step-dot.active {
+  background: var(--color-accent);
+  transform: scale(1.3);
+}
+
+.review-step-dot.done {
+  background: var(--color-purple);
+}
+
+.review-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+  max-width: 32px;
+}
+
+/* ----- ステップパネル ----- */
+.review-step-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 32px;
+}
+
+.review-step-panel.hidden {
+  display: none !important;
+}
+
+/* ----- おばちゃんバブル ----- */
+.review-obasan-bubble {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--color-purple-lt);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.review-obasan-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.review-obasan-text {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+/* ----- Step 1: 大きな選択ボタン ----- */
+.review-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.review-choice-btn {
+  width: 100%;
+  padding: 18px 16px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-family: var(--font-main);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  line-height: 1.6;
+}
+
+.review-choice-btn:hover,
+.review-choice-btn:active {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+}
+
+/* ----- Step 2: メッセージリスト ----- */
+.review-message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.review-msg-item {
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.review-msg-item:hover {
+  border-color: var(--color-purple);
+  background: var(--color-beige);
+}
+
+.review-msg-item.selected {
+  border-color: var(--color-accent);
+  background: var(--color-purple-lt);
+}
+
+.review-msg-role {
+  font-size: 0.75rem;
+  color: var(--color-text-lt);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.review-msg-text {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* ----- Step 3: 理由グリッド ----- */
+.review-reasons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.review-reason-btn {
+  padding: 10px 14px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-family: var(--font-main);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+  line-height: 1.4;
+}
+
+.review-reason-btn:hover {
+  border-color: var(--color-purple);
+  background: var(--color-beige);
+}
+
+.review-reason-btn.selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* ----- Step 4: 自由メモ ----- */
+.review-free-memo {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-family: var(--font-main);
+  color: var(--color-text);
+  background: var(--color-surface);
+  resize: vertical;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  transition: border-color var(--transition);
+}
+
+.review-free-memo:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* ----- Step 5: 反映チェックボックス ----- */
+.review-reflect-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-beige);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.review-reflect-check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.review-reflect-label {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+/* ----- 共通: ナビゲーションボタン ----- */
+.review-nav-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ----- 共通: ステップ注記 ----- */
+.review-step-note {
+  font-size: 0.8rem;
+  color: var(--color-text-lt);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   Ver.0.3-C — おばちゃん非常口UI 追加スタイル
+   ============================================================ */
+
+/* ----- お茶タイムバナー ----- */
+.tea-time-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+  border: 1.5px solid #f0c040;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 16px 8px;
+  font-size: 0.82rem;
+  color: #7a5c00;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(240,192,64,0.18);
+  animation: teaFadeIn 0.4s ease;
+}
+
+.tea-time-banner.hidden {
+  display: none;
+}
+
+.tea-time-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.tea-time-text {
+  line-height: 1.4;
+}
+
+@keyframes teaFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----- 状態バー：モード別カラー ----- */
+.room-status-bar.mode-decompressing {
+  background: linear-gradient(90deg, #e8e0f5 0%, #d8cef0 100%);
+  border-color: #b39ddb;
+  color: #4a2f7a;
+}
+
+.room-status-bar.mode-waiting {
+  background: linear-gradient(90deg, #fff8e1 0%, #fff3cd 100%);
+  border-color: #f0c040;
+  color: #7a5c00;
+}
+
+.room-status-bar.mode-closing {
+  background: linear-gradient(90deg, #f5f5f5 0%, #eeeeee 100%);
+  border-color: #bdbdbd;
+  color: #555;
+}
+
+/* ----- 4択ボタン（OBASAN_ACTIONS）----- */
+.room-choice-btn {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--color-accent);
+  background: #fff;
+  color: var(--color-accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  line-height: 1.4;
+}
+
+.room-choice-btn:hover,
+.room-choice-btn:active {
+  background: var(--color-accent);
+  color: #fff;
+  transform: scale(0.98);
+}
+
+/* 「今日はここまでにする」は控えめな色 */
+.room-choice-btn.btn-ghost-choice {
+  border-color: var(--color-border);
+  color: var(--color-text-lt);
+}
+
+.room-choice-btn.btn-ghost-choice:hover,
+.room-choice-btn.btn-ghost-choice:active {
+  background: var(--color-beige-mid);
+  color: var(--color-text-mid);
+}
+
+/* ============================================================
+   Ver.0.4-A — 迷ったら整理棚 / おばちゃんあみだ
+   ============================================================ */
+
+/* ----- ヘルパーメニューボタン（整理棚） ----- */
+.helper-menu-btn {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1.5px dashed var(--color-purple);
+  border-radius: 10px;
+  color: var(--color-accent);
+  font-size: 0.84rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: center;
+}
+.helper-menu-btn:hover {
+  background: var(--color-purple-lt);
+  border-color: var(--color-accent);
+}
+
+/* ----- ヘルパーメニューパネル（整理棚ドロワー） ----- */
+.helper-menu-panel {
+  background: #fff;
+  border: 1.5px solid var(--color-purple);
+  border-radius: 16px;
+  margin: 0 12px 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(140,100,200,0.10);
+}
+.helper-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+  background: linear-gradient(90deg, var(--color-purple-lt) 0%, #fff 100%);
+  border-bottom: 1px solid var(--color-border);
+}
+.helper-menu-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-accent-dk);
+}
+.helper-menu-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-text-lt);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: inherit;
+}
+.helper-menu-close:hover { background: var(--color-purple-lt); }
+
+.helper-menu-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ----- 整理棚メニューアイテム ----- */
+.helper-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+.helper-menu-item:hover {
+  background: var(--color-purple-lt);
+  border-color: var(--color-purple);
+}
+.helper-item-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.helper-item-text {
+  font-weight: 600;
+  color: var(--color-text-mid);
+}
+
+/* あみだボタン（目立つ） */
+.helper-menu-item-lottery {
+  background: linear-gradient(135deg, var(--color-purple-lt) 0%, var(--color-beige) 100%);
+  border-color: var(--color-purple);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.helper-menu-item-lottery:hover {
+  background: var(--color-purple-lt);
+}
+.helper-item-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-accent-dk);
+}
+.helper-item-sublabel {
+  font-size: 0.78rem;
+  color: var(--color-text-lt);
+}
+
+/* ----- あみだパネル共通 ----- */
+.amida-panel {
+  background: #fff;
+  border: 1.5px solid var(--color-purple);
+  border-radius: 16px;
+  margin: 0 12px 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(140,100,200,0.12);
+}
+.amida-panel-header {
+  padding: 12px 16px 10px;
+  background: linear-gradient(90deg, var(--color-purple-lt) 0%, var(--color-beige) 100%);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-accent-dk);
+  border-bottom: 1px solid var(--color-border);
+}
+.amida-panel-body {
+  padding: 12px;
+}
+
+/* ----- おばちゃんメッセージ（パネル内） ----- */
+.amida-obasan-msg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 0 8px;
+}
+.amida-obasan-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.amida-obasan-text {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--color-text-mid);
+  background: var(--color-purple-lt);
+  border-radius: 12px;
+  padding: 10px 14px;
+  flex: 1;
+}
+
+/* ----- リスク確認ボタン ----- */
+.amida-risk-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+.amida-btn-ok {
+  padding: 13px 16px;
+  background: var(--color-green-lt);
+  border: 1.5px solid var(--color-green);
+  border-radius: 12px;
+  color: #2e6e3e;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.amida-btn-ok:hover { background: var(--color-green); }
+.amida-btn-ng {
+  padding: 13px 16px;
+  background: #fff3f3;
+  border: 1.5px solid var(--color-danger);
+  border-radius: 12px;
+  color: var(--color-danger);
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.amida-btn-ng:hover { background: #ffe0e0; }
+
+/* ----- 選択肢入力パネル ----- */
+.amida-note {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  background: #fff3f3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 12px 4px;
+  border: 1px solid #f0c0c0;
+}
+.amida-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px 4px;
+}
+.amida-input {
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.amida-input:focus {
+  border-color: var(--color-purple);
+  background: #fff;
+}
+.amida-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+.amida-actions .btn {
+  flex: 1;
+}
+
+/* ============================================================
+   Ver.0.5-A オノノケ縁側システム
+   ============================================================ */
+
+/* ----- 「今どうしたい？」状態ボタンパネル ----- */
+.issue-button-panel {
+  padding: 8px 12px 6px;
+  background: #faf5f0;
+  border-top: 1px solid #e8ddd4;
+}
+
+.issue-panel-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8b7355;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.issue-button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+/* 共通ベース */
+.issue-btn {
+  padding: 7px 11px;
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.issue-btn:active {
+  opacity: 0.75;
+  transform: scale(0.97);
+}
+
+/* おばちゃん担当（薄紫） */
+.issue-btn--obasan {
+  background: #f0ecf8;
+  border-color: #c4b0e8;
+  color: #5a3e8a;
+}
+
+/* トリセツくん担当（薄オレンジ） */
+.issue-btn--manual {
+  background: #fff4e8;
+  border-color: #f0c080;
+  color: #8a5a00;
+}
+
+/* 安全さん担当（薄緑） */
+.issue-btn--safety {
+  background: #eef8ee;
+  border-color: #90c890;
+  color: #2a6a2a;
+}
+
+/* 今日はここまで（グレー・控えめ） */
+.issue-btn--close {
+  background: #f5f5f5;
+  border-color: #cccccc;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* ----- 準備中キャラエリア ----- */
+.issue-coming-soon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #f0ece8;
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.coming-soon-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #b0a090;
+  background: #e8e0d8;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+}
+
+.coming-soon-char {
+  font-size: 12px;
+  color: #b0a090;
+  padding: 2px 6px;
+  border: 1px dashed #c8b8a8;
+  border-radius: 8px;
+}
+
+/* ----- キャラメッセージバブル ----- */
+.message-character {
+  align-self: flex-start;
+  max-width: 85%;
+  margin-bottom: 12px;
+}
+
+/* おばちゃん担当キャラ */
+.message-character--obasan {
+  background: #f0ecf8;
+  border: 1.5px solid #c4b0e8;
+  border-radius: 0 14px 14px 14px;
+  padding: 10px 14px;
+}
+
+.message-character--obasan .message-header {
+  color: #5a3e8a;
+}
+
+/* トリセツくん */
+.message-character--manual {
+  background: #fff4e8;
+  border: 1.5px solid #f0c080;
+  border-radius: 0 14px 14px 14px;
+  padding: 10px 14px;
+}
+
+.message-character--manual .message-header {
+  color: #8a5a00;
+}
+
+/* 安全さん */
+.message-character--safety {
+  background: #eef8ee;
+  border: 1.5px solid #90c890;
+  border-radius: 0 14px 14px 14px;
+  padding: 10px 14px;
+}
+
+.message-character--safety .message-header {
+  color: #2a6a2a;
+}
+
+/* キャラバッジ（状態バー内） */
+.char-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.char-badge--obasan {
+  background: #f0ecf8;
+  color: #5a3e8a;
+  border: 1px solid #c4b0e8;
+}
+
+.char-badge--manual {
+  background: #fff4e8;
+  color: #8a5a00;
+  border: 1px solid #f0c080;
+}
+
+.char-badge--safety {
+  background: #eef8ee;
+  color: #2a6a2a;
+  border: 1px solid #90c890;
+}
+
+/* ============================================================
+   Ver.0.5-B — Room Status Bar / 状態帯カード
+   ============================================================ */
+
+/* 状態帯カード本体 */
+.assistant-status-card {
+  margin: 8px 12px;
+  padding: 12px 14px;
+  background: #fff7df;
+  border: 2px solid #e4b84f;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #4a3515;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(80, 60, 20, 0.10);
+}
+
+/* 状態ラベル（大きく・太く・主役） */
+.status-card-label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #4a3515;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+/* 自分側への説明文 */
+.status-card-description {
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: #3f3327;
+  margin-bottom: 8px;
+}
+
+/* 相手側プレビュー枠（重要：点線→実線・背景強化） */
+.status-card-peer-preview {
+  background: rgba(255, 255, 255, 0.80);
+  border: 1.5px solid #d4b36c;
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #4b3b2b;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+.status-card-peer-preview strong {
+  display: block;
+  font-size: 0.74rem;
+  color: #8b6a20;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.status-card-peer-preview span {
+  color: #4b3b2b;
+  font-weight: 500;
+}
+
+/* issueType別のアクセントカラー（ラベルのみ色変え） */
+/* issueType別アクセントカラー（ラベル色のみ変更、背景は共通の#fff7dfを維持） */
+.assistant-status-card[data-issue="waiting_reply"] .status-card-label { color: #7a5a10; }
+.assistant-status-card[data-issue="waiting_reply"] { background: #fff7df; border-color: #e4b84f; }
+
+.assistant-status-card[data-issue="awkward"] .status-card-label { color: #5a3a7a; }
+.assistant-status-card[data-issue="awkward"] { background: #f8f4ff; border-color: #b89ae0; }
+
+.assistant-status-card[data-issue="purpose"] .status-card-label { color: #7a4a10; }
+.assistant-status-card[data-issue="purpose"] { background: #fff7df; border-color: #e4b84f; }
+
+.assistant-status-card[data-issue="safety_check"] .status-card-label { color: #1a5a3a; }
+.assistant-status-card[data-issue="safety_check"] { background: #f0faf4; border-color: #6abf8a; }
+
+.assistant-status-card[data-issue="close_today"] .status-card-label { color: #3a3a5a; }
+.assistant-status-card[data-issue="close_today"] { background: #f4f4f8; border-color: #9090b8; }
+
+/* ============================================================
+   Ver.0.5-B UI修正 — 状態表示1枚化・iPhone最適化
+   ============================================================ */
+
+/* ----- 状態バー：最小化スタイル（テキストのみ、高さ圧縮） ----- */
+.room-status-bar {
+  padding: 6px 16px;
+  min-height: 32px;
+  font-size: 0.8rem;
+}
+
+/* mode-character: キャラ介入中 */
+.room-status-bar.mode-character {
+  background: linear-gradient(90deg, #f0ecf8 0%, #e8e0f5 100%);
+  border-color: #c4b0e8;
+  color: #5a3e8a;
+}
+
+/* ----- issue-button-panel: collapsed（折りたたみ）状態 ----- */
+/* 状態カード表示中はボタン群を小さく・タイトルのみ表示 */
+.issue-button-panel.collapsed {
+  padding: 4px 12px;
+  background: #f5f2ee;
+  border-top: 1px solid #e0d8d0;
+}
+
+.issue-button-panel.collapsed .issue-panel-header {
+  font-size: 10px;
+  color: #b0a090;
+  margin-bottom: 0;
+}
+
+.issue-button-panel.collapsed .issue-button-grid,
+.issue-button-panel.collapsed .issue-coming-soon {
+  display: none;
+}
+
+/* ----- call-obasan-wrap: dimmed（非表示）状態 ----- */
+/* 状態カード表示中はおばちゃんボタンを非表示 */
+.call-obasan-wrap.dimmed {
+  display: none;
+}
+
+/* ----- 状態カード内アクションボタン ----- */
+.status-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.status-card-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.15s, transform 0.1s;
+  font-family: var(--font-main);
+  line-height: 1.3;
+}
+
+.status-card-btn:active {
+  opacity: 0.75;
+  transform: scale(0.97);
+}
+
+/* 解除ボタン（グレー系・はっきり表示） */
+.status-card-btn--release {
+  background: #ede8e0;
+  border-color: #b8a890;
+  color: #4a3a2a;
+}
+
+.status-card-btn--release:hover {
+  background: #e8e0d8;
+}
+
+/* 別の助け舟ボタン（薄紫系・はっきり表示） */
+.status-card-btn--change {
+  background: #ece4f8;
+  border-color: #a890d8;
+  color: #4a2e7a;
+}
+
+.status-card-btn--change:hover {
+  background: #e8e0f5;
+}
+
+/* ----- 状態カード：後続の上書きルールは削除（上の定義で統一） ----- */
+
+/* ----- tea-time-banner は削除済み（HTMLから除去）のため非表示保険 ----- */
+.tea-time-banner {
+  display: none !important;
+}
+
+/* ============================================================
+   Ver.0.5-B コンパクト化 — キーボード表示時の折りたたみ
+   ============================================================ */
+
+/* 入力フォーカス中：issueパネル・おばちゃんボタン・整理棚・準備中キャラを非表示 */
+body.keyboard-active .issue-button-panel,
+body.keyboard-active .call-obasan-wrap,
+body.keyboard-active .helper-menu-wrap,
+body.keyboard-active .issue-coming-soon {
+  display: none !important;
+}
+
+/* 入力フォーカス中：helper-menu-panelも非表示 */
+body.keyboard-active .helper-menu-panel {
+  display: none !important;
+}
+
+/* 入力フォーカス中：状態カードは維持（1枚のみ表示中の場合） */
+body.keyboard-active .assistant-status-card {
+  display: block;
+}
+
+/* 状態カード表示中：issueパネルはcollapsed（タイトルのみ）・おばちゃんは非表示 */
+/* これはapp.jsのclassで制御済みのため、CSSは補強のみ */
+
+/* ----- 全体的なメッセージバブルのコンパクト化 ----- */
+.message-bubble {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  padding: 9px 13px;
+}
+
+.message-header {
+  font-size: 0.74rem;
+  margin-bottom: 3px;
+}
+
+/* チャットコンテナの余白を詰める */
+.chat-container {
+  padding: 10px 12px;
+  gap: 8px;
+}
+
+/* ----- 状態バーのコンパクト化（さらに詰める） ----- */
+.room-status-bar {
+  padding: 5px 14px;
+  min-height: 28px;
+  font-size: 0.78rem;
+}
+
+/* ----- ルームヘッダーのコンパクト化 ----- */
+.room-header {
+  padding: 6px 12px;
+}
+
+.room-header-title {
+  font-size: 0.88rem;
+}
+
+.room-header-version {
+  font-size: 0.7rem;
+}
+
+/* ----- PR枠のコンパクト化 ----- */
+.room-pr-bar {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+}
+
+/* ----- ルームルールバーのコンパクト化 ----- */
+.room-rules-bar {
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  gap: 0;
+}
+
+.room-rule-cell {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+}
+
+/* ----- 選択肢ボタンのコンパクト化 ----- */
+.room-choice-btn {
+  padding: 10px 14px;
+  font-size: 0.86rem;
+}
+
+.room-choice-list {
+  padding: 6px 12px 4px;
+  gap: 6px;
+}
+
+/* ============================================================
+   Ver.0.5-B 助け舟ボトムシート & スリム状態バー
+   ============================================================ */
+
+/* ----- 助け舟トリガーボタン ----- */
+.help-trigger {
+  flex-shrink: 0;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #f5eef8;
+  color: #6a3fa0;
+  border: 1.5px solid #c9a0e0;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.help-trigger:active {
+  background: #e8d8f5;
+}
+
+/* ----- 入力エリアのレイアウト（トリガーボタン追加後） ----- */
+.room-input-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 6px 12px 8px;
+  background: #fff;
+  border-top: 1px solid #e8e0d5;
+}
+
+/* ----- ボトムシート背景 ----- */
+.help-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.18);
+  z-index: 80;
+}
+
+/* ----- ボトムシートパネル ----- */
+.help-menu-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 60vh;
+  background: #fffaf2;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.16);
+  padding: 12px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 90;
+  overflow-y: auto;
+}
+
+/* ----- ハンドルバー ----- */
+.help-menu-handle {
+  width: 40px;
+  height: 4px;
+  background: #d0c4b0;
+  border-radius: 2px;
+  margin: 0 auto 8px;
+  flex-shrink: 0;
+}
+
+/* ----- タイトル ----- */
+.help-menu-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5a3a1a;
+  text-align: center;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+/* ----- メニュー項目ボタン ----- */
+.help-menu-item {
+  font-size: 15px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid #e8d8c0;
+  color: #3a2a10;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+.help-menu-item:active {
+  background: #fdf0d8;
+}
+
+/* ----- 閉じるボタン ----- */
+.help-menu-close {
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #f0ebe0;
+  border: none;
+  color: #7a6a50;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 4px;
+}
+.help-menu-close:active {
+  background: #e4ddd0;
+}
+
+/* ----- スリム状態バー（assistant-status-bar） ----- */
+.assistant-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: #fff7df;
+  border-bottom: 2px solid #e4b84f;
+  font-size: 13px;
+  min-height: 36px;
+  max-height: 44px;
+  overflow: hidden;
+}
+.assistant-status-bar.hidden {
+  display: none;
+}
+.status-bar-label {
+  font-weight: 700;
+  color: #5a3a00;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+.status-bar-desc {
+  color: #7a6030;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.status-bar-release {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #a08040;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+.status-bar-release:active {
+  color: #5a3a00;
+}
+
+/* ----- keyboard-active時：ボトムシートを閉じる（JS側で制御するが保険） ----- */
+body.keyboard-active .help-menu-panel,
+body.keyboard-active .help-menu-backdrop {
+  display: none !important;
+}
+
+/* ============================================================
+   Ver.0.5-C：新理念コピー・ボトムシートマイクロコピー
+   ============================================================ */
+
+/* トップ理念エリア */
+.top-philosophy {
+  margin: 16px 20px 8px;
+  padding: 12px 16px;
+  background: #f7f4ef;
+  border-left: 3px solid #c9a96e;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #5a4a3a;
+  line-height: 1.7;
+}
+
+.top-philosophy p {
+  margin: 0;
+}
+
+/* ボトムシート内マイクロコピー */
+.help-menu-microcopy {
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  background: #fff7df;
+  border: 1px solid #e4b84f;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: #6b4f1a;
+  line-height: 1.6;
+  text-align: center;
 }

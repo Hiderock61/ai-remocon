@@ -1,1498 +1,631 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.4 修正版</title>
-<style>
-/* ─── 変数 ─── */
-:root {
-  --bg: #f2f2f7;
-  --text: #1c1c1e;
-  --sub: #636366;
-  --card: #ffffff;
-  --border: #e5e5ea;
-  --primary: #0071e3;
-  --primary-dk: #0060c7;
-  --wide-bg: #eef3ff;
-  --wide-border: #c7d8f8;
-  --silly-bg: #f0fff4;
-  --silly-border: #b2dfcb;
-  --radius: 16px;
-  --radius-sm: 12px;
-  --pill: 28px;
-  --shadow: 0 1px 5px rgba(0,0,0,0.07);
-  --shadow-btn: 0 4px 14px rgba(0,113,227,0.28);
-}
-
-/* ─── リセット ─── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0; padding: 0;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-html { height: 100%; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont,
-    "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Noto Sans JP", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.55;
-  min-height: 100dvh;
-  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
-}
-
-#app {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ─── ヘッダー ─── */
-#header {
-  display: flex;
-  align-items: center;
-  padding: 10px 16px;
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid var(--border);
-  min-height: 48px;
-}
-#header.hidden { display: none; }
-
-#back-btn {
-  background: none;
-  border: none;
-  color: var(--primary);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 8px 12px 8px 0;
-  cursor: pointer;
-  flex-shrink: 0;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-#breadcrumb {
-  font-size: 13px;
-  color: var(--sub);
-  margin-left: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ─── メイン ─── */
-main { flex: 1; padding: 20px 16px 0; }
-
-.screen { display: none; animation: fadeIn .22s ease; }
-.screen.active { display: block; }
-
-/* ─── 画面タイトル ─── */
-.screen-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  letter-spacing: -.3px;
-}
-
-/* ─── トップ画面 ─── */
-.top-lead {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.top-lead-title {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: -.4px;
-}
-.top-lead-sub {
-  font-size: 13px;
-  color: var(--sub);
-  margin-top: 5px;
-  line-height: 1.6;
-}
-
-/* ワイドボタン（どこでも困ってる・くだらない） */
-.wide-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 18px 20px;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--wide-border);
-  background: var(--wide-bg);
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform .12s, opacity .12s;
-  box-shadow: var(--shadow);
-  user-select: none;
-  min-height: 60px;
-  text-align: center;
-  letter-spacing: -.2px;
-}
-.wide-btn.silly {
-  background: var(--silly-bg);
-  border-color: var(--silly-border);
-}
-.wide-btn:active { transform: scale(.97); opacity: .85; }
-
-/* 中央ラベル */
-.section-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--sub);
-  text-align: center;
-  margin: 16px 0 10px;
-  letter-spacing: .3px;
-  text-transform: uppercase;
-}
-
-/* カテゴリグリッド */
-.cat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.cat-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 14px 14px 12px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: transform .12s, opacity .12s;
-  min-height: 96px;
-  box-shadow: var(--shadow);
-  user-select: none;
-  position: relative;
-}
-.cat-btn:active { transform: scale(.95); opacity: .85; }
-
-.cat-icon {
-  font-size: 30px;
-  line-height: 1;
-  margin-bottom: 8px;
-  display: block;
-}
-.cat-label {
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-  color: var(--text);
-  text-align: left;
-}
-
-/* フッター */
-.top-footer {
-  margin-top: 24px;
-  padding-bottom: 4px;
-  text-align: center;
-  font-size: 11px;
-  color: #aeaeb2;
-}
-
-/* ─── シナリオ・アクションリスト ─── */
-.list-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.list-item {
-  padding: 18px 20px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform .12s, opacity .12s;
-  box-shadow: var(--shadow);
-  user-select: none;
-  min-height: 56px;
-  display: flex;
-  align-items: center;
-}
-.list-item:active { transform: scale(.97); opacity: .8; }
-
-/* ─── プロンプト画面 ─── */
-.result-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.result-meta {
-  font-size: 13px;
-  color: var(--sub);
-  line-height: 1.6;
-}
-.result-meta strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.prompt-box {
-  background: var(--card);
-  padding: 20px;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--border);
-  font-size: 15px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  min-height: 160px;
-  box-shadow: var(--shadow);
-  color: #3a3a3c;
-}
-
-.copy-btn {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: var(--pill);
-  padding: 18px;
-  font-size: 17px;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-  transition: background .15s, transform .1s;
-  letter-spacing: .3px;
-  box-shadow: var(--shadow-btn);
-  user-select: none;
-  min-height: 56px;
-  width: 100%;
-  display: block;
-}
-.copy-btn:active { transform: scale(.97); background: var(--primary-dk); }
-
-/* ─── 外部AIリンク ─── */
-.ai-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 2px;
-}
-.ai-label {
-  font-size: 13px;
-  color: var(--sub);
-  text-align: center;
-}
-.ai-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-.ai-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 0 12px;
-  min-height: 48px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform .12s, opacity .12s, background .12s;
-  box-shadow: var(--shadow);
-  user-select: none;
-  text-align: center;
-}
-.ai-btn:active { transform: scale(.95); opacity: .8; background: #f0f0f5; }
-.ai-icon { font-size: 18px; flex-shrink: 0; line-height: 1; }
-
-/* ─── トースト ─── */
-#toast {
-  position: fixed;
-  bottom: calc(32px + env(safe-area-inset-bottom, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(28,28,30,.88);
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 500;
-  z-index: 100;
-  opacity: 1;
-  transition: opacity .4s ease;
-  white-space: nowrap;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  pointer-events: none;
-}
-#toast.hidden { opacity: 0; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#faf8f4">
+  <title>YUUEKi.com</title>
+  <meta name="description" content="目的を言う自由。断る自由。気まずくならずに話し始める一対一ルーム。YUUEKi.com">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="YUUEKi.com">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app">
+  <div id="app">
 
-  <!-- ヘッダー -->
-  <header id="header" class="hidden">
-    <button id="back-btn" type="button">◀ 戻る</button>
-    <div id="breadcrumb"></div>
-  </header>
-
-  <main id="main">
-
-    <!-- 画面1: location -->
-    <section id="screen-location" class="screen active">
-      <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.4 修正版</div>
-        <div class="top-lead-sub">書くの飽きた。<br>今いる場所を3タップするだけで、AIに貼る文章ができるリモコン。</div>
+    <!-- ========================================
+         画面1: トップ画面
+    ========================================= -->
+    <div id="screen-top" class="screen active">
+      <div class="top-hero">
+        <div class="yuueki-logo-wrap">
+          <span class="yuueki-logo-main">YUUEKi.com</span>
+          <span class="yuueki-logo-sub">👵🏻 つながろおばちゃんのガイド付き</span>
+        </div>
+        <p class="yuueki-copy">目的を言う自由。<br>断る自由。<br>気まずくならずに話し始める場所。</p>
       </div>
 
-      <button class="wide-btn" type="button" data-loc="anywhere">😵 どこでもいいから困ってる</button>
-
-      <div class="section-label">今どこ？</div>
-
-      <div class="cat-grid" id="cat-grid">
-        <!-- JSで生成 -->
+      <div class="top-desc-card">
+        <p>YUUEKi.com は、人間関係の目的を最初から正直に置ける一対一ルームです。</p>
+        <p style="margin-top:8px;">恋愛のふりをしなくていい。<br>ただ話したいも、会いたいも、境界線つきで最初から置けます。</p>
       </div>
 
-      <button class="wide-btn silly" type="button" data-loc="silly" style="margin-top:10px;">🥒 くだらないことしたい</button>
+      <div class="top-buttons">
+        <button class="btn btn-primary" onclick="goTo('screen-torisetsu-intro')">
+          👵🏻 トリセツを作る
+        </button>
+        <button class="btn btn-secondary" onclick="goTo('screen-partner-select')">
+          仮想ルームを試してみる
+        </button>
+        <button class="btn btn-ghost" onclick="goTo('screen-complete-view')">
+          今日は見るだけ
+        </button>
+      </div>
 
-      <div class="top-footer">by オノノケホールディングス😲©️</div>
-    </section>
+      <div class="top-philosophy">
+        <p>隠すからズレる。<br>ごまかすから重くなる。<br>恋愛のふりをするから、あとで傷つく。</p>
+        <p style="margin-top:8px;">YUUEKi.com は、成人同士の合意と撤退権を前提に、目的を正直に置ける場所です。<br>自分の目的を言う自由と、相手が断る自由は、いつでもセットです。</p>
+        <p class="note-text" style="margin-top:8px;">AIは本人の代筆をしません。</p>
+      </div>
 
-    <!-- 画面2: scenario -->
-    <section id="screen-scenario" class="screen">
-      <h2 class="screen-title" id="scenario-title">何に困ってる？</h2>
-      <div class="list-wrap" id="scenario-list"></div>
-    </section>
+      <!-- スポンサー枠（仮） -->
+      <div class="sponsor-bar" id="sponsor-bar-top">
+        <span class="sponsor-label">PR</span>
+        <span class="sponsor-text">この茶の間は、〇〇珈琲の提供でお送りしています。広告やけどな。無理に押さんでええよ。</span>
+      </div>
+    </div>
 
-    <!-- 画面3: action（actionsが2つ以上の場合のみ使用） -->
-    <section id="screen-action" class="screen">
-      <h2 class="screen-title">AIに何をさせたい？</h2>
-      <div class="list-wrap" id="action-list"></div>
-    </section>
+    <!-- ========================================
+         画面2: トリセツ作成イントロ
+    ========================================= -->
+    <div id="screen-torisetsu-intro" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
 
-    <!-- 画面4: prompt -->
-    <section id="screen-prompt" class="screen">
-      <div class="result-wrap">
-        <div class="result-meta" id="result-meta"></div>
-        <div class="prompt-box" id="prompt-display"></div>
-        <button class="copy-btn" id="copy-btn" type="button">コピーする</button>
-        <div class="ai-section">
-          <p class="ai-label">コピーしたら、下のAIに貼ってください</p>
-          <div class="ai-grid">
-            <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="ai-btn">
-              <span class="ai-icon">🤖</span>ChatGPTを開く
-            </a>
-            <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="ai-btn">
-              <span class="ai-icon">✨</span>Geminiを開く
-            </a>
-            <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer" class="ai-btn">
-              <span class="ai-icon">🪟</span>Copilotを開く
-            </a>
-            <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" class="ai-btn">
-              <span class="ai-icon">🌿</span>Claudeを開く
-            </a>
+      <div class="obasan-speech">
+        <div class="obasan-face">👵🏻</div>
+        <div class="speech-bubble">
+          <p>ほな、あんたのトリセツを作りましょか。</p>
+          <p>プロフィールやないよ。<br>
+          「これが嫌」「これは大丈夫」を整理するだけ。</p>
+          <p>答えられるところだけでええからな。<br>
+          あとから直せます。</p>
+        </div>
+        <p class="speech-note">
+          6つだけ聞きます。<br>
+          「あとで答える」を選んでも大丈夫です。
+        </p>
+      </div>
+
+      <div style="padding: 0 20px; margin-top: 8px;">
+        <button class="btn btn-primary" onclick="startTorisetsu()">
+          ほな、始めましょか
+        </button>
+        <button class="btn btn-ghost" style="margin-top:10px;" onclick="goTo('screen-intervention-level')">
+          質問はいいので介入度だけ決める
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面3: トリセツ質問（6問）
+    ========================================= -->
+    <div id="screen-torisetsu-questions" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-label" id="tq-progress-label">質問 1 / 6</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="tq-progress-fill" style="width: 16.6%"></div>
+        </div>
+      </div>
+
+      <div class="screen-content" id="torisetsu-question-container">
+        <!-- JSで動的に挿入 -->
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面4: おばちゃん介入度選択
+    ========================================= -->
+    <div id="screen-intervention-level" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
+
+      <div class="screen-content">
+        <div>
+          <h2 class="section-title">おばちゃんに、どれくらい<br>間に入ってほしい？</h2>
+          <p class="section-subtitle" style="margin-top:6px;">あとから変えられます。</p>
+        </div>
+
+        <div class="obasan-level-list">
+          <div class="level-card" onclick="selectInterventionLevel(this, 'watch')">
+            <div class="level-num">レベル 1</div>
+            <div class="level-name">そっと見守る</div>
+            <div class="level-desc">呼ばれた時だけ動く。基本は黙って見てる。</div>
+            <div class="level-meter">
+              <div class="level-dot on"></div>
+              <div class="level-dot"></div>
+              <div class="level-dot"></div>
+              <div class="level-dot"></div>
+            </div>
+          </div>
+
+          <div class="level-card" onclick="selectInterventionLevel(this, 'help')">
+            <div class="level-num">レベル 2</div>
+            <div class="level-name">困った時だけ助ける</div>
+            <div class="level-desc">NG話題が出た時や、会話が止まった時だけ入る。</div>
+            <div class="level-meter">
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+              <div class="level-dot"></div>
+              <div class="level-dot"></div>
+            </div>
+          </div>
+
+          <div class="level-card" onclick="selectInterventionLevel(this, 'active')">
+            <div class="level-num">レベル 3</div>
+            <div class="level-name">ちょいちょい間に入る</div>
+            <div class="level-desc">話の流れを見て、適度に話題を振ったり整理したりする。</div>
+            <div class="level-meter">
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+              <div class="level-dot"></div>
+            </div>
+          </div>
+
+          <div class="level-card" onclick="selectInterventionLevel(this, 'full')">
+            <div class="level-num">レベル 4</div>
+            <div class="level-name">かなりおせっかいに支える</div>
+            <div class="level-desc">積極的に場を仕切る。不安な人向け。</div>
+            <div class="level-meter">
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+              <div class="level-dot on"></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="note-text">
+          おばちゃんは本人の代筆はしません。<br>
+          必要な時だけ、おばちゃんとして公然と発言します。
+        </p>
+
+        <button class="btn btn-primary" id="intervention-next-btn" onclick="goTo('screen-torisetsu-confirm')" disabled
+          style="opacity:0.4;">
+          次へ進む
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面5: トリセツ確認画面
+    ========================================= -->
+    <div id="screen-torisetsu-confirm" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
+
+      <div class="ledger-header">
+        <div class="obasan-face">👵🏻</div>
+        <p>こんな感じでトリセツにしてみたで。<br>
+        違うところがあったら直せるからな。</p>
+      </div>
+
+      <div class="ledger-blocks" id="torisetsu-blocks" style="margin-top: 16px;">
+        <!-- JSで動的に生成 -->
+      </div>
+
+      <div class="ledger-memo-block" style="margin-top: 10px;">
+        <div class="ledger-memo-label">👵🏻 おばちゃんメモ</div>
+        <div class="ledger-memo-value" id="torisetsu-obasan-memo">
+          あんたのトリセツ、ちゃんと預かったよ。
+        </div>
+      </div>
+
+      <div class="ledger-buttons" style="margin-top: 16px;">
+        <button class="btn btn-primary" onclick="saveTorisetsuAndProceed()">
+          このトリセツで進む
+        </button>
+        <button class="btn btn-secondary" onclick="goTo('screen-torisetsu-questions')">
+          少し直す
+        </button>
+        <button class="btn btn-ghost" onclick="goTo('screen-partner-select')">
+          仮想ルームを試す
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面6: 仮想相手選択画面
+    ========================================= -->
+    <div id="screen-partner-select" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
+
+      <div class="screen-content">
+        <div>
+          <h2 class="section-title">仮想のお相手を選んでください</h2>
+          <p class="section-subtitle" style="margin-top:6px;">本物の相手とはつながりません。練習用です。</p>
+        </div>
+
+        <div class="partner-preset-list" id="partner-preset-list">
+          <!-- JSで動的に生成 -->
+        </div>
+
+        <button class="btn btn-primary" id="partner-next-btn" onclick="startVirtualRoom()" disabled
+          style="opacity:0.4; margin-top:8px;">
+          この相手と話してみる
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面7: 一対一ルーム（仮想）
+    ========================================= -->
+    <div id="screen-room" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goTo('screen-partner-select')">← 戻る</button>
+        <span class="app-logo" id="room-header-title">👵🏻 一対一ルーム</span>
+        <span class="room-version">Ver.0.5-C</span>
+      </div>
+
+      <!-- スポンサー枠（仮） -->
+      <div class="sponsor-bar sponsor-bar-room" id="sponsor-bar-room">
+        <span class="sponsor-label">PR</span>
+        <span class="sponsor-text">この茶の間は、〇〇珈琲の提供でお送りしています。</span>
+      </div>
+
+      <!-- ルーム情報バー -->
+      <div class="room-info-bar" id="room-info-bar">
+        <div class="room-info-item">
+          <span class="room-info-label">OK話題</span>
+          <span class="room-info-value" id="room-ok-topics">—</span>
+        </div>
+        <div class="room-info-item">
+          <span class="room-info-label">NG話題</span>
+          <span class="room-info-value room-info-ng" id="room-ng-topics">—</span>
+        </div>
+        <div class="room-info-item">
+          <span class="room-info-label">おばちゃん</span>
+          <span class="room-info-value" id="room-obasan-mode">見守り中</span>
+        </div>
+      </div>
+
+      <!-- おばさん状態バー（最小表示：アイコン＋モード名のみ） -->
+      <div class="room-status-bar" id="room-status-bar">
+        <span class="room-status-icon" id="room-status-icon">👵🏻</span>
+        <span class="room-status-text" id="room-status-text">見守り中</span>
+      </div>
+
+      <!-- 状態帯カード（Ver.0.5-B）：uiState.assistantTeam.statusVisibleがtrueの時に表示 -->
+      <div class="assistant-status-card hidden" id="assistant-status-card">
+        <!-- JSのrenderAssistantStatusCard()で動的に描画 -->
+      </div>
+
+      <!-- チャットタイムライン -->
+      <div class="chat-container" id="chat-container">
+        <!-- JSで動的に追加 -->
+      </div>
+
+      <!-- TODO: 準備中キャラ（ダモリさん・ノリ助・ヒデロコ）は将来ここに復活予定 -->
+
+      <!-- あみだ：低リスク確認パネル -->
+      <div class="amida-panel hidden" id="amida-risk-check">
+        <div class="amida-panel-header">🎲 おばちゃんあみだ</div>
+        <div class="amida-panel-body" id="amida-risk-check-body">
+          <!-- JSで動的に追加 -->
+        </div>
+      </div>
+
+      <!-- あみだ：選択肢入力パネル -->
+      <div class="amida-panel hidden" id="amida-input-panel">
+        <div class="amida-panel-header">🎲 選択肢を入れてな（2〜4個）</div>
+        <div class="amida-note">⚠️ 個人情報・安全・お金・性的判断は入れないでください</div>
+        <div class="amida-inputs" id="amida-inputs">
+          <input class="amida-input" type="text" placeholder="選択肢 1" id="amida-choice-1" maxlength="30">
+          <input class="amida-input" type="text" placeholder="選択肢 2" id="amida-choice-2" maxlength="30">
+          <input class="amida-input" type="text" placeholder="選択肢 3（任意）" id="amida-choice-3" maxlength="30">
+          <input class="amida-input" type="text" placeholder="選択肢 4（任意）" id="amida-choice-4" maxlength="30">
+        </div>
+        <div class="amida-actions">
+          <button class="btn btn-primary" onclick="runAmida()">🎲 転がしてみる</button>
+          <button class="btn btn-ghost" onclick="cancelAmida()">やめる</button>
+        </div>
+      </div>
+
+      <!-- 整理棚誘導エリア（高リスク判定時） -->
+      <div class="amida-panel hidden" id="amida-sorting-panel">
+        <div class="amida-panel-header">🗂 迷ったら整理棚</div>
+        <div class="amida-panel-body" id="amida-sorting-body">
+          <!-- JSで動的に追加 -->
+        </div>
+        <div class="amida-actions">
+          <button class="btn btn-ghost" onclick="cancelAmida()">戻る</button>
+        </div>
+      </div>
+
+      <!-- 選択肢エリア -->
+      <div class="room-choice-list" id="room-choice-list">
+        <!-- JSで動的に追加 -->
+      </div>
+
+      <!-- 自分の入力欄 -->
+      <div class="room-input-area" id="room-input-area">
+        <button class="help-trigger" type="button" onclick="toggleHelpMenu()">👵🏻 助け舟</button>
+        <textarea
+          class="room-input-textarea"
+          id="room-input-textarea"
+          placeholder="メッセージを入力…"
+          rows="2"
+        ></textarea>
+        <button class="room-send-btn" type="button" onclick="sendMyMessage()">送信</button>
+      </div>
+
+      <!-- 助け舟ボトムシート（JSのrenderHelpMenu()で動的描画） -->
+      <div id="help-menu-root"></div>
+
+      <!-- 終了エリア -->
+      <div class="room-end-area" id="room-end-area">
+        <button class="btn btn-primary" onclick="startReview()">
+          ふりかえりをする
+        </button>
+        <button class="btn btn-ghost" style="margin-top:8px;" onclick="goTo('screen-top')">
+          トップへ戻る
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         画面8: 会話後のふりかえり（Ver.0.3-A 6ステップ）
+    ========================================= -->
+    <div id="screen-review" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goBack()">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
+
+      <!-- ステップインジケーター -->
+      <div class="review-step-indicator" id="review-step-indicator">
+        <span class="review-step-dot active" data-step="1"></span>
+        <span class="review-step-line"></span>
+        <span class="review-step-dot" data-step="2"></span>
+        <span class="review-step-line"></span>
+        <span class="review-step-dot" data-step="3"></span>
+        <span class="review-step-line"></span>
+        <span class="review-step-dot" data-step="4"></span>
+        <span class="review-step-line"></span>
+        <span class="review-step-dot" data-step="5"></span>
+        <span class="review-step-line"></span>
+        <span class="review-step-dot" data-step="6"></span>
+      </div>
+
+      <!-- Step 1: 今日の会話どうだった？ -->
+      <div class="review-step-panel" id="review-step-1">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text">
+              お疲れさん！ 今回のおしゃべりはどうやった？<br>
+              あんたが無理なく過ごせたかどうか、おばちゃんにちょっとだけ教えてな🍵
+            </div>
+          </div>
+
+          <div class="review-choice-list">
+            <button class="review-choice-btn" onclick="selectReviewStep1('ok')">
+              特に嫌なことはなく、のんびり話せたよ
+            </button>
+            <button class="review-choice-btn" onclick="selectReviewStep1('ng')">
+              ちょっとだけ「ん？」と思うところがあったかな
+            </button>
           </div>
         </div>
       </div>
-    </section>
 
-  </main>
+      <!-- Step 2: 嫌だったメッセージを選ぶ -->
+      <div class="review-step-panel hidden" id="review-step-2">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text">
+              気になった発言があれば、タップして選んでな。<br>
+              複数選んでも大丈夫やよ。
+            </div>
+          </div>
 
-  <div id="toast" class="toast hidden">コピーしました 📋</div>
-</div>
+          <p class="review-step-note">選ばなくてもそのまま次へ進めます</p>
 
-<!-- ─── データ ─── -->
-<script type="application/json" id="app-data">
-{
-  "locations": [
-    {
-      "id": "anywhere",
-      "label": "😵 どこでもいいから困ってる",
-      "role": "wide",
-      "scenarios": [
-        {
-          "id": "anywhere_chaos",
-          "label": "頭がぐちゃぐちゃ",
-          "tags": [
-            "🧩 この悩み、どう扱う？",
-            "😲 何が起こったんだ"
-          ],
-          "actions": [
-            {
-              "id": "anywhere_chaos_sort",
-              "label": "整理してほしい",
-              "mode": "standby",
-              "commonPrompt": "今、頭の中がぐちゃぐちゃです。いろいろなことが混ざっていて、何がどう絡んでいるかわかりません。私がこれから状況を話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "anywhere_whatisit",
-          "label": "ようは何なのかわからない",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "anywhere_whatisit_core",
-              "label": "核心を出してほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、気になっていること・モヤモヤしていることを送ります。「だからなんだ」「ようは何が言いたい」「それで何をしたい」の3つに分けて、核心だけ短く整理してください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "anywhere_body",
-          "label": "体がつらい",
-          "tags": [
-            "🧘 今の体、どうすればいい？"
-          ],
-          "actions": [
-            {
-              "id": "anywhere_body_ease",
-              "label": "今できることを教えてほしい",
-              "mode": "standby",
-              "commonPrompt": "体がつらいです。診断ではなく、今この瞬間に少しだけ楽になれる行動を1〜2個だけ教えてください。大げさな対策ではなく、今すぐできる小さいことにしてください。強い痛み、しびれ、息苦しさ、意識がぼんやりする、急な悪化がある場合は、早めに医療機関や周囲の人に相談する前提で答えてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "anywhere_lighten",
-          "label": "くだらなくして軽くしたい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "anywhere_lighten_silly",
-              "label": "くだらなく広げてほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、今の状況や悩みを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。深刻にしすぎず、でもただふざけるだけにもしないでください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "anywhere_stuck",
-          "label": "とにかく困っている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "anywhere_stuck_first",
-              "label": "最初の一手を出してほしい",
-              "mode": "standby",
-              "commonPrompt": "とにかく困っています。状況を大きくしすぎず、今できる一手を1つだけ出してください。解決策の全部ではなく、最初の小さい一歩だけでいいです。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "home",
-      "label": "🏠 家の中",
-      "role": "生活起動リモコン",
-      "scenarios": [
-        {
-          "id": "home_morning_stuck",
-          "label": "起きたけど動けない",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "home_morning_stuck_first",
-              "label": "最初の一手を出す",
-              "mode": "standby",
-              "commonPrompt": "私は今、家の中にいます。起きたけど動けません。気合いではなく、今の状態を整理して、今日の最初の一手をひとつだけ出してください。大きな計画ではなく、今すぐできる小さい行動にしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "home_nothing_todo",
-          "label": "何していいかわからない",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "home_nothing_todo_suggest",
-              "label": "今できることを提案してほしい",
-              "mode": "standby",
-              "commonPrompt": "家にいますが、何をしていいかわかりません。やりたいことも、やるべきことも、ぼんやりしています。今の気分や状況を少し話すので、今日できそうなことを3つくらい提案してください。大きなことではなく、30分以内でできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "home_messy",
-          "label": "部屋が散らかっている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "home_messy_start",
-              "label": "片付けの入口を作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "部屋が散らかっています。全部一気に片付けようとすると動けなくなるので、今すぐ1分でできる片付けの入口を1つだけ教えてください。「まずここだけ」という場所や行動を提案してください。"
-            }
-          ]
-        },
-        {
-          "id": "home_food",
-          "label": "何食べるか決められない",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "home_food_decide",
-              "label": "決めてほしい",
-              "mode": "standby",
-              "commonPrompt": "家にいて、何を食べるか決められません。今の気分・冷蔵庫の状況・時間帯などを少し話すので、今日の食事を1つ決めてください。選択肢を増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "home_phone_loop",
-          "label": "スマホだけ見て時間が溶けている",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "home_phone_loop_break",
-              "label": "抜け出す入口を作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "スマホだけ見て時間が溶けています。やめようと思っているのにやめられません。責めずに、今この瞬間にスマホから離れるための小さい行動を1つだけ教えてください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "silly",
-      "label": "🥒 くだらないことしたい",
-      "role": "くだらなさリモコン",
-      "scenarios": [
-        {
-          "id": "silly_expand",
-          "label": "くだらなく広げてほしい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "silly_expand_go",
-              "label": "広げてほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、何かを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。意味があってもなくても構いません。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "silly_funny",
-          "label": "面白いこと言ってほしい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "silly_funny_go",
-              "label": "何か言ってほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、今の状況や気分を送ります。それを受けて、面白いことを1つ言ってください。笑えなくてもいいです。ただ少しずれた方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "silly_shift",
-          "label": "予定調和をずらしてほしい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "silly_shift_go",
-              "label": "ずらしてほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、よくある状況・ありきたりな話・当たり前のことを送ります。それを「でも実は」「逆に言うと」「別の星から見ると」のような視点でずらしてください。正しくなくていいです。少しだけ違う角度から見せてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "silly_drama",
-          "label": "小さな寸劇にしてほしい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "silly_drama_go",
-              "label": "寸劇にしてほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、今の状況や出来事を送ります。それを登場人物が2〜3人いる短い寸劇にしてください。大げさでも地味でも構いません。読んで少し笑えるか、少し「なるほど」と思えるものにしてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "silly_metaphor",
-          "label": "変な例えにしてほしい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "silly_metaphor_go",
-              "label": "例えてほしい",
-              "mode": "standby",
-              "commonPrompt": "これから、何かを送ります。それを、全然関係なさそうなものに例えてください。例えが正確でなくていいです。「なんでそれ？」と思えるくらいずれた例えが理想です。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "train",
-      "label": "🚃 電車・移動中",
-      "role": "移動中リモコン",
-      "scenarios": [
-        {
-          "id": "train_bored",
-          "label": "なんか暇",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "train_bored_play",
-              "label": "暇つぶしを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "電車に乗っていて暇です。目を閉じてできる遊び・頭の中だけで完結する考えごと・スマホを見ながらできる軽い遊びを1つ提案してください。難しくなくていいです。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "train_sign",
-          "label": "広告や言葉が気になった",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "train_sign_expand",
-              "label": "広げてほしい",
-              "mode": "standby",
-              "commonPrompt": "電車の中で、気になった広告・言葉・文章がありました。これから送るので、それが何を言おうとしているのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "train_info",
-          "label": "この情報ほんと？",
-          "tags": [
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "train_info_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "移動中に気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "train_after",
-          "label": "降りた後に何をするか決めたい",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "train_after_decide",
-              "label": "決めてほしい",
-              "mode": "standby",
-              "commonPrompt": "電車に乗っています。降りた後に何をするか決められていません。今の状況や選択肢を少し話すので、降りてから最初にやることを1つだけ決めてください。迷いを増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "train_head_full",
-          "label": "頭の中が混んできた",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "train_head_full_sort",
-              "label": "整理してほしい",
-              "mode": "standby",
-              "commonPrompt": "移動中に頭の中が混んできました。いろいろなことが混ざっています。これから話すので、今考えていることを「今日やること」「後でいいこと」「考えなくていいこと」に分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "work",
-      "label": "🏢 会社・学校・作業場",
-      "role": "作業起動リモコン",
-      "scenarios": [
-        {
-          "id": "work_too_much",
-          "label": "やることが多すぎて止まっている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "work_too_much_first",
-              "label": "最初の一手を出してほしい",
-              "mode": "standby",
-              "commonPrompt": "やることが多すぎて止まっています。全部を整理しようとするとさらに動けなくなります。今日の最初の一手を1つだけ出してください。大きなことではなく、今すぐ5分で始められるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "work_sleepy",
-          "label": "眠い・集中できない",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "work_sleepy_recover",
-              "label": "今できることを教えてほしい",
-              "mode": "standby",
-              "commonPrompt": "眠くて集中できません。気合いではなく、今の状態で少しだけ集中力を取り戻せる小さい行動を1〜2個教えてください。大げさな対策ではなく、今すぐできるものにしてください。"
-            }
-          ]
-        },
-        {
-          "id": "work_reply",
-          "label": "返信文を作りたい",
-          "tags": [
-            "🙅🏼 オブラートに包んで断りたい"
-          ],
-          "actions": [
-            {
-              "id": "work_reply_draft",
-              "label": "下書きを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、短く、自然で、角が立ちにくい返信文の下書きを作ってください。そのまま使えるものと、少しやわらかいものの2パターンあると助かります。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "work_decline",
-          "label": "断りたい",
-          "tags": [
-            "🙅🏼 オブラートに包んで断りたい"
-          ],
-          "actions": [
-            {
-              "id": "work_decline_draft",
-              "label": "断り文を作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "断りたいことがあります。これから状況・相手・断りたい内容を送るので、角が立ちにくい断り文を作ってください。言い訳っぽくならず、でも冷たくもない文にしてください。必要なら、短め・丁寧・やわらかめの3案に分けてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "work_unclear",
-          "label": "説明されたけどようは何かわからない",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "work_unclear_core",
-              "label": "核心を出してほしい",
-              "mode": "standby",
-              "commonPrompt": "説明を受けたのですが、ようは何なのかわかりません。これから聞いた内容を送るので、「つまり何をしてほしいのか」「何が重要なのか」「何をしなくていいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "shop",
-      "label": "🛒 店・買い物中",
-      "role": "買い物リモコン",
-      "scenarios": [
-        {
-          "id": "shop_hesitate",
-          "label": "買うか迷っている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "shop_hesitate_decide",
-              "label": "決めてほしい",
-              "mode": "standby",
-              "commonPrompt": "買うか迷っています。これから商品・値段・迷っている理由を送るので、「買う」か「やめる」か、どちらかに背中を押してください。長い分析ではなく、短く決めてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "shop_compare",
-          "label": "商品を比較したい",
-          "tags": [
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "shop_compare_table",
-              "label": "比べてほしい",
-              "mode": "standby",
-              "commonPrompt": "商品を比較したいです。これから比べたい商品・スペック・気になるポイントを送るので、わかりやすく整理してください。どちらがどんな人に向いているかも教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "shop_review",
-          "label": "レビューや宣伝が本当か気になる",
-          "tags": [
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "shop_review_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "商品のレビューや宣伝文句が本当かどうか気になります。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "shop_staff",
-          "label": "店員にどう言えばいいかわからない",
-          "tags": [
-            "🙅🏼 オブラートに包んで断りたい",
-            "🦉 教えてください"
-          ],
-          "actions": [
-            {
-              "id": "shop_staff_phrase",
-              "label": "言い方を教えてほしい",
-              "mode": "standby",
-              "commonPrompt": "店員に何かを伝えたいのですが、どう言えばいいかわかりません。これから状況・伝えたいこと・困っていることを送るので、角が立ちにくく、短く自然な言い方を作ってください。必要なら「質問する言い方」「断る言い方」「少し考えたい時の言い方」に分けてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "shop_impulse",
-          "label": "衝動買いかもしれない",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "shop_impulse_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "これから買おうとしている商品について話します。衝動買いかどうか確認したいので、「本当に必要か」「後で後悔しないか」を短く整理してください。責めずに、冷静に判断できるよう手伝ってください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "street",
-      "label": "🚶 路上・公園・街を歩く",
-      "role": "外出リモコン",
-      "scenarios": [
-        {
-          "id": "street_wander",
-          "label": "なんとなく歩いている",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "street_wander_play",
-              "label": "今の状況を面白くしてほしい",
-              "mode": "standby",
-              "commonPrompt": "なんとなく歩いています。今いる場所・時間・気分を少し話すので、今この瞬間を少し面白くする見方や遊びを1つ提案してください。大げさなことではなく、歩きながらできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "street_where",
-          "label": "次にどこへ行くか迷っている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "street_where_decide",
-              "label": "決めてほしい",
-              "mode": "standby",
-              "commonPrompt": "次にどこへ行くか迷っています。今いる場所・時間・気分・選択肢を少し話すので、「ここへ行こう」と1つ決めてください。選択肢を増やすのではなく、1つに絞ってください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "street_notice",
-          "label": "看板・店・人・出来事が気になった",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "street_notice_expand",
-              "label": "広げてほしい",
-              "mode": "standby",
-              "commonPrompt": "外を歩いていて、気になったものがありました。これから送るので、それが何なのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "street_tired",
-          "label": "疲れた・休みたい",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "street_tired_rest",
-              "label": "休み方を教えてほしい",
-              "mode": "standby",
-              "commonPrompt": "外を歩いていて疲れました。今いる場所・状況を少し話すので、今すぐできる休み方を1つ提案してください。大げさなことではなく、今この場所でできることにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "street_return",
-          "label": "帰るか、もう少し外にいるか迷う",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "street_return_decide",
-              "label": "決めてほしい",
-              "mode": "standby",
-              "commonPrompt": "帰るか、もう少し外にいるか迷っています。今の気分・時間・体の状態を少し話すので、「帰ろう」か「もう少しいよう」か、どちらかに背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "cafe",
-      "label": "☕ カフェ・休憩中",
-      "role": "休憩リモコン",
-      "scenarios": [
-        {
-          "id": "cafe_stopped",
-          "label": "休んでいるのか止まっているのかわからない",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "cafe_stopped_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "カフェにいます。休んでいるのか、止まっているのかわかりません。今の状況を少し話すので、「これは休息」か「これは停滞」かを整理して、次の一手を1つだけ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "cafe_think",
-          "label": "考えごとを整理したい",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "cafe_think_sort",
-              "label": "整理してほしい",
-              "mode": "standby",
-              "commonPrompt": "カフェで考えごとを整理したいです。これから頭の中にあることを話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "cafe_memo",
-          "label": "メモや文章を軽く整えたい",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "cafe_memo_polish",
-              "label": "整えてほしい",
-              "mode": "standby",
-              "commonPrompt": "書いたメモや文章を軽く整えたいです。これから送るので、意味を変えずに読みやすくしてください。大きく書き直すのではなく、少し整える程度にしてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "cafe_reply",
-          "label": "返信文を作りたい",
-          "tags": [
-            "🙅🏼 オブラートに包んで断りたい"
-          ],
-          "actions": [
-            {
-              "id": "cafe_reply_draft",
-              "label": "下書きを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、短く、自然で、角が立ちにくい返信文の下書きを作ってください。必要なら「かなり短い」「丁寧」「やわらかい」の3案に分けてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "cafe_return",
-          "label": "作業に戻るか迷っている",
-          "tags": [
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "cafe_return_decide",
-              "label": "背中を押してほしい",
-              "mode": "standby",
-              "commonPrompt": "作業に戻るか迷っています。休憩が長くなっています。今の状況を少し話すので、「戻ろう」か「もう少し休もう」か、どちらかに背中を押してください。責めずに、今できることを1つ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "public",
-      "label": "🏥 病院・役所・窓口",
-      "role": "手続きリモコン",
-      "scenarios": [
-        {
-          "id": "public_doc",
-          "label": "書類や通知の意味がわからない",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "public_doc_explain",
-              "label": "わかりやすく説明してほしい",
-              "mode": "standby",
-              "commonPrompt": "書類や通知が届きましたが、意味がわかりません。これから内容を送るので、「何を言っているのか」「何をしなければいけないのか」「期限はいつか」を短くわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "public_unclear",
-          "label": "説明されたけど理解できなかった",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "public_unclear_core",
-              "label": "核心を出してほしい",
-              "mode": "standby",
-              "commonPrompt": "説明を受けましたが、理解できませんでした。これから聞いた内容を送るので、「つまり何が起きているのか」「何をしなければいけないのか」「何を聞き返せばいいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "public_symptom",
-          "label": "症状をどう伝えればいいかわからない",
-          "tags": [
-            "👨‍⚕️ ちょっと症状聞いてください"
-          ],
-          "actions": [
-            {
-              "id": "public_symptom_memo",
-              "label": "伝えるメモを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "症状をどう伝えればいいかわかりません。これから症状・いつから・どんな状態かを送るので、医師や薬剤師に伝えるための短いメモを作ってください。診断ではなく、伝えるための整理だけしてください。強い痛み、しびれ、息苦しさ、意識がぼんやりする、急な悪化がある場合は、早めに医療機関や周囲の人に相談する前提で答えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "public_question",
-          "label": "何を聞けばいいかわからない",
-          "tags": [
-            "🦉 教えてください"
-          ],
-          "actions": [
-            {
-              "id": "public_question_list",
-              "label": "聞くことリストを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "病院や役所で何を聞けばいいかわかりません。これから状況・目的・不安なことを送るので、今日聞くべきことを3つ以内にまとめてください。重要なものから順に並べてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "public_next",
-          "label": "持ち物・手順・次にやることが不安",
-          "tags": [
-            "🦉 教えてください"
-          ],
-          "actions": [
-            {
-              "id": "public_next_checklist",
-              "label": "チェックリストを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "これから行く手続き・受診・申請について、持ち物・手順・次にやることが不安です。状況を送るので、今日必要なことを短いチェックリストにしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "sns",
-      "label": "📱 SNS・ネット中",
-      "role": "ネットリモコン",
-      "scenarios": [
-        {
-          "id": "sns_loop",
-          "label": "SNSを見すぎて時間が溶けている",
-          "tags": [
-            "😲 何が起こったんだ",
-            "🧩 この悩み、どう扱う？"
-          ],
-          "actions": [
-            {
-              "id": "sns_loop_break",
-              "label": "抜け出す入口を作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSを見すぎて時間が溶けています。責めずに、今この瞬間にSNSから離れるための小さい行動を1つだけ教えてください。難しいことではなく、今すぐできるものにしてください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_fire",
-          "label": "炎上や話題で何が起きたのかわからない",
-          "tags": [
-            "😲 何が起こったんだ"
-          ],
-          "actions": [
-            {
-              "id": "sns_fire_explain",
-              "label": "何が起きたか教えてほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSで炎上や話題になっていますが、何が起きたのかわかりません。これから状況を送るので、「何が起きたのか」「なぜ話題になっているのか」「まだわかっていないこと」を整理してください。断定できることと推測を分けてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_info",
-          "label": "この情報ほんと？",
-          "tags": [
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "sns_info_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSで気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_screenshot",
-          "label": "スクショや投稿の意味がわからない",
-          "tags": [
-            "🤯 だからなんだ"
-          ],
-          "actions": [
-            {
-              "id": "sns_screenshot_explain",
-              "label": "説明してほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSのスクリーンショットや投稿の意味がわかりません。これから内容を送るので、「何を言っているのか」「なぜこれが話題なのか」「背景は何か」をわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_ad",
-          "label": "怪しい広告・レビュー・商品が気になる",
-          "tags": [
-            "🕵️ これほんと？"
-          ],
-          "actions": [
-            {
-              "id": "sns_ad_check",
-              "label": "確認してほしい",
-              "mode": "standby",
-              "commonPrompt": "怪しい広告・レビュー・商品が気になっています。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_dm",
-          "label": "DMや返信文を作りたい",
-          "tags": [
-            "🙅🏼 オブラートに包んで断りたい"
-          ],
-          "actions": [
-            {
-              "id": "sns_dm_draft",
-              "label": "下書きを作ってほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSのDMや返信文を作りたいです。これから状況・相手・伝えたいことを送るので、自然な文の下書きを作ってください。SNSらしい温度感で、丁寧すぎず、でも失礼にならない文にしてください。断りたい場合や距離を置きたい場合は、角が立ちにくい言い方にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "sns_silly",
-          "label": "くだらなく広げたい",
-          "tags": [
-            "🥒 くだらなく広げる"
-          ],
-          "actions": [
-            {
-              "id": "sns_silly_go",
-              "label": "広げてほしい",
-              "mode": "standby",
-              "commonPrompt": "SNSで見たものや今の状況を、くだらない方向に広げてほしいです。これから内容を送るので、本質は残したまま、少し笑える方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-</script>
+          <div class="review-message-list" id="review-message-list">
+            <!-- JSで会話ログから動的生成 -->
+          </div>
 
-<!-- ─── ロジック ─── -->
-<script>
-/* ── データ読み込み ── */
-const APP_DATA = JSON.parse(document.getElementById('app-data').textContent);
-const LOCATIONS = APP_DATA.locations;
-const LOC_MAP = {};
-LOCATIONS.forEach(l => { LOC_MAP[l.id] = l; });
+          <div class="review-nav-buttons">
+            <button class="btn btn-primary" onclick="goReviewStep(3)">
+              次へ進む
+            </button>
+          </div>
+        </div>
+      </div>
 
-/* ── DOM ── */
-const header        = document.getElementById('header');
-const backBtn       = document.getElementById('back-btn');
-const breadcrumb    = document.getElementById('breadcrumb');
-const toast         = document.getElementById('toast');
-const copyBtn       = document.getElementById('copy-btn');
-const promptDisplay = document.getElementById('prompt-display');
-const resultMeta    = document.getElementById('result-meta');
-const catGrid       = document.getElementById('cat-grid');
-const scenarioList  = document.getElementById('scenario-list');
-const scenarioTitle = document.getElementById('scenario-title');
-const actionList    = document.getElementById('action-list');
+      <!-- Step 3: モヤモヤ理由の複数選択 -->
+      <div class="review-step-panel hidden" id="review-step-3">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text">
+              そうか、ちょっとモヤモヤしたんやね。<br>
+              教えてくれてありがとうな。<br>
+              何が理由やったか、当てはまるやつを何個でも選んでな。<br>
+              あんたが悪いわけやないから、正直に言うてええんよ。
+            </div>
+          </div>
 
-const screens = {
-  location: document.getElementById('screen-location'),
-  scenario: document.getElementById('screen-scenario'),
-  action:   document.getElementById('screen-action'),
-  prompt:   document.getElementById('screen-prompt')
-};
+          <div class="review-reasons-grid" id="review-reasons-grid">
+            <!-- JSで動的生成 -->
+          </div>
 
-/* ── 状態 ── */
-let state = {
-  step: 'location',      // location | scenario | action | prompt
-  location: null,        // location object
-  scenario: null,        // scenario object
-  action: null           // action object
-};
+          <div class="review-nav-buttons">
+            <button class="btn btn-primary" onclick="goReviewStep(4)">
+              次へ進む
+            </button>
+          </div>
+        </div>
+      </div>
 
-/* ── カテゴリグリッド生成（wide以外） ── */
-const GRID_LOCS = LOCATIONS.filter(l => l.id !== 'anywhere' && l.id !== 'silly');
-GRID_LOCS.forEach(loc => {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'cat-btn';
-  // アイコンとラベルを分割
-  const parts = loc.label.match(/^(\S+)\s(.+)$/);
-  const icon  = parts ? parts[1] : loc.label;
-  const label = parts ? parts[2] : '';
-  btn.innerHTML = `<span class="cat-icon">${icon}</span><span class="cat-label">${label}</span>`;
-  btn.addEventListener('click', () => selectLocation(loc));
-  catGrid.appendChild(btn);
-});
+      <!-- Step 4: 自由メモ -->
+      <div class="review-step-panel hidden" id="review-step-4">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text">
+              ほかに伝えておきたいことがあれば、ここへ書いてな。<br>
+              空欄でも大丈夫やよ。
+            </div>
+          </div>
 
-/* ── ワイドボタンのイベント ── */
-document.querySelectorAll('.wide-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const locId = btn.getAttribute('data-loc');
-    const loc = LOC_MAP[locId];
-    if (loc) selectLocation(loc);
-  });
-});
+          <textarea
+            class="review-free-memo"
+            id="review-free-memo"
+            placeholder="選択肢になかったことや、おばちゃんに伝えておきたいモヤモヤがあれば、ここへ自由に書いてな。空欄でも大丈夫です。"
+            rows="5"
+          ></textarea>
 
-/* ── 画面切替 ── */
-function showScreen(name) {
-  Object.keys(screens).forEach(k => {
-    screens[k].classList.toggle('active', k === name);
-  });
-  window.scrollTo({ top: 0, behavior: 'auto' });
-}
+          <div class="review-nav-buttons">
+            <button class="btn btn-primary" onclick="goReviewStep(5)">
+              次へ進む
+            </button>
+          </div>
+        </div>
+      </div>
 
-function updateHeader() {
-  if (state.step === 'location') {
-    header.classList.add('hidden');
-    breadcrumb.textContent = '';
-    return;
-  }
-  header.classList.remove('hidden');
-  if (state.step === 'scenario') {
-    breadcrumb.textContent = state.location.label;
-  } else if (state.step === 'action') {
-    breadcrumb.textContent = state.location.label + ' › ' + state.scenario.label;
-  } else if (state.step === 'prompt') {
-    const sc = state.scenario ? state.scenario.label : '';
-    breadcrumb.textContent = state.location.label + (sc ? ' › ' + sc : '');
-  }
-}
+      <!-- Step 5: 次回のトリセツに反映する -->
+      <div class="review-step-panel hidden" id="review-step-5">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text">
+              今日のこと、次回のトリセツに活かしてもええかな？
+            </div>
+          </div>
 
-/* ── location選択 ── */
-function selectLocation(loc) {
-  state.location = loc;
-  state.scenario = null;
-  state.action   = null;
-  state.step     = 'scenario';
+          <label class="review-reflect-check">
+            <input type="checkbox" id="review-reflect-checkbox" onchange="onReflectCheckChange(this)">
+            <span class="review-reflect-label">次回のトリセツに反映する</span>
+          </label>
 
-  // シナリオリスト生成
-  scenarioTitle.textContent = '何に困ってる？';
-  scenarioList.innerHTML = '';
-  loc.scenarios.forEach(sc => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'list-item';
-    btn.textContent = sc.label;
-    btn.addEventListener('click', () => selectScenario(sc));
-    scenarioList.appendChild(btn);
-  });
+          <div class="review-nav-buttons">
+            <button class="btn btn-primary" onclick="saveReviewAndFinish()">
+              記録して終わる
+            </button>
+            <button class="btn btn-ghost" style="margin-top:8px;" onclick="goTo('screen-top')">
+              記録せずに終わる
+            </button>
+          </div>
+        </div>
+      </div>
 
-  updateHeader();
-  showScreen('scenario');
-}
+      <!-- Step 6: おばちゃんの確認メッセージ（saveReviewAndFinish後に表示） -->
+      <div class="review-step-panel hidden" id="review-step-6">
+        <div class="screen-content">
+          <div class="review-obasan-bubble">
+            <span class="review-obasan-icon">👵🏻</span>
+            <div class="review-obasan-text" id="review-step6-message">
+              <!-- JSで動的に切り替え -->
+            </div>
+          </div>
 
-/* ── scenario選択 ── */
-function selectScenario(sc) {
-  state.scenario = sc;
-  state.action   = null;
-  state.step     = 'action';
+          <div class="review-nav-buttons" style="margin-top:24px;">
+            <button class="btn btn-primary" id="review-step6-btn" onclick="goTo('screen-review-done')">
+              <!-- JSで動的に切り替え -->
+            </button>
+            <button class="btn btn-secondary" style="margin-top:8px;" onclick="goTo('screen-partner-select')">
+              もう一度試してみる
+            </button>
+            <button class="btn btn-ghost" style="margin-top:8px;" onclick="goTo('screen-top')">
+              トップへ戻る
+            </button>
+          </div>
+        </div>
+      </div>
 
-  if (sc.actions.length === 1) {
-    // actions が1つだけ → action画面をスキップ
-    selectAction(sc.actions[0]);
-    return;
-  }
+    </div>
 
-  // アクションリスト生成
-  actionList.innerHTML = '';
-  sc.actions.forEach(act => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'list-item';
-    btn.textContent = act.label;
-    btn.addEventListener('click', () => selectAction(act));
-    actionList.appendChild(btn);
-  });
+    <!-- ========================================
+         画面9: ふりかえり完了・トリセツ反映
+    ========================================= -->
+    <div id="screen-review-done" class="screen">
+      <div class="header-bar">
+        <span style="width:48px"></span>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
 
-  updateHeader();
-  showScreen('action');
-}
+      <div class="complete-screen">
+        <div class="complete-icon">📋</div>
+        <h2 class="complete-title">ふりかえり、記録したよ。</h2>
+        <p class="complete-desc" id="review-done-desc">
+          今日気づいたことを、トリセツに反映しておいたよ。<br>
+          次の時に活きてくるからな。
+        </p>
 
-/* ── action選択 → prompt表示 ── */
-function selectAction(act) {
-  state.action = act;
-  state.step   = 'prompt';
+        <div class="complete-stamp" id="review-done-stamp">
+          <strong>👵🏻 おばちゃんより</strong><br>
+          無理せんでええよ。<br>
+          今日試してみただけで、十分やからな。
+        </div>
 
-  promptDisplay.textContent = act.commonPrompt;
-  resultMeta.innerHTML =
-    '<strong>' + state.location.label + '</strong>' +
-    ' › ' + state.scenario.label;
+        <div class="complete-buttons">
+          <button class="btn btn-primary" onclick="goTo('screen-torisetsu-confirm')">
+            更新されたトリセツを見る
+          </button>
+          <button class="btn btn-secondary" onclick="goTo('screen-partner-select')">
+            もう一度試してみる
+          </button>
+          <button class="btn btn-ghost" onclick="goTo('screen-top')">
+            トップへ戻る
+          </button>
+        </div>
+      </div>
+    </div>
 
-  updateHeader();
-  showScreen('prompt');
-}
+    <!-- ========================================
+         「今日は見るだけ」用 簡易完了画面
+    ========================================= -->
+    <div id="screen-complete-view" class="screen">
+      <div class="header-bar">
+        <button class="back-btn" onclick="goTo('screen-top')">← 戻る</button>
+        <span class="app-logo">YUUEKi.com</span>
+        <span style="width:48px"></span>
+      </div>
 
-/* ── 戻るボタン ── */
-backBtn.addEventListener('click', () => {
-  if (state.step === 'prompt') {
-    // actionsが1つだった場合はscenarioへ、複数だったらactionへ
-    if (state.scenario && state.scenario.actions.length > 1) {
-      state.step = 'action';
-      updateHeader();
-      showScreen('action');
-    } else {
-      state.step = 'scenario';
-      updateHeader();
-      showScreen('scenario');
-    }
-  } else if (state.step === 'action') {
-    state.step = 'scenario';
-    updateHeader();
-    showScreen('scenario');
-  } else if (state.step === 'scenario') {
-    state.step = 'location';
-    state.location = null;
-    updateHeader();
-    showScreen('location');
-  }
-});
+      <div class="complete-screen">
+        <div class="complete-icon">👵🏻</div>
+        <h2 class="complete-title">ゆっくり見てってな。</h2>
+        <p class="complete-desc">
+          急がなくていいよ。<br>
+          気が向いたら、また来てな。
+        </p>
 
-/* ── コピー ── */
-copyBtn.addEventListener('click', () => {
-  if (!state.action) return;
-  const text = state.action.commonPrompt;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
-});
+        <div class="complete-stamp">
+          トリセツを作るのは、あんたが準備できた時でええ。<br>
+          おばちゃん、ここで待ってるから。
+        </div>
 
-function fallbackCopy(text) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
-  document.body.appendChild(ta);
-  ta.focus(); ta.select();
-  try { document.execCommand('copy'); } catch(e) {}
-  document.body.removeChild(ta);
-  showToast();
-}
+        <div class="complete-buttons">
+          <button class="btn btn-primary" onclick="goTo('screen-torisetsu-intro')">
+            やっぱりトリセツを作る
+          </button>
+          <button class="btn btn-secondary" onclick="goTo('screen-partner-select')">
+            仮想ルームを試す
+          </button>
+          <button class="btn btn-ghost" onclick="goTo('screen-top')">
+            トップへ戻る
+          </button>
+        </div>
+      </div>
+    </div>
 
-let toastTimer = null;
-function showToast() {
-  toast.classList.remove('hidden');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.add('hidden'), 2000);
-}
-</script>
+  </div><!-- /#app -->
+
+  <script src="app.js"></script>
 </body>
 </html>
