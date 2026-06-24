@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIリモコン v0.1</title>
+    <title>AIリモコン v0.2</title>
     <style>
 :root {
     --bg-color: #f2f2f7;
@@ -23,9 +23,10 @@
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
-html, body {
+html {
     height: 100%;
 }
 
@@ -34,13 +35,14 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.5;
-    padding-bottom: env(safe-area-inset-bottom, 16px);
+    min-height: 100dvh;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 }
 
 #app {
     max-width: 480px;
     margin: 0 auto;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -66,9 +68,12 @@ header.hidden {
     color: var(--primary);
     font-size: 15px;
     font-weight: 600;
-    padding: 6px 12px 6px 0;
+    padding: 8px 12px 8px 0;
     cursor: pointer;
     flex-shrink: 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
 }
 
 .breadcrumb {
@@ -102,6 +107,7 @@ main {
     letter-spacing: -0.3px;
 }
 
+/* ── カテゴリグリッド ── */
 .category-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -153,6 +159,7 @@ main {
     color: var(--text-color);
 }
 
+/* ── リスト ── */
 .list-container {
     display: flex;
     flex-direction: column;
@@ -170,6 +177,9 @@ main {
     transition: transform 0.12s, opacity 0.12s;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     user-select: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
 }
 
 .list-item:active {
@@ -177,10 +187,11 @@ main {
     opacity: 0.8;
 }
 
+/* ── 結果画面 ── */
 .result-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .prompt-box {
@@ -210,6 +221,9 @@ main {
     letter-spacing: 0.3px;
     box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
     user-select: none;
+    min-height: 56px;
+    width: 100%;
+    display: block;
 }
 
 .primary-btn:active {
@@ -217,6 +231,61 @@ main {
     background-color: #0060c7;
 }
 
+/* ── 外部AIリンクセクション ── */
+.ai-links-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.ai-links-label {
+    font-size: 13px;
+    color: #636366;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.ai-links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.ai-link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    min-height: 48px;
+    background-color: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.12s, opacity 0.12s, background-color 0.12s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    user-select: none;
+    text-align: center;
+}
+
+.ai-link-btn:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+    background-color: #f0f0f5;
+}
+
+.ai-link-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ── トースト ── */
 .toast {
     position: fixed;
     bottom: calc(32px + env(safe-area-inset-bottom, 0px));
@@ -275,6 +344,23 @@ main {
                 <div class="result-container">
                     <div id="prompt-display" class="prompt-box"></div>
                     <button id="copy-btn" class="primary-btn">コピーする</button>
+                    <div class="ai-links-section">
+                        <p class="ai-links-label">コピーしたら、下のAIに貼ってください</p>
+                        <div class="ai-links-grid">
+                            <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                                <span class="ai-link-icon">🤖</span>ChatGPTを開く
+                            </a>
+                            <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                                <span class="ai-link-icon">✨</span>Geminiを開く
+                            </a>
+                            <a href="https://copilot.microsoft.com/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                                <span class="ai-link-icon">🪟</span>Copilotを開く
+                            </a>
+                            <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
+                                <span class="ai-link-icon">🌿</span>Claudeを開く
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -285,17 +371,19 @@ main {
     <script>
 const data = {
   categories: [
-    { id: "panic", icon: "😵", title: "どこでもいいから困ってる", type: "thick" },
-    { id: "home",  icon: "🏠", title: "家の中", type: "thick" },
-    { id: "silly", icon: "🥒", title: "くだらないことしたい", type: "silly" },
-    { id: "train", icon: "🚃", title: "電車・移動中", type: "thin" },
-    { id: "work",  icon: "🏢", title: "会社・学校・作業場", type: "thin" },
-    { id: "shop",  icon: "🛒", title: "店・買い物中", type: "thin" },
-    { id: "street",icon: "🚶", title: "外・街中", type: "thin" },
-    { id: "cafe",  icon: "☕", title: "カフェ・休憩中", type: "thin" },
-    { id: "public",icon: "🏥", title: "病院・役所・窓口", type: "thin" }
+    { id: "panic",  icon: "😵", title: "どこでもいいから困ってる", type: "thick" },
+    { id: "home",   icon: "🏠", title: "家の中",                   type: "thick" },
+    { id: "silly",  icon: "🥒", title: "くだらないことしたい",     type: "silly" },
+    { id: "train",  icon: "🚃", title: "電車・移動中",             type: "thin"  },
+    { id: "work",   icon: "🏢", title: "会社・学校・作業場",       type: "thin"  },
+    { id: "shop",   icon: "🛒", title: "店・買い物中",             type: "thin"  },
+    { id: "street", icon: "🚶", title: "外・街中",                 type: "thin"  },
+    { id: "cafe",   icon: "☕", title: "カフェ・休憩中",           type: "thin"  },
+    { id: "public", icon: "🏥", title: "病院・役所・窓口",         type: "thin"  }
   ],
+
   problems: {
+    /* ── 濃い3カテゴリ ── */
     panic: [
       { id: "p1", text: "頭がパンクしてる" },
       { id: "p2", text: "何から手をつければいいかわからない" },
@@ -317,32 +405,42 @@ const data = {
       { id: "s4", text: "謎の生き物図鑑にする" },
       { id: "s5", text: "何も起きない怖さを作る" }
     ],
+
+    /* ── 薄い6カテゴリ（v0.2拡充） ── */
     train: [
-      { id: "tr1", text: "暇だけどスマホ見るの疲れた" },
-      { id: "tr2", text: "満員電車でイライラする" }
+      { id: "tr1", text: "目的地まで絶妙に暇" },
+      { id: "tr2", text: "スマホを見るのに疲れた" },
+      { id: "tr3", text: "到着後に何するか決めたい" }
     ],
     work: [
-      { id: "w1", text: "やる気が出ない" },
-      { id: "w2", text: "メールの返信が面倒" }
+      { id: "w1", text: "眠すぎて作業が進まない" },
+      { id: "w2", text: "連絡文がまとまらない" },
+      { id: "w3", text: "タスクが多くて止まってる" }
     ],
     shop: [
-      { id: "sh1", text: "何を買うか忘れた" },
-      { id: "sh2", text: "どっちを買うか迷う" }
+      { id: "sh1", text: "どっちを買うか迷う" },
+      { id: "sh2", text: "何を買うか忘れた" },
+      { id: "sh3", text: "レビューの見方がわからない" }
     ],
     street: [
-      { id: "st1", text: "道に迷った気分" },
-      { id: "st2", text: "歩くのがだるい" }
+      { id: "st1", text: "頭を切り替えたい" },
+      { id: "st2", text: "外で次の行動を決めたい" },
+      { id: "st3", text: "歩くのがだるい" }
     ],
     cafe: [
-      { id: "c1", text: "ボーッとしてる" },
-      { id: "c2", text: "少し考え事をまとめたい" }
+      { id: "c1", text: "なんとなくスマホを見てしまう" },
+      { id: "c2", text: "考えをまとめたい" },
+      { id: "c3", text: "休憩から戻れない" }
     ],
     public: [
-      { id: "pu1", text: "待ち時間が長すぎる" },
-      { id: "pu2", text: "書類の書き方がわからない" }
+      { id: "pu1", text: "待ち時間が長い" },
+      { id: "pu2", text: "書類の意味がわからない" },
+      { id: "pu3", text: "医師や窓口への説明が不安" }
     ]
   },
+
   actions: {
+    /* ── panic ── */
     p1: [
       { id: "a_p1_1", text: "情報を整理してほしい",
         prompt: "今、頭がパンクしています。いろいろな情報が混ざってしまっているので、落ち着いて一つずつ整理するのを手伝ってください。まずは、私が今抱えていることを箇条書きで吐き出してもいいですか？" },
@@ -365,6 +463,8 @@ const data = {
       { id: "a_p5_1", text: "選択肢を絞ってほしい",
         prompt: "選択肢が多すぎて選べません。私がいくつか候補を挙げるので、それぞれの良いところを簡単にまとめて、最後に「これにしてみたら？」と一つ背中を押してください。" }
     ],
+
+    /* ── home ── */
     h1: [
       { id: "a_h1_1", text: "起き上がる理由を作ってほしい",
         prompt: "起きたけど布団から出られません。無理やり起きるのではなく、布団から出たくなるような、ちょっとした楽しい理由や、今すぐできる小さなご褒美を提案してください。" },
@@ -387,6 +487,8 @@ const data = {
       { id: "a_h5_1", text: "外に出るメリットを教えて",
         prompt: "外に出るか迷っています。面倒くさい気持ちが勝っているのですが、今から外に出たらこんないいことがあるかも、というメリットをいくつか挙げて背中を押してください。" }
     ],
+
+    /* ── silly ── */
     s1: [
       { id: "a_s1_1", text: "大臣を任命する",
         prompt: "我が家の冷蔵庫を「内閣」に見立てて遊びたいです。マヨネーズや卵、余った野菜などをそれぞれの大臣に任命し、彼らの役割や派閥争いなどの設定を面白おかしく考えてください。" }
@@ -407,57 +509,104 @@ const data = {
       { id: "a_s5_1", text: "無のホラー小説にする",
         prompt: "「何も起きない」という状況を、なぜかとても恐ろしく感じるような、短いホラー小説風の文章を書いてください。静けさや日常の風景が、逆に不気味に思えるような描写をお願いします。" }
     ],
+
+    /* ── train（v0.2拡充） ── */
     tr1: [
       { id: "a_tr1_1", text: "目を閉じてできる遊び",
-        prompt: "電車に乗っていますが、スマホを見るのに疲れました。目を閉じたまま頭の中だけでできる、ちょっとした想像ゲームや遊びを教えてください。" }
+        prompt: "電車に乗っていて、目的地まで少し時間があります。目を閉じたまま頭の中だけでできる、ちょっとした想像ゲームや遊びを教えてください。入力は不要です。" },
+      { id: "a_tr1_2", text: "1分で読める小話",
+        prompt: "電車の中で暇を持て余しています。1分ほどで読めるような、クスッとする短い話か、ちょっと面白い豆知識を一つ聞かせてください。" }
     ],
     tr2: [
-      { id: "a_tr2_1", text: "イライラを実況中継して",
-        prompt: "満員電車でイライラしています。この状況を、スポーツの実況中継のように大げさに、かつコミカルに描写して、少し笑わせてくれませんか？" }
+      { id: "a_tr2_1", text: "スマホを置いて楽しむ方法",
+        prompt: "電車に乗っていますが、スマホを見るのに疲れました。スマホを置いたまま、車窓や周りの風景を使って楽しめる、ちょっとした観察ゲームや暇つぶしを教えてください。" }
     ],
+    tr3: [
+      { id: "a_tr3_1", text: "到着後の最初の一手を決める",
+        prompt: "もうすぐ目的地に着きます。到着してから最初に何をするか、まだ決まっていません。状況を少し話すので、スムーズに動き出せる「最初の一手」を一つ提案してください。" }
+    ],
+
+    /* ── work（v0.2拡充） ── */
     w1: [
-      { id: "a_w1_1", text: "作業を細かく分解して",
-        prompt: "作業場にいますが、やる気が出ません。これからやるべきことを言うので、何も考えずに手を動かせるレベルまで、作業を限界まで細かく分解してください。" }
+      { id: "a_w1_1", text: "30秒でできる切り替え",
+        prompt: "作業場にいますが、眠くて集中できません。席を立たずに30秒でできる、眠気を少し飛ばすための切り替え方法を教えてください。入力は不要です。" },
+      { id: "a_w1_2", text: "今やる1つだけ決める",
+        prompt: "眠くて作業が止まっています。難しいことは考えなくていいので、今すぐ手を動かせる、一番小さな作業を1つだけ提案してください。" }
     ],
     w2: [
-      { id: "a_w2_1", text: "返信の叩き台を作って",
-        prompt: "メールの返信が面倒です。要点だけ伝えるので、角が立たない、でも丁寧すぎない、ちょうどいい塩梅の返信文の叩き台を作ってください。" }
+      { id: "a_w2_1", text: "角が立たない文面を作る",
+        prompt: "連絡文がうまくまとまりません。要点だけ伝えるので、角が立たない、でも丁寧すぎない、ちょうどいい塩梅の文面の叩き台を作ってください。" }
     ],
+    w3: [
+      { id: "a_w3_1", text: "タスクを細かく分解する",
+        prompt: "タスクが多くて止まっています。これからやるべきことを言うので、何も考えずに手を動かせるレベルまで、作業を限界まで細かく分解してください。" },
+      { id: "a_w3_2", text: "今やる1つだけ決める",
+        prompt: "タスクが多すぎて何から手をつければいいかわかりません。全部やろうとしなくていいので、今この瞬間に取りかかれる、一番小さな作業を1つだけ選んでください。" }
+    ],
+
+    /* ── shop（v0.2拡充） ── */
     sh1: [
-      { id: "a_sh1_1", text: "連想ゲームで思い出させて",
-        prompt: "お店に来たのに、何を買うか忘れました。私が思いつく断片的なキーワードを言うので、連想ゲームのように質問して、買うべきものを思い出させてください。" }
+      { id: "a_sh1_1", text: "比較ポイントを3つ出す",
+        prompt: "お店で2つの商品のどちらを買うか迷っています。商品の特徴を少し話すので、選ぶときに見るべきポイントを3つ挙げて、どちらが向いているか整理してください。" },
+      { id: "a_sh1_2", text: "買う条件を整理する",
+        prompt: "商品の選択で迷っています。「これを買うなら〇〇な人向け」という形で、それぞれの商品が向いている条件を整理してください。どちらが正解かではなく、自分に合う方を選べるように手伝ってください。" }
     ],
     sh2: [
-      { id: "a_sh2_1", text: "コイントスして",
-        prompt: "買い物中で、2つの商品のどちらを買うか迷っています。私が2つの選択肢を言うので、仮想のコイントスをして、どちらか一つをランダムに選んでください。" }
+      { id: "a_sh2_1", text: "連想ゲームで思い出させて",
+        prompt: "お店に来たのに、何を買うか忘れました。私が思いつく断片的なキーワードを言うので、連想ゲームのように質問して、買うべきものを思い出させてください。" }
     ],
+    sh3: [
+      { id: "a_sh3_1", text: "レビューの怪しいポイントを整理する",
+        prompt: "商品のレビューを見ていますが、どこを信じればいいかわかりません。一般的に、ネットのレビューを読むときに注意したほうがいい点や、参考になりやすいレビューの特徴を教えてください。" }
+    ],
+
+    /* ── street（v0.2拡充） ── */
     st1: [
-      { id: "a_st1_1", text: "ランダムな行き先を決めて",
-        prompt: "外を歩いていますが、目的がなくて道に迷った気分です。今いる場所の近くで、あえて行くような場所ではない、ちょっと変な目的地をランダムに指定してください。" }
+      { id: "a_st1_1", text: "気分を切り替える3ステップ",
+        prompt: "外を歩いていますが、頭を切り替えたいです。歩きながらできる、気分をリセットするための簡単な3ステップを教えてください。入力は不要です。" },
+      { id: "a_st1_2", text: "歩きながらできる思考整理",
+        prompt: "外を歩いている間に、頭の中をすっきりさせたいです。歩きながら自問できる、シンプルな問いを3つほど出してください。" }
     ],
     st2: [
-      { id: "a_st2_1", text: "歩幅をBGMにして",
-        prompt: "歩くのがだるいです。私の歩くテンポに合わせた、脳内で再生できる架空のBGMのタイトルと、その曲の雰囲気を描写して、少し歩くのを楽しくしてください。" }
+      { id: "a_st2_1", text: "次の一手を決める",
+        prompt: "外にいますが、この後どうするか決まっていません。状況を少し話すので、今から動き出せる「次の一手」を一つ提案してください。" }
     ],
+    st3: [
+      { id: "a_st3_1", text: "歩くのが少し楽しくなる脳内BGM",
+        prompt: "歩くのがだるいです。私の今の気分や歩くテンポに合わせた、脳内で再生できる架空のBGMのタイトルと、その曲の雰囲気を描写して、少し歩くのを楽しくしてください。入力は不要です。" }
+    ],
+
+    /* ── cafe（v0.2拡充） ── */
     c1: [
-      { id: "a_c1_1", text: "コーヒーの味を詩にして",
-        prompt: "カフェでボーッとしています。今飲んでいるコーヒー（または飲み物）の味や香りを、ちょっと大げさでポエティックな詩にして表現してください。" }
+      { id: "a_c1_1", text: "デジタルデトックスの問い",
+        prompt: "カフェでなんとなくスマホを見てしまっています。スマホを置いて、少しだけ自分に向き合うための、シンプルな問いを1つ出してください。入力は不要です。" }
     ],
     c2: [
-      { id: "a_c2_1", text: "考えをまとめる壁打ち相手に",
-        prompt: "カフェで休憩中に少し考え事をまとめたいです。私が思いついたことを脈絡なく書き込むので、あなたは相槌を打ちながら、時々短い質問を投げかけて、考えを引き出してください。" }
+      { id: "a_c2_1", text: "考えを整理する壁打ち相手に",
+        prompt: "カフェで考えをまとめたいです。私が思いついたことを脈絡なく書き込むので、相槌を打ちながら、時々短い質問を投げかけて、考えを引き出してください。" }
     ],
+    c3: [
+      { id: "a_c3_1", text: "作業再開のゆるい儀式",
+        prompt: "カフェで休憩が長引いています。作業に戻るための、ちょっとした「再開の儀式」を提案してください。大げさじゃなくて、ゆるくていいです。入力は不要です。" }
+    ],
+
+    /* ── public（v0.2拡充） ── */
     pu1: [
-      { id: "a_pu1_1", text: "待ち時間を冒険に変えて",
-        prompt: "役所（または病院）の待ち時間が長すぎます。この待合室をRPGの酒場やダンジョンの入り口に見立てて、私の待ち時間を壮大な冒険のプロローグ風に描写してください。" }
+      { id: "a_pu1_1", text: "待ち時間を軽くする遊び",
+        prompt: "病院か役所の待合室にいます。待ち時間が長いので、スマホ1つでできる、頭を使う軽い遊びや暇つぶしを教えてください。入力は不要です。" }
     ],
     pu2: [
-      { id: "a_pu2_1", text: "書類の書き方を優しく教えて",
-        prompt: "窓口で書類を書いていますが、書き方がよくわかりません。難しい言葉を使わずに、隣で優しく教えてくれるような口調で、書くためのヒントをください。" }
+      { id: "a_pu2_1", text: "難しい言葉をやさしくする",
+        prompt: "書類に書いてある言葉の意味がよくわかりません。難しい言葉や項目を伝えるので、隣で優しく教えてくれるような口調で、わかりやすく説明してください。" }
+    ],
+    pu3: [
+      { id: "a_pu3_1", text: "伝えるメモを作る",
+        prompt: "医師や窓口の担当者に、うまく説明できるか不安です。伝えたいことを箇条書きで話すので、相手に伝わりやすい短いメモにまとめてください。診断や判断はしなくて大丈夫です。" }
     ]
   }
 };
 
+/* ── アプリ本体 ── */
 document.addEventListener('DOMContentLoaded', () => {
     const state = { category: null, problem: null, action: null, history: [] };
 
@@ -468,21 +617,22 @@ document.addEventListener('DOMContentLoaded', () => {
         result:   document.getElementById('screen-result')
     };
 
-    const header      = document.getElementById('header');
-    const backBtn     = document.getElementById('back-btn');
-    const breadcrumb  = document.getElementById('breadcrumb');
-    const categoryList= document.getElementById('category-list');
-    const problemList = document.getElementById('problem-list');
-    const actionList  = document.getElementById('action-list');
-    const promptDisplay = document.getElementById('prompt-display');
-    const copyBtn     = document.getElementById('copy-btn');
-    const toast       = document.getElementById('toast');
+    const header       = document.getElementById('header');
+    const backBtn      = document.getElementById('back-btn');
+    const breadcrumb   = document.getElementById('breadcrumb');
+    const categoryList = document.getElementById('category-list');
+    const problemList  = document.getElementById('problem-list');
+    const actionList   = document.getElementById('action-list');
+    const promptDisplay= document.getElementById('prompt-display');
+    const copyBtn      = document.getElementById('copy-btn');
+    const toast        = document.getElementById('toast');
 
     renderCategories();
     showScreen('category');
     backBtn.addEventListener('click', goBack);
     copyBtn.addEventListener('click', copyPrompt);
 
+    /* ── 画面切り替え ── */
     function showScreen(screenId) {
         Object.values(screens).forEach(s => s.classList.remove('active'));
         screens[screenId].classList.add('active');
@@ -512,16 +662,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateBreadcrumb(screenId) {
         if (screenId === 'problem') {
             const cat = data.categories.find(c => c.id === state.category);
-            breadcrumb.textContent = `「${cat.title}」のとき`;
+            breadcrumb.textContent = cat ? `「${cat.title}」のとき` : '';
         } else if (screenId === 'action') {
-            const prob = data.problems[state.category].find(p => p.id === state.problem);
-            breadcrumb.textContent = `「${prob.text}」とき`;
+            const probs = data.problems[state.category] || [];
+            const prob  = probs.find(p => p.id === state.problem);
+            breadcrumb.textContent = prob ? `「${prob.text}」とき` : '';
         } else if (screenId === 'result') {
-            const act = data.actions[state.problem].find(a => a.id === state.action);
-            breadcrumb.textContent = `「${act.text}」`;
+            const acts = data.actions[state.problem] || [];
+            const act  = acts.find(a => a.id === state.action);
+            breadcrumb.textContent = act ? `「${act.text}」` : '';
         }
     }
 
+    /* ── レンダリング ── */
     function renderCategories() {
         categoryList.innerHTML = '';
         data.categories.forEach(cat => {
@@ -567,19 +720,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* ── コピー ── */
     function copyPrompt() {
         const text = promptDisplay.textContent;
         if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(showToast);
+            navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
         } else {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
-            document.body.appendChild(ta);
-            ta.focus(); ta.select();
-            try { document.execCommand('copy'); showToast(); } catch(e) {}
-            ta.remove();
+            fallbackCopy(text);
         }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); showToast(); } catch(e) {}
+        ta.remove();
     }
 
     function showToast() {
