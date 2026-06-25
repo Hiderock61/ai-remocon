@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.4.1</title>
+<title>AIリモコン v0.5</title>
 <style>
 /* ─── 変数 ─── */
 :root {
-  --bg: #f2f2f7;
-  --text: #1c1c1e;
-  --sub: #636366;
-  --card: #ffffff;
-  --border: #e5e5ea;
-  --primary: #0071e3;
-  --primary-dk: #0060c7;
-  --wide-bg: #eef3ff;
-  --wide-border: #c7d8f8;
-  --silly-bg: #f0fff4;
-  --silly-border: #b2dfcb;
-  --radius: 16px;
-  --radius-sm: 12px;
-  --pill: 28px;
-  --shadow: 0 1px 5px rgba(0,0,0,0.07);
-  --shadow-btn: 0 4px 14px rgba(0,113,227,0.28);
+  --bg: #f0f1f3;
+  --text: #1a1a1c;
+  --sub: #6e6e73;
+  --card: #fafafa;
+  --border: #d8d8de;
+  --primary: #0057c2;
+  --primary-dk: #004aaa;
+  --primary-light: rgba(0,87,194,.08);
+  --wide-bg: #edf1fb;
+  --wide-border: #b8caf5;
+  --silly-bg: #edfaf3;
+  --silly-border: #a8dfc0;
+  --radius: 12px;
+  --radius-sm: 9px;
+  --pill: 24px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-btn: 0 3px 10px rgba(0,87,194,.24);
+  --ready-color: #0057c2;
 }
 
 /* ─── リセット ─── */
@@ -58,13 +60,13 @@ body {
 #header {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 8px 14px;
   background: var(--bg);
   position: sticky;
   top: 0;
   z-index: 10;
   border-bottom: 1px solid var(--border);
-  min-height: 48px;
+  min-height: 46px;
 }
 #header.hidden { display: none; }
 
@@ -72,7 +74,7 @@ body {
   background: none;
   border: none;
   color: var(--primary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   padding: 8px 12px 8px 0;
   cursor: pointer;
@@ -81,10 +83,11 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+  letter-spacing: -.1px;
 }
 
 #breadcrumb {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--sub);
   margin-left: 2px;
   white-space: nowrap;
@@ -93,54 +96,54 @@ body {
 }
 
 /* ─── メイン ─── */
-main { flex: 1; padding: 20px 16px 0; }
+main { flex: 1; padding: 18px 14px 0; }
 
-.screen { display: none; animation: fadeIn .22s ease; }
+.screen { display: none; animation: fadeIn .2s ease; }
 .screen.active { display: block; }
 
 /* ─── 画面タイトル ─── */
 .screen-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   letter-spacing: -.3px;
 }
 
 /* ─── トップ画面 ─── */
 .top-lead {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .top-lead-title {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -.4px;
 }
 .top-lead-sub {
   font-size: 13px;
   color: var(--sub);
-  margin-top: 5px;
+  margin-top: 4px;
   line-height: 1.6;
 }
 
-/* ワイドボタン（どこでも困ってる・くだらない） */
+/* ワイドボタン */
 .wide-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 18px 20px;
+  padding: 16px 18px;
   border-radius: var(--radius);
   border: 1.5px solid var(--wide-border);
   background: var(--wide-bg);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform .12s, opacity .12s;
+  transition: transform .1s, opacity .1s;
   box-shadow: var(--shadow);
   user-select: none;
-  min-height: 60px;
+  min-height: 56px;
   text-align: center;
   letter-spacing: -.2px;
 }
@@ -148,16 +151,16 @@ main { flex: 1; padding: 20px 16px 0; }
   background: var(--silly-bg);
   border-color: var(--silly-border);
 }
-.wide-btn:active { transform: scale(.97); opacity: .85; }
+.wide-btn:active { transform: scale(.97); opacity: .82; }
 
 /* 中央ラベル */
 .section-label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--sub);
   text-align: center;
-  margin: 16px 0 10px;
-  letter-spacing: .3px;
+  margin: 14px 0 9px;
+  letter-spacing: .5px;
   text-transform: uppercase;
 }
 
@@ -165,7 +168,7 @@ main { flex: 1; padding: 20px 16px 0; }
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 9px;
 }
 
 .cat-btn {
@@ -173,27 +176,27 @@ main { flex: 1; padding: 20px 16px 0; }
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: 14px 14px 12px;
+  padding: 12px 12px 10px;
   background: var(--card);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
-  transition: transform .12s, opacity .12s;
-  min-height: 96px;
+  transition: transform .1s, opacity .1s;
+  min-height: 90px;
   box-shadow: var(--shadow);
   user-select: none;
   position: relative;
 }
-.cat-btn:active { transform: scale(.95); opacity: .85; }
+.cat-btn:active { transform: scale(.95); opacity: .82; }
 
 .cat-icon {
-  font-size: 30px;
+  font-size: 28px;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
   display: block;
 }
 .cat-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
   color: var(--text);
@@ -202,41 +205,41 @@ main { flex: 1; padding: 20px 16px 0; }
 
 /* フッター */
 .top-footer {
-  margin-top: 24px;
+  margin-top: 22px;
   padding-bottom: 4px;
   text-align: center;
   font-size: 11px;
-  color: #aeaeb2;
+  color: #b0b0b8;
 }
 
 /* ─── シナリオ・アクションリスト ─── */
 .list-wrap {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .list-item {
-  padding: 12px 14px;
+  padding: 11px 13px;
   background: var(--card);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform .12s, opacity .12s;
+  transition: transform .1s, opacity .1s;
   box-shadow: var(--shadow);
   user-select: none;
-  min-height: 64px;
+  min-height: 62px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
 }
-.list-item:active { transform: scale(.97); opacity: .8; }
+.list-item:active { transform: scale(.97); opacity: .78; }
 
 .scenario-main {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.35;
   color: var(--text);
@@ -244,7 +247,7 @@ main { flex: 1; padding: 20px 16px 0; }
 
 .scenario-sub {
   margin-top: 3px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--sub);
   line-height: 1.35;
   white-space: nowrap;
@@ -258,110 +261,227 @@ main { flex: 1; padding: 20px 16px 0; }
   color: var(--sub);
   line-height: 1.6;
   margin-top: -8px;
-  margin-bottom: 14px;
+  margin-bottom: 13px;
 }
 
-/* ─── プロンプト画面 ─── */
+/* ─── プロンプト画面（v0.5） ─── */
 .result-wrap {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 13px;
 }
 
+/* READY バッジ */
+.ready-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ready-color);
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  opacity: .75;
+}
+.ready-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ready-color);
+  flex-shrink: 0;
+}
+
+/* メタ情報（location › scenario） */
 .result-meta {
   font-size: 13px;
   color: var(--sub);
   line-height: 1.6;
+  margin-top: 2px;
 }
 .result-meta strong {
   color: var(--text);
   font-weight: 600;
 }
 
-.prompt-box {
-  background: var(--card);
-  padding: 20px;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--border);
+/* effectLabel */
+.effect-label {
   font-size: 15px;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  min-height: 160px;
-  box-shadow: var(--shadow);
-  color: #3a3a3c;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.55;
+  letter-spacing: -.1px;
 }
 
+/* コピーボタン */
 .copy-btn {
   background: var(--primary);
   color: #fff;
   border: none;
   border-radius: var(--pill);
-  padding: 18px;
-  font-size: 17px;
+  padding: 16px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
-  transition: background .15s, transform .1s;
-  letter-spacing: .3px;
+  transition: background .12s, transform .1s;
+  letter-spacing: .2px;
   box-shadow: var(--shadow-btn);
   user-select: none;
-  min-height: 56px;
+  min-height: 54px;
   width: 100%;
   display: block;
 }
 .copy-btn:active { transform: scale(.97); background: var(--primary-dk); }
 
+/* 「文言を見る・調整する」リンク */
+.custom-toggle {
+  background: none;
+  border: none;
+  color: var(--sub);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  padding: 6px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(110,110,115,.4);
+  transition: color .12s;
+}
+.custom-toggle:active { color: var(--primary); }
+
+/* カスタム編集エリア */
+.custom-area {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.custom-area.open { display: flex; }
+
+.custom-area-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sub);
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.custom-textarea {
+  width: 100%;
+  min-height: 160px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  resize: none;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+.custom-textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+}
+
+.custom-copy-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--pill);
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: background .12s, transform .1s;
+  box-shadow: var(--shadow-btn);
+  user-select: none;
+  min-height: 48px;
+  width: 100%;
+}
+.custom-copy-btn:active { transform: scale(.97); background: var(--primary-dk); }
+
+.custom-sub-btns {
+  display: flex;
+  gap: 9px;
+}
+.custom-sub-btn {
+  flex: 1;
+  background: var(--card);
+  color: var(--sub);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background .1s, transform .1s;
+  min-height: 42px;
+}
+.custom-sub-btn:active { transform: scale(.97); background: #ebebef; }
+
 /* ─── 外部AIリンク ─── */
 .ai-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
   padding-top: 2px;
 }
 .ai-label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--sub);
   text-align: center;
 }
 .ai-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 9px;
 }
 .ai-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 0 12px;
-  min-height: 48px;
+  gap: 5px;
+  padding: 0 10px;
+  min-height: 46px;
   background: var(--card);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   text-decoration: none;
   cursor: pointer;
-  transition: transform .12s, opacity .12s, background .12s;
+  transition: transform .1s, opacity .1s, background .1s;
   box-shadow: var(--shadow);
   user-select: none;
   text-align: center;
 }
-.ai-btn:active { transform: scale(.95); opacity: .8; background: #f0f0f5; }
-.ai-icon { font-size: 18px; flex-shrink: 0; line-height: 1; }
+.ai-btn:active { transform: scale(.95); opacity: .78; background: #ebebef; }
+.ai-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
 
 /* ─── トースト ─── */
 #toast {
   position: fixed;
-  bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(28,28,30,.88);
+  background: rgba(26,26,28,.88);
   color: #fff;
-  padding: 12px 24px;
-  border-radius: 24px;
-  font-size: 14px;
+  padding: 11px 22px;
+  border-radius: 22px;
+  font-size: 13px;
   font-weight: 500;
   z-index: 100;
   opacity: 1;
@@ -374,7 +494,7 @@ main { flex: 1; padding: 20px 16px 0; }
 #toast.hidden { opacity: 0; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 </style>
@@ -393,7 +513,7 @@ main { flex: 1; padding: 20px 16px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.4.1</div>
+        <div class="top-lead-title">AIリモコン v0.5</div>
         <div class="top-lead-sub">書くの飽きた。<br>今いる場所を3タップするだけで、AIに貼る文章ができるリモコン。</div>
       </div>
 
@@ -423,12 +543,23 @@ main { flex: 1; padding: 20px 16px 0; }
       <div class="list-wrap" id="action-list"></div>
     </section>
 
-    <!-- 画面4: prompt -->
+    <!-- 画面4: prompt (v0.5) -->
     <section id="screen-prompt" class="screen">
       <div class="result-wrap">
+
+        <!-- READY バッジ -->
+        <div class="ready-badge"><span class="ready-dot"></span>READY</div>
+
+        <!-- location › scenario -->
         <div class="result-meta" id="result-meta"></div>
-        <div class="prompt-box" id="prompt-display"></div>
+
+        <!-- effectLabel -->
+        <div class="effect-label" id="effect-label">AIに貼る文章を用意しました。</div>
+
+        <!-- コピーボタン -->
         <button class="copy-btn" id="copy-btn" type="button">コピーする</button>
+
+        <!-- 外部AIリンク -->
         <div class="ai-section">
           <p class="ai-label">コピーしたら、下のAIに貼ってください</p>
           <div class="ai-grid">
@@ -446,6 +577,21 @@ main { flex: 1; padding: 20px 16px 0; }
             </a>
           </div>
         </div>
+
+        <!-- 文言を見る・調整する -->
+        <button class="custom-toggle" id="custom-toggle" type="button">文言を見る・調整する</button>
+
+        <!-- カスタム編集エリア（初期非表示） -->
+        <div class="custom-area" id="custom-area">
+          <div class="custom-area-title">文言を調整</div>
+          <textarea class="custom-textarea" id="custom-textarea" rows="6"></textarea>
+          <button class="custom-copy-btn" id="custom-copy-btn" type="button">この文でコピーする</button>
+          <div class="custom-sub-btns">
+            <button class="custom-sub-btn" id="custom-reset-btn" type="button">元に戻す</button>
+            <button class="custom-sub-btn" id="custom-close-btn" type="button">閉じる</button>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -475,7 +621,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "anywhere_chaos_sort",
               "label": "整理してほしい",
               "mode": "standby",
-              "commonPrompt": "今、頭の中がぐちゃぐちゃです。いろいろなことが混ざっていて、何がどう絡んでいるかわかりません。私がこれから状況を話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "今、頭の中がぐちゃぐちゃです。いろいろなことが混ざっていて、何がどう絡んでいるかわかりません。私がこれから状況を話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「頭の中の整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "何が何に絡まっているかわからない"
@@ -491,7 +638,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "anywhere_whatisit_core",
               "label": "核心を出してほしい",
               "mode": "standby",
-              "commonPrompt": "これから、気になっていること・モヤモヤしていることを送ります。「だからなんだ」「ようは何が言いたい」「それで何をしたい」の3つに分けて、核心だけ短く整理してください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、気になっていること・モヤモヤしていることを送ります。「だからなんだ」「ようは何が言いたい」「それで何をしたい」の3つに分けて、核心だけ短く整理してください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「核心の言語化」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "気になっているのに言葉にならない"
@@ -507,7 +655,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "anywhere_body_ease",
               "label": "今できることを教えてほしい",
               "mode": "standby",
-              "commonPrompt": "体がつらいです。診断ではなく、今この瞬間に少しだけ楽になれる行動を1〜2個だけ教えてください。大げさな対策ではなく、今すぐできる小さいことにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "体がつらいです。診断ではなく、今この瞬間に少しだけ楽になれる行動を1〜2個だけ教えてください。大げさな対策ではなく、今すぐできる小さいことにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今すぐできる小さな楽になり方」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "動く気がしない、でも何かしたい"
@@ -523,7 +672,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "anywhere_lighten_silly",
               "label": "くだらなく広げてほしい",
               "mode": "standby",
-              "commonPrompt": "これから、今の状況や悩みを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。深刻にしすぎず、でもただふざけるだけにもしないでください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、今の状況や悩みを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。深刻にしすぎず、でもただふざけるだけにもしないでください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「くだらなく軽くする変換」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "重いままだと動けない"
@@ -539,7 +689,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "anywhere_stuck_first",
               "label": "最初の一手を出してほしい",
               "mode": "standby",
-              "commonPrompt": "とにかく困っています。状況を大きくしすぎず、今できる一手を1つだけ出してください。解決策の全部ではなく、最初の小さい一歩だけでいいです。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "とにかく困っています。状況を大きくしすぎず、今できる一手を1つだけ出してください。解決策の全部ではなく、最初の小さい一歩だけでいいです。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「最初の一手」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "何から手をつけるかもわからない"
@@ -565,7 +716,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "home_morning_stuck_first",
               "label": "最初の一手を出す",
               "mode": "standby",
-              "commonPrompt": "私は今、家の中にいます。起きたけど動けません。気合いではなく、今の状態を整理して、今日の最初の一手をひとつだけ出してください。大きな計画ではなく、今すぐできる小さい行動にしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "私は今、家の中にいます。起きたけど動けません。気合いではなく、今の状態を整理して、今日の最初の一手をひとつだけ出してください。大きな計画ではなく、今すぐできる小さい行動にしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今日の最初の一手」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "布団から出る最初の一手がない"
@@ -581,7 +733,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "home_nothing_todo_suggest",
               "label": "今できることを提案してほしい",
               "mode": "standby",
-              "commonPrompt": "家にいますが、何をしていいかわかりません。やりたいことも、やるべきことも、ぼんやりしています。今の気分や状況を少し話すので、今日できそうなことを3つくらい提案してください。大きなことではなく、30分以内でできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "家にいますが、何をしていいかわかりません。やりたいことも、やるべきことも、ぼんやりしています。今の気分や状況を少し話すので、今日できそうなことを3つくらい提案してください。大きなことではなく、30分以内でできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今日できそうなことの提案」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "順番が見えない"
@@ -597,7 +750,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "home_messy_start",
               "label": "片付けの入口を作ってほしい",
               "mode": "standby",
-              "commonPrompt": "部屋が散らかっています。全部一気に片付けようとすると動けなくなるので、今すぐ1分でできる片付けの入口を1つだけ教えてください。「まずここだけ」という場所や行動を提案してください。"
+              "commonPrompt": "部屋が散らかっています。全部一気に片付けようとすると動けなくなるので、今すぐ1分でできる片付けの入口を1つだけ教えてください。「まずここだけ」という場所や行動を提案してください。",
+              "effectLabel": "AIに「片付けの入口づくり」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "どこから手をつけるかがわからない"
@@ -613,7 +767,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "home_food_decide",
               "label": "決めてほしい",
               "mode": "standby",
-              "commonPrompt": "家にいて、何を食べるか決められません。今の気分・冷蔵庫の状況・時間帯などを少し話すので、今日の食事を1つ決めてください。選択肢を増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "家にいて、何を食べるか決められません。今の気分・冷蔵庫の状況・時間帯などを少し話すので、今日の食事を1つ決めてください。選択肢を増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今日の食事を1つ決めること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "考えるのが面倒くさくなってきた"
@@ -631,7 +786,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "home_phone_loop_break",
               "label": "抜け出す入口を作ってほしい",
               "mode": "standby",
-              "commonPrompt": "スマホだけ見て時間が溶けています。やめようと思っているのにやめられません。責めずに、今この瞬間にスマホから離れるための小さい行動を1つだけ教えてください。"
+              "commonPrompt": "スマホだけ見て時間が溶けています。やめようと思っているのにやめられません。責めずに、今この瞬間にスマホから離れるための小さい行動を1つだけ教えてください。",
+              "effectLabel": "AIに「スマホ時間から抜ける最初の一手」を頼む文章を用意しました。"
             }
           ]
         }
@@ -655,7 +811,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "silly_expand_go",
               "label": "広げてほしい",
               "mode": "standby",
-              "commonPrompt": "これから、何かを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。意味があってもなくても構いません。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、何かを送ります。本質は残したまま、くだらない例え・生活感のある比喩・小さな寸劇のような形で、少し笑える方向に広げてください。意味があってもなくても構いません。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「くだらなく広げること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "何かをちょっとずらしたい"
@@ -671,7 +828,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "silly_funny_go",
               "label": "何か言ってほしい",
               "mode": "standby",
-              "commonPrompt": "これから、今の状況や気分を送ります。それを受けて、面白いことを1つ言ってください。笑えなくてもいいです。ただ少しずれた方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、今の状況や気分を送ります。それを受けて、面白いことを1つ言ってください。笑えなくてもいいです。ただ少しずれた方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「少しずれた面白いこと」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "笑えなくてもいい、ちょっとずれれば"
@@ -687,7 +845,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "silly_shift_go",
               "label": "ずらしてほしい",
               "mode": "standby",
-              "commonPrompt": "これから、よくある状況・ありきたりな話・当たり前のことを送ります。それを「でも実は」「逆に言うと」「別の星から見ると」のような視点でずらしてください。正しくなくていいです。少しだけ違う角度から見せてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、よくある状況・ありきたりな話・当たり前のことを送ります。それを「でも実は」「逆に言うと」「別の星から見ると」のような視点でずらしてください。正しくなくていいです。少しだけ違う角度から見せてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「予定調和をずらす見方」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "当たり前を別の角度から見たい"
@@ -703,7 +862,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "silly_drama_go",
               "label": "寸劇にしてほしい",
               "mode": "standby",
-              "commonPrompt": "これから、今の状況や出来事を送ります。それを登場人物が2〜3人いる短い寸劇にしてください。大げさでも地味でも構いません。読んで少し笑えるか、少し「なるほど」と思えるものにしてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、今の状況や出来事を送ります。それを登場人物が2〜3人いる短い寸劇にしてください。大げさでも地味でも構いません。読んで少し笑えるか、少し「なるほど」と思えるものにしてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「小さな寸劇への変換」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "登場人物がいる小さい話にしたい"
@@ -719,7 +879,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "silly_metaphor_go",
               "label": "例えてほしい",
               "mode": "standby",
-              "commonPrompt": "これから、何かを送ります。それを、全然関係なさそうなものに例えてください。例えが正確でなくていいです。「なんでそれ？」と思えるくらいずれた例えが理想です。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから、何かを送ります。それを、全然関係なさそうなものに例えてください。例えが正確でなくていいです。「なんでそれ？」と思えるくらいずれた例えが理想です。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「なんでそれ？な例え」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "なんでそれ？と思われるくらいずれた例えがいい"
@@ -744,7 +905,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "train_bored_play",
               "label": "暇つぶしを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "電車に乗っていて暇です。目を閉じてできる遊び・頭の中だけで完結する考えごと・スマホを見ながらできる軽い遊びを1つ提案してください。難しくなくていいです。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "電車に乗っていて暇です。目を閉じてできる遊び・頭の中だけで完結する考えごと・スマホを見ながらできる軽い遊びを1つ提案してください。難しくなくていいです。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「移動中の暇つぶし提案」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "でも何もしたくない気もする"
@@ -761,7 +923,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "train_sign_expand",
               "label": "広げてほしい",
               "mode": "standby",
-              "commonPrompt": "電車の中で、気になった広告・言葉・文章がありました。これから送るので、それが何を言おうとしているのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "電車の中で、気になった広告・言葉・文章がありました。これから送るので、それが何を言おうとしているのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「気になった言葉の背景と広がり」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "読んだけどよくわからない"
@@ -777,7 +940,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "train_info_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "移動中に気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "移動中に気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「情報の真偽の整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "確かめたいけど調べる気力がない"
@@ -793,7 +957,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "train_after_decide",
               "label": "決めてほしい",
               "mode": "standby",
-              "commonPrompt": "電車に乗っています。降りた後に何をするか決められていません。今の状況や選択肢を少し話すので、降りてから最初にやることを1つだけ決めてください。迷いを増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "電車に乗っています。降りた後に何をするか決められていません。今の状況や選択肢を少し話すので、降りてから最初にやることを1つだけ決めてください。迷いを増やすのではなく、「これにしよう」と1つ背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「降りた後の最初の行動を1つ決めること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "乗っているうちに決めたい"
@@ -809,7 +974,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "train_head_full_sort",
               "label": "整理してほしい",
               "mode": "standby",
-              "commonPrompt": "移動中に頭の中が混んできました。いろいろなことが混ざっています。これから話すので、今考えていることを「今日やること」「後でいいこと」「考えなくていいこと」に分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "移動中に頭の中が混んできました。いろいろなことが混ざっています。これから話すので、今考えていることを「今日やること」「後でいいこと」「考えなくていいこと」に分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「頭の中の交通整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "いろいろなことが重なっている"
@@ -834,7 +1000,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "work_too_much_first",
               "label": "最初の一手を出してほしい",
               "mode": "standby",
-              "commonPrompt": "やることが多すぎて止まっています。全部を整理しようとするとさらに動けなくなります。今日の最初の一手を1つだけ出してください。大きなことではなく、今すぐ5分で始められるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "やることが多すぎて止まっています。全部を整理しようとするとさらに動けなくなります。今日の最初の一手を1つだけ出してください。大きなことではなく、今すぐ5分で始められるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「やること多すぎる時の最初の一手」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "全部見えているのに動けない"
@@ -850,7 +1017,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "work_sleepy_recover",
               "label": "今できることを教えてほしい",
               "mode": "standby",
-              "commonPrompt": "眠くて集中できません。気合いではなく、今の状態で少しだけ集中力を取り戻せる小さい行動を1〜2個教えてください。大げさな対策ではなく、今すぐできるものにしてください。"
+              "commonPrompt": "眠くて集中できません。気合いではなく、今の状態で少しだけ集中力を取り戻せる小さい行動を1〜2個教えてください。大げさな対策ではなく、今すぐできるものにしてください。",
+              "effectLabel": "AIに「眠い時に集中を取り戻す小さな行動」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "気合いではどうにもならない"
@@ -866,7 +1034,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "work_reply_draft",
               "label": "下書きを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、丁寧すぎず、でも失礼にならない返信文の下書きを作ってください。そのまま使えるものと、少しカジュアルなものの2パターンあると助かります。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、丁寧すぎず、でも失礼にならない返信文の下書きを作ってください。そのまま使えるものと、少しカジュアルなものの2パターンあると助かります。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「返信文の下書き作成」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "何と言えばいいか迷っている"
@@ -882,7 +1051,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "work_decline_draft",
               "label": "断り文を作ってほしい",
               "mode": "standby",
-              "commonPrompt": "断りたいことがあります。これから状況・相手・断りたい内容を送るので、角が立たない断り文を作ってください。言い訳っぽくならず、でも冷たくもない文にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "断りたいことがあります。これから状況・相手・断りたい内容を送るので、角が立たない断り文を作ってください。言い訳っぽくならず、でも冷たくもない文にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「角が立たない断り文の作成」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "角が立たない断り方がわからない"
@@ -898,7 +1068,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "work_unclear_core",
               "label": "核心を出してほしい",
               "mode": "standby",
-              "commonPrompt": "説明を受けたのですが、ようは何なのかわかりません。これから聞いた内容を送るので、「つまり何をしてほしいのか」「何が重要なのか」「何をしなくていいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "説明を受けたのですが、ようは何なのかわかりません。これから聞いた内容を送るので、「つまり何をしてほしいのか」「何が重要なのか」「何をしなくていいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「説明の核心の言語化」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "つまり何をすればいいのかもの"
@@ -923,7 +1094,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "shop_hesitate_decide",
               "label": "決めてほしい",
               "mode": "standby",
-              "commonPrompt": "買うか迷っています。これから商品・値段・迷っている理由を送るので、「買う」か「やめる」か、どちらかに背中を押してください。長い分析ではなく、短く決めてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "買うか迷っています。これから商品・値段・迷っている理由を送るので、「買う」か「やめる」か、どちらかに背中を押してください。長い分析ではなく、短く決めてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「買う・やめるの背中を押すこと」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "どちらかに背中を押してほしい"
@@ -939,7 +1111,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "shop_compare_table",
               "label": "比べてほしい",
               "mode": "standby",
-              "commonPrompt": "商品を比較したいです。これから比べたい商品・スペック・気になるポイントを送るので、わかりやすく整理してください。どちらがどんな人に向いているかも教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "商品を比較したいです。これから比べたい商品・スペック・気になるポイントを送るので、わかりやすく整理してください。どちらがどんな人に向いているかも教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「商品の比較整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "違いが整理できていない"
@@ -955,7 +1128,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "shop_review_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "商品のレビューや宣伝文句が本当かどうか気になります。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "商品のレビューや宣伝文句が本当かどうか気になります。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「レビューの怪しい点の整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "良いことしか書いてない気がする"
@@ -971,7 +1145,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "shop_staff_phrase",
               "label": "言い方を教えてほしい",
               "mode": "standby",
-              "commonPrompt": "店員に何かを伝えたいのですが、どう言えばいいかわかりません。これから状況・伝えたいこと・困っていることを送るので、自然な言い方を教えてください。丁寧すぎず、でも失礼にならない言い方にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "店員に何かを伝えたいのですが、どう言えばいいかわかりません。これから状況・伝えたいこと・困っていることを送るので、自然な言い方を教えてください。丁寧すぎず、でも失礼にならない言い方にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「店員への自然な言い方」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "伝えたいことがあるのに言葉にならない"
@@ -987,7 +1162,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "shop_impulse_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "これから買おうとしている商品について話します。衝動買いかどうか確認したいので、「本当に必要か」「後で後悔しないか」を短く整理してください。責めずに、冷静に判断できるよう手伝ってください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから買おうとしている商品について話します。衝動買いかどうか確認したいので、「本当に必要か」「後で後悔しないか」を短く整理してください。責めずに、冷静に判断できるよう手伝ってください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「衝動買いかどうかの冷静な確認」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "後で後悔するかもと思っている"
@@ -1012,7 +1188,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "street_wander_play",
               "label": "今の状況を面白くしてほしい",
               "mode": "standby",
-              "commonPrompt": "なんとなく歩いています。今いる場所・時間・気分を少し話すので、今この瞬間を少し面白くする見方や遊びを1つ提案してください。大げさなことではなく、歩きながらできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "なんとなく歩いています。今いる場所・時間・気分を少し話すので、今この瞬間を少し面白くする見方や遊びを1つ提案してください。大げさなことではなく、歩きながらできるものにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今この場所を少し面白くする見方」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "目的地はあるけど気分がない"
@@ -1028,7 +1205,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "street_where_decide",
               "label": "決めてほしい",
               "mode": "standby",
-              "commonPrompt": "次にどこへ行くか迷っています。今いる場所・時間・気分・選択肢を少し話すので、「ここへ行こう」と1つ決めてください。選択肢を増やすのではなく、1つに絞ってください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "次にどこへ行くか迷っています。今いる場所・時間・気分・選択肢を少し話すので、「ここへ行こう」と1つ決めてください。選択肢を増やすのではなく、1つに絞ってください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「次の行き先を1つ決めること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "選びきれなくて止まっている"
@@ -1045,7 +1223,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "street_notice_expand",
               "label": "広げてほしい",
               "mode": "standby",
-              "commonPrompt": "外を歩いていて、気になったものがありました。これから送るので、それが何なのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "外を歩いていて、気になったものがありました。これから送るので、それが何なのか・どんな背景があるのか・面白い見方はないかを教えてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「気になったものの背景と広がり」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "なんだろう、もっと知りたい"
@@ -1061,7 +1240,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "street_tired_rest",
               "label": "休み方を教えてほしい",
               "mode": "standby",
-              "commonPrompt": "外を歩いていて疲れました。今いる場所・状況を少し話すので、今すぐできる休み方を1つ提案してください。大げさなことではなく、今この場所でできることにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "外を歩いていて疲れました。今いる場所・状況を少し話すので、今すぐできる休み方を1つ提案してください。大げさなことではなく、今この場所でできることにしてください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「今すぐできる休み方の提案」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "どこでどう休むか決められない"
@@ -1077,7 +1257,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "street_return_decide",
               "label": "決めてほしい",
               "mode": "standby",
-              "commonPrompt": "帰るか、もう少し外にいるか迷っています。今の気分・時間・体の状態を少し話すので、「帰ろう」か「もう少しいよう」か、どちらかに背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "帰るか、もう少し外にいるか迷っています。今の気分・時間・体の状態を少し話すので、「帰ろう」か「もう少しいよう」か、どちらかに背中を押してください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「帰る・もう少しいるかの背中を押すこと」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "決め手がなくてずっと迷っている"
@@ -1103,7 +1284,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "cafe_stopped_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "カフェにいます。休んでいるのか、止まっているのかわかりません。今の状況を少し話すので、「これは休息」か「これは停滞」かを整理して、次の一手を1つだけ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "カフェにいます。休んでいるのか、止まっているのかわかりません。今の状況を少し話すので、「これは休息」か「これは停滞」かを整理して、次の一手を1つだけ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「休息か停滞かの整理と次の一手」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "コーヒーが冷めても気づかない時間"
@@ -1119,7 +1301,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "cafe_think_sort",
               "label": "整理してほしい",
               "mode": "standby",
-              "commonPrompt": "カフェで考えごとを整理したいです。これから頭の中にあることを話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "カフェで考えごとを整理したいです。これから頭の中にあることを話すので、感情・事実・やること・後回しにしていいことに分けて整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「考えごとの整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "頭の中にあるものを出したい"
@@ -1135,7 +1318,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "cafe_memo_polish",
               "label": "整えてほしい",
               "mode": "standby",
-              "commonPrompt": "書いたメモや文章を軽く整えたいです。これから送るので、意味を変えずに読みやすくしてください。大きく書き直すのではなく、少し整える程度にしてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "書いたメモや文章を軽く整えたいです。これから送るので、意味を変えずに読みやすくしてください。大きく書き直すのではなく、少し整える程度にしてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「メモや文章を読みやすく整えること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "書いたけど読みにくい"
@@ -1151,7 +1335,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "cafe_reply_draft",
               "label": "下書きを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、丁寧すぎず、でも失礼にならない返信文の下書きを作ってください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "返信文を作りたいです。これから状況・相手・伝えたいことを送るので、丁寧すぎず、でも失礼にならない返信文の下書きを作ってください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「返信文の下書き作成」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "休憩中にさっと片づけたい"
@@ -1167,7 +1352,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "cafe_return_decide",
               "label": "背中を押してほしい",
               "mode": "standby",
-              "commonPrompt": "作業に戻るか迷っています。休憩が長くなっています。今の状況を少し話すので、「戻ろう」か「もう少し休もう」か、どちらかに背中を押してください。責めずに、今できることを1つ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "作業に戻るか迷っています。休憩が長くなっています。今の状況を少し話すので、「戻ろう」か「もう少し休もう」か、どちらかに背中を押してください。責めずに、今できることを1つ出してください。まだ詳しい状況は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「作業に戻る背中を押すこと」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "休憩が長くなっている気がする"
@@ -1192,7 +1378,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "public_doc_explain",
               "label": "わかりやすく説明してほしい",
               "mode": "standby",
-              "commonPrompt": "書類や通知が届きましたが、意味がわかりません。これから内容を送るので、「何を言っているのか」「何をしなければいけないのか」「期限はいつか」を短くわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "書類や通知が届きましたが、意味がわかりません。これから内容を送るので、「何を言っているのか」「何をしなければいけないのか」「期限はいつか」を短くわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「書類の意味をわかりやすく説明すること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "読んだけど何をすればいいか不明"
@@ -1208,7 +1395,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "public_unclear_core",
               "label": "核心を出してほしい",
               "mode": "standby",
-              "commonPrompt": "説明を受けましたが、理解できませんでした。これから聞いた内容を送るので、「つまり何が起きているのか」「何をしなければいけないのか」「何を聞き返せばいいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "説明を受けましたが、理解できませんでした。これから聞いた内容を送るので、「つまり何が起きているのか」「何をしなければいけないのか」「何を聞き返せばいいのか」を短く整理してください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「窓口で聞き返す言い方」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "わかったふりをしてしまった"
@@ -1224,7 +1412,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "public_symptom_memo",
               "label": "伝えるメモを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "症状をどう伝えればいいかわかりません。これから症状・いつから・どんな状態かを送るので、医師や窓口に伝えるための短いメモを作ってください。診断ではなく、伝えるための整理だけしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "症状をどう伝えればいいかわかりません。これから症状・いつから・どんな状態かを送るので、医師や窓口に伝えるための短いメモを作ってください。診断ではなく、伝えるための整理だけしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「症状を伝えるメモ作り」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "口で説明するのが不安"
@@ -1240,7 +1429,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "public_question_list",
               "label": "聞くことリストを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "病院や役所で何を聞けばいいかわかりません。これから状況・目的・不安なことを送るので、今日聞くべきことを3つ以内にまとめてください。重要なものから順に並べてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "病院や役所で何を聞けばいいかわかりません。これから状況・目的・不安なことを送るので、今日聞くべきことを3つ以内にまとめてください。重要なものから順に並べてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「聞きたいことのリスト整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "聞きたいことがまとまらない"
@@ -1256,7 +1446,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "public_next_checklist",
               "label": "チェックリストを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "これから行く手続き・受診・申請について、持ち物・手順・次にやることが不安です。状況を送るので、今日必要なことを短いチェックリストにしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "これから行く手続き・受診・申請について、持ち物・手順・次にやることが不安です。状況を送るので、今日必要なことを短いチェックリストにしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「次に何を持っていくかの確認」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "何を持っていけばいいか不明"
@@ -1282,7 +1473,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_loop_break",
               "label": "抜け出す入口を作ってほしい",
               "mode": "standby",
-              "commonPrompt": "SNSを見すぎて時間が溶けています。責めずに、今この瞬間にSNSから離れるための小さい行動を1つだけ教えてください。難しいことではなく、今すぐできるものにしてください。"
+              "commonPrompt": "SNSを見すぎて時間が溶けています。責めずに、今この瞬間にSNSから離れるための小さい行動を1つだけ教えてください。難しいことではなく、今すぐできるものにしてください。",
+              "effectLabel": "AIに「SNS時間から抜ける最初の一手」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "やめたいのか休みたいのか曖昧"
@@ -1298,7 +1490,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_fire_explain",
               "label": "何が起きたか教えてほしい",
               "mode": "standby",
-              "commonPrompt": "SNSで炎上や話題になっていますが、何が起きたのかわかりません。これから状況を送るので、「何が起きたのか」「なぜ話題になっているのか」「まだわかっていないこと」を整理してください。断定できることと推測を分けてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "SNSで炎上や話題になっていますが、何が起きたのかわかりません。これから状況を送るので、「何が起きたのか」「なぜ話題になっているのか」「まだわかっていないこと」を整理してください。断定できることと推測を分けてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「炎上・話題の出来事の整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "流れてきたけど何が起きたのか不明"
@@ -1314,7 +1507,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_info_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "SNSで気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "SNSで気になった情報があります。これから送るので、断定できること・推論に留まること・確認が必要なことを分けて整理してください。本当か嘘かを急いで決めつけず、根拠と確認ポイントも教えてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「SNS情報の真偽の整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "信じたいけど確かめたい"
@@ -1330,7 +1524,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_screenshot_explain",
               "label": "説明してほしい",
               "mode": "standby",
-              "commonPrompt": "SNSのスクリーンショットや投稿の意味がわかりません。これから内容を送るので、「何を言っているのか」「なぜこれが話題なのか」「背景は何か」をわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "SNSのスクリーンショットや投稿の意味がわかりません。これから内容を送るので、「何を言っているのか」「なぜこれが話題なのか」「背景は何か」をわかりやすく説明してください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「スクショや投稿の背景説明」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "読んだけどコンテキストがない"
@@ -1346,7 +1541,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_ad_check",
               "label": "確認してほしい",
               "mode": "standby",
-              "commonPrompt": "怪しい広告・レビュー・商品が気になっています。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "怪しい広告・レビュー・商品が気になっています。これから内容を送るので、信頼できそうな点・怪しい点・確認すべき点を分けて教えてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「怪しい広告・商品の信頼性整理」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "買いたいけど怒しい気もする"
@@ -1362,7 +1558,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_dm_draft",
               "label": "下書きを作ってほしい",
               "mode": "standby",
-              "commonPrompt": "SNSのDMや返信文を作りたいです。これから状況・相手・伝えたいことを送るので、自然な文の下書きを作ってください。SNSらしい温度感で、丁寧すぎず、でも失礼にならない文にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "SNSのDMや返信文を作りたいです。これから状況・相手・伝えたいことを送るので、自然な文の下書きを作ってください。SNSらしい温度感で、丁寧すぎず、でも失礼にならない文にしてください。まだ詳しい内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「SNSらしい返信文の下書き」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "SNSらしい温度感で決めたい"
@@ -1378,7 +1575,8 @@ main { flex: 1; padding: 20px 16px 0; }
               "id": "sns_silly_go",
               "label": "広げてほしい",
               "mode": "standby",
-              "commonPrompt": "SNSで見たものや今の状況を、くだらない方向に広げてほしいです。これから内容を送るので、本質は残したまま、少し笑える方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。"
+              "commonPrompt": "SNSで見たものや今の状況を、くだらない方向に広げてほしいです。これから内容を送るので、本質は残したまま、少し笑える方向に転がしてください。まだ内容は送っていないので、次の入力を待ってください。",
+              "effectLabel": "AIに「SNSで見たものをくだらなく広げること」を頼む文章を用意しました。"
             }
           ],
           "subLabel": "見たものを少しずらしたい"
@@ -1400,18 +1598,24 @@ const LOC_MAP = {};
 LOCATIONS.forEach(l => { LOC_MAP[l.id] = l; });
 
 /* ── DOM ── */
-const header        = document.getElementById('header');
-const backBtn       = document.getElementById('back-btn');
-const breadcrumb    = document.getElementById('breadcrumb');
-const toast         = document.getElementById('toast');
-const copyBtn       = document.getElementById('copy-btn');
-const promptDisplay = document.getElementById('prompt-display');
-const resultMeta    = document.getElementById('result-meta');
-const catGrid       = document.getElementById('cat-grid');
-const scenarioList  = document.getElementById('scenario-list');
-const scenarioTitle = document.getElementById('scenario-title');
-const scenarioLead  = document.getElementById('scenario-lead');
-const actionList    = document.getElementById('action-list');
+const header         = document.getElementById('header');
+const backBtn        = document.getElementById('back-btn');
+const breadcrumb     = document.getElementById('breadcrumb');
+const toast          = document.getElementById('toast');
+const copyBtn        = document.getElementById('copy-btn');
+const effectLabelEl  = document.getElementById('effect-label');
+const resultMeta     = document.getElementById('result-meta');
+const catGrid        = document.getElementById('cat-grid');
+const scenarioList   = document.getElementById('scenario-list');
+const scenarioTitle  = document.getElementById('scenario-title');
+const scenarioLead   = document.getElementById('scenario-lead');
+const actionList     = document.getElementById('action-list');
+const customToggle   = document.getElementById('custom-toggle');
+const customArea     = document.getElementById('custom-area');
+const customTextarea = document.getElementById('custom-textarea');
+const customCopyBtn  = document.getElementById('custom-copy-btn');
+const customResetBtn = document.getElementById('custom-reset-btn');
+const customCloseBtn = document.getElementById('custom-close-btn');
 
 const screens = {
   location: document.getElementById('screen-location'),
@@ -1422,10 +1626,12 @@ const screens = {
 
 /* ── 状態 ── */
 let state = {
-  step: 'location',      // location | scenario | action | prompt
-  location: null,        // location object
-  scenario: null,        // scenario object
-  action: null           // action object
+  step: 'location',
+  location: null,
+  scenario: null,
+  action: null,
+  customPrompt: null,
+  isCustomOpen: false
 };
 
 /* ── カテゴリグリッド生成（wide以外） ── */
@@ -1434,7 +1640,6 @@ GRID_LOCS.forEach(loc => {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'cat-btn';
-  // アイコンとラベルを分割
   const parts = loc.label.match(/^(\S+)\s(.+)$/);
   const icon  = parts ? parts[1] : loc.label;
   const label = parts ? parts[2] : '';
@@ -1484,7 +1689,6 @@ function selectLocation(loc) {
   state.action   = null;
   state.step     = 'scenario';
 
-  // シナリオリスト生成
   scenarioTitle.textContent = loc.screenTitle || '何に困ってる？';
   scenarioLead.textContent  = loc.screenLead  || '';
   scenarioList.innerHTML = '';
@@ -1510,12 +1714,10 @@ function selectScenario(sc) {
   state.step     = 'action';
 
   if (sc.actions.length === 1) {
-    // actions が1つだけ → action画面をスキップ
     selectAction(sc.actions[0]);
     return;
   }
 
-  // アクションリスト生成
   actionList.innerHTML = '';
   sc.actions.forEach(act => {
     const btn = document.createElement('button');
@@ -1530,24 +1732,67 @@ function selectScenario(sc) {
   showScreen('action');
 }
 
-/* ── action選択 → prompt表示 ── */
+/* ── action選択 → prompt表示（v0.5: 全文非表示） ── */
 function selectAction(act) {
-  state.action = act;
-  state.step   = 'prompt';
+  state.action       = act;
+  state.step         = 'prompt';
+  state.customPrompt = null;
+  state.isCustomOpen = false;
 
-  promptDisplay.textContent = act.commonPrompt;
+  // effectLabel または fallback
+  effectLabelEl.textContent = act.effectLabel || 'AIに貼る文章を用意しました。';
+
+  // meta
   resultMeta.innerHTML =
     '<strong>' + state.location.label + '</strong>' +
     ' › ' + state.scenario.label;
+
+  // カスタムエリアを閉じる
+  customArea.classList.remove('open');
+  customTextarea.value = '';
 
   updateHeader();
   showScreen('prompt');
 }
 
+/* ── 「文言を見る・調整する」 ── */
+customToggle.addEventListener('click', () => {
+  if (!state.action) return;
+  state.customPrompt = state.customPrompt || state.action.commonPrompt;
+  state.isCustomOpen = true;
+  customTextarea.value = state.customPrompt;
+  customArea.classList.add('open');
+  // スクロールしてtextareaを見せる
+  setTimeout(() => customArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+});
+
+/* ── textarea 編集 ── */
+customTextarea.addEventListener('input', () => {
+  state.customPrompt = customTextarea.value;
+});
+
+/* ── 「この文でコピーする」 ── */
+customCopyBtn.addEventListener('click', () => {
+  const text = state.customPrompt || (state.action ? state.action.commonPrompt : '');
+  doCopy(text);
+});
+
+/* ── 「元に戻す」 ── */
+customResetBtn.addEventListener('click', () => {
+  if (!state.action) return;
+  state.customPrompt = null;
+  customTextarea.value = state.action.commonPrompt;
+});
+
+/* ── 「閉じる」 ── */
+customCloseBtn.addEventListener('click', () => {
+  state.isCustomOpen = false;
+  customArea.classList.remove('open');
+});
+
 /* ── 戻るボタン ── */
 backBtn.addEventListener('click', () => {
   if (state.step === 'prompt') {
-    // actionsが1つだった場合はscenarioへ、複数だったらactionへ
     if (state.scenario && state.scenario.actions.length > 1) {
       state.step = 'action';
       updateHeader();
@@ -1569,16 +1814,21 @@ backBtn.addEventListener('click', () => {
   }
 });
 
-/* ── コピー ── */
+/* ── 通常コピー（commonPrompt） ── */
 copyBtn.addEventListener('click', () => {
   if (!state.action) return;
-  const text = state.action.commonPrompt;
+  doCopy(state.action.commonPrompt);
+});
+
+/* ── コピー共通処理 ── */
+function doCopy(text) {
+  if (!text) return;
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
   } else {
     fallbackCopy(text);
   }
-});
+}
 
 function fallbackCopy(text) {
   const ta = document.createElement('textarea');
