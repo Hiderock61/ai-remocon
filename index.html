@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.5</title>
+<title>AIリモコン v0.6</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -493,6 +493,105 @@ main { flex: 1; padding: 18px 14px 0; }
 }
 #toast.hidden { opacity: 0; }
 
+
+/* ─── セグメント切り替え ─── */
+.mode-seg {
+  display: flex;
+  gap: 0;
+  background: var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 16px;
+}
+.mode-seg-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sub);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  min-height: 36px;
+  letter-spacing: -.1px;
+}
+.mode-seg-btn.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+}
+.mode-seg-btn:active { opacity: .75; }
+
+/* ─── 日記・記録面 ─── */
+.diary-lead {
+  font-size: 13px;
+  color: var(--sub);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.diary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.diary-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 14px 12px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform .1s, opacity .1s;
+  box-shadow: var(--shadow);
+  user-select: none;
+  min-height: 68px;
+  position: relative;
+}
+.diary-btn::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background: #7c6af7;
+}
+.diary-btn:active { transform: scale(.97); opacity: .78; }
+.diary-btn-main {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  padding-left: 4px;
+}
+.diary-btn-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--sub);
+  line-height: 1.35;
+  padding-left: 4px;
+}
+
+/* ─── ヒアリング情報（prompt画面） ─── */
+.hearing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 13px;
+  background: #f3f0ff;
+  border: 1.5px solid #c8bef7;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: #5a4db0;
+  line-height: 1.55;
+}
+.hearing-info.hidden { display: none; }
+.hearing-info-row { display: flex; align-items: baseline; gap: 5px; }
+.hearing-info-icon { font-size: 13px; flex-shrink: 0; }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -513,10 +612,18 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.5</div>
+        <div class="top-lead-title">AIリモコン v0.6</div>
         <div class="top-lead-sub">書くの飽きた。<br>今いる場所を3タップするだけで、AIに貼る文章ができるリモコン。</div>
       </div>
 
+
+      <!-- 面切り替えセグメント -->
+      <div class="mode-seg" id="mode-seg">
+        <button class="mode-seg-btn active" type="button" data-mode="default">通常</button>
+        <button class="mode-seg-btn" type="button" data-mode="diary">日記・記録</button>
+      </div>
+
+      <div id="mode-default">
       <button class="wide-btn" type="button" data-loc="anywhere">😵 どこでもいいから困ってる</button>
 
       <div class="section-label">今どこ？</div>
@@ -526,6 +633,17 @@ main { flex: 1; padding: 18px 14px 0; }
       </div>
 
       <button class="wide-btn silly" type="button" data-loc="silly" style="margin-top:10px;">🥒 くだらないことしたい</button>
+
+
+      </div><!-- /mode-default -->
+
+      <!-- 日記・記録面 -->
+      <div id="mode-diary" style="display:none;">
+        <p class="diary-lead">今日のことを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
+        <div class="diary-list" id="diary-list">
+          <!-- JSで生成 -->
+        </div>
+      </div>
 
       <div class="top-footer">by オノノケホールディングス😲©️</div>
     </section>
@@ -555,6 +673,13 @@ main { flex: 1; padding: 18px 14px 0; }
 
         <!-- effectLabel -->
         <div class="effect-label" id="effect-label">AIに貼る文章を用意しました。</div>
+
+
+        <!-- ヒアリング情報（hearing型のみ表示） -->
+        <div class="hearing-info hidden" id="hearing-info">
+          <div class="hearing-info-row"><span class="hearing-info-icon">💬</span><span id="hearing-count-text"></span></div>
+          <div class="hearing-info-row"><span class="hearing-info-icon">📝</span><span id="hearing-output-text"></span></div>
+        </div>
 
         <!-- コピーボタン -->
         <button class="copy-btn" id="copy-btn" type="button">コピーする</button>
@@ -697,7 +822,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "今、脳内で何が起きてる？",
-      "screenLead": "場所を選ぶ余裕がない時の、最初の避難口です。"
+      "screenLead": "場所を選ぶ余裕がない時の、最初の避難口です。",
+      "remoteMode": "default"
     },
     {
       "id": "home",
@@ -793,7 +919,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "家の中で、今どれが近い？",
-      "screenLead": "生活を1ミリだけ、無理なく動かすための入口です。"
+      "screenLead": "生活を1ミリだけ、無理なく動かすための入口です。",
+      "remoteMode": "default"
     },
     {
       "id": "silly",
@@ -887,7 +1014,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "どうくだらなくする？",
-      "screenLead": "重いものを、くだらない器に移すための安全地帯です。"
+      "screenLead": "重いものを、くだらない器に移すための安全地帯です。",
+      "remoteMode": "default"
     },
     {
       "id": "train",
@@ -982,7 +1110,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "移動中のいま、どう過ごす？",
-      "screenLead": "動けない時間を、少しだけ扱いやすくします。"
+      "screenLead": "動けない時間を、少しだけ扱いやすくします。",
+      "remoteMode": "default"
     },
     {
       "id": "work",
@@ -1072,11 +1201,12 @@ main { flex: 1; padding: 18px 14px 0; }
               "effectLabel": "AIに「説明の核心の言語化」を頼む文章を用意しました。"
             }
           ],
-          "subLabel": "つまり何をすればいいのかもの"
+          "subLabel": "つまり何をすればいいのか不明"
         }
       ],
       "screenTitle": "現場で、今どこが詰まってる？",
-      "screenLead": "人とタスクと空気を、事故りにくい一手へ戻します。"
+      "screenLead": "人とタスクと空気を、事故りにくい一手へ戻します。",
+      "remoteMode": "default"
     },
     {
       "id": "shop",
@@ -1170,7 +1300,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "商品の前で、何に迷ってる？",
-      "screenLead": "買う・比べる・疑うを、その場で少し軽くします。"
+      "screenLead": "買う・比べる・疑うを、その場で少し軽くします。",
+      "remoteMode": "default"
     },
     {
       "id": "street",
@@ -1265,7 +1396,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "街を歩きながら、どうしたい？",
-      "screenLead": "歩いている時の迷い・疲れ・観測を拾います。"
+      "screenLead": "歩いている時の迷い・疲れ・観測を拾います。",
+      "remoteMode": "default"
     },
     {
       "id": "cafe",
@@ -1360,7 +1492,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "休憩しながら、脳をどう動かす？",
-      "screenLead": "頭の荷物を、少しだけテーブルに置く場所です。"
+      "screenLead": "頭の荷物を、少しだけテーブルに置く場所です。",
+      "remoteMode": "default"
     },
     {
       "id": "public",
@@ -1454,7 +1587,8 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "窓口の前で、何が詰まってる？",
-      "screenLead": "硬い言葉や説明を、聞き返せる形に戻します。"
+      "screenLead": "硬い言葉や説明を、聞き返せる形に戻します。",
+      "remoteMode": "default"
     },
     {
       "id": "sns",
@@ -1545,7 +1679,7 @@ main { flex: 1; padding: 18px 14px 0; }
               "effectLabel": "AIに「怪しい広告・商品の信頼性整理」を頼む文章を用意しました。"
             }
           ],
-          "subLabel": "買いたいけど怒しい気もする"
+          "subLabel": "買いたいけど怪しい気もする"
         },
         {
           "id": "sns_dm",
@@ -1583,7 +1717,69 @@ main { flex: 1; padding: 18px 14px 0; }
         }
       ],
       "screenTitle": "画面の中で、何が起きてる？",
-      "screenLead": "デジタル空間で脳がチカチカした時の整理口です。"
+      "screenLead": "デジタル空間で脳がチカチカした時の整理口です。",
+      "remoteMode": "default"
+    },
+    {
+      "id": "diary",
+      "remoteMode": "diary",
+      "label": "📔 日記・記録",
+      "role": "日記リモコン",
+      "screenTitle": "今日のことを整理する",
+      "screenLead": "AIに先に聞いてもらいながら、今日を形にします。",
+      "scenarios": [
+        {
+          "id": "diary_day_recap",
+          "label": "今日を回収したい",
+          "subLabel": "何があったか順番に聞いてほしい",
+          "actions": [
+            {
+              "id": "diary_day_recap_action",
+              "label": "今日を回収する",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 5,
+              "finalOutput": "今日の回収ログ",
+              "effectLabel": "AIに「今日1日の聞き取りと回収ログ化」を頼む文章を用意しました。",
+              "commonPrompt": "今日1日を回収したいです。\nいきなり日記を書かずに、まず私に5つまでヒアリングしてください。\n聞いてほしいことは、今日あったこと、印象に残ったこと、気分、身体の状態、最後に残っている感想です。\n質問は一度に詰め込みすぎず、答えやすい形にしてください。\n私が答えたら、その内容をもとに、時系列に近い形で「今日の回収ログ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "diary_moyamoya",
+          "label": "今日のモヤモヤを成仏させたい",
+          "subLabel": "何が残っているか聞いてほしい",
+          "actions": [
+            {
+              "id": "diary_moyamoya_action",
+              "label": "モヤモヤを成仏させる",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "本日の未成仏リストと供養メモ",
+              "effectLabel": "AIに「今日のモヤモヤの聞き取りと供養メモ化」を頼む文章を用意しました。",
+              "commonPrompt": "今日のモヤモヤを整理したいです。\nいきなり解決策を出さずに、まず私に4つまでヒアリングしてください。\n何が引っかかっているのか、どの場面が残っているのか、体や気分に残っている感じ、今すぐ解決したいのか一旦置きたいのかを聞いてください。\n私が答えたら、責めずに「本日の未成仏リスト」と「供養メモ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "diary_letter",
+          "label": "明日の自分に置き手紙したい",
+          "subLabel": "今日の残り香を渡したい",
+          "actions": [
+            {
+              "id": "diary_letter_action",
+              "label": "置き手紙を作る",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 4,
+              "finalOutput": "明日の自分への置き手紙",
+              "effectLabel": "AIに「明日の自分への置き手紙づくり」を頼む文章を用意しました。",
+              "commonPrompt": "明日の自分に置き手紙を作りたいです。\nいきなり文章を書かずに、まず私に4つまでヒアリングしてください。\n今日やったこと、今日残ったこと、明日の自分に忘れてほしくないこと、明日の最初の一手を聞いてください。\n私が答えたら、その内容をもとに、短くてやさしい「明日の自分への置き手紙」にしてください。\n説教っぽくせず、明日の自分が読みやすい文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -1616,6 +1812,12 @@ const customTextarea = document.getElementById('custom-textarea');
 const customCopyBtn  = document.getElementById('custom-copy-btn');
 const customResetBtn = document.getElementById('custom-reset-btn');
 const customCloseBtn = document.getElementById('custom-close-btn');
+const hearingInfo      = document.getElementById('hearing-info');
+const hearingCountText = document.getElementById('hearing-count-text');
+const hearingOutputText= document.getElementById('hearing-output-text');
+const diaryList        = document.getElementById('diary-list');
+const modeDiaryEl      = document.getElementById('mode-diary');
+const modeDefaultEl    = document.getElementById('mode-default');
 
 const screens = {
   location: document.getElementById('screen-location'),
@@ -1631,11 +1833,16 @@ let state = {
   scenario: null,
   action: null,
   customPrompt: null,
-  isCustomOpen: false
+  isCustomOpen: false,
+  currentMode: 'default'
 };
 
 /* ── カテゴリグリッド生成（wide以外） ── */
-const GRID_LOCS = LOCATIONS.filter(l => l.id !== 'anywhere' && l.id !== 'silly');
+const GRID_LOCS = LOCATIONS.filter(l =>
+  (l.remoteMode || 'default') === 'default' &&
+  l.id !== 'anywhere' &&
+  l.id !== 'silly'
+);
 GRID_LOCS.forEach(loc => {
   const btn = document.createElement('button');
   btn.type = 'button';
@@ -1646,6 +1853,50 @@ GRID_LOCS.forEach(loc => {
   btn.innerHTML = `<span class="cat-icon">${icon}</span><span class="cat-label">${label}</span>`;
   btn.addEventListener('click', () => selectLocation(loc));
   catGrid.appendChild(btn);
+});
+
+
+/* ── セグメント切り替え ── */
+function buildDiaryList() {
+  if (!diaryList) return;
+  const diaryLoc = LOCATIONS.find(l => l.remoteMode === 'diary');
+  if (!diaryLoc) return;
+  diaryList.innerHTML = '';
+  diaryLoc.scenarios.forEach(sc => {
+    const act = sc.actions[0];
+    if (!act) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'diary-btn';
+    btn.innerHTML =
+      '<span class="diary-btn-main">' + sc.label + '</span>' +
+      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
+    btn.addEventListener('click', () => {
+      // diary は selectLocation → selectScenario の流れを踏む
+      selectLocation(diaryLoc);
+      selectScenario(sc);
+    });
+    diaryList.appendChild(btn);
+  });
+}
+buildDiaryList();
+
+document.querySelectorAll('.mode-seg-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.getAttribute('data-mode');
+    if (state.currentMode === mode) return;
+    state.currentMode = mode;
+    document.querySelectorAll('.mode-seg-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-mode') === mode);
+    });
+    if (mode === 'diary') {
+      modeDefaultEl.style.display = 'none';
+      modeDiaryEl.style.display   = 'block';
+    } else {
+      modeDefaultEl.style.display = 'block';
+      modeDiaryEl.style.display   = 'none';
+    }
+  });
 });
 
 /* ── ワイドボタンのイベント ── */
@@ -1747,6 +1998,18 @@ function selectAction(act) {
     '<strong>' + state.location.label + '</strong>' +
     ' › ' + state.scenario.label;
 
+  // ヒアリング情報の表示
+  const itype = act.interactionType;
+  if (itype === 'hearing' || itype === 'hearing_transform') {
+    const count = act.hearingCount || '';
+    const output = act.finalOutput || '';
+    hearingCountText.textContent  = 'AIが先に' + count + 'つまで聞きます。';
+    hearingOutputText.textContent = '最後に、' + output + 'にします。';
+    hearingInfo.classList.remove('hidden');
+  } else {
+    hearingInfo.classList.add('hidden');
+  }
+
   // カスタムエリアを閉じる
   customArea.classList.remove('open');
   customTextarea.value = '';
@@ -1811,6 +2074,14 @@ backBtn.addEventListener('click', () => {
     state.location = null;
     updateHeader();
     showScreen('location');
+    // 面の表示を復元
+    if (state.currentMode === 'diary') {
+      modeDefaultEl.style.display = 'none';
+      modeDiaryEl.style.display   = 'block';
+    } else {
+      modeDefaultEl.style.display = 'block';
+      modeDiaryEl.style.display   = 'none';
+    }
   }
 });
 
