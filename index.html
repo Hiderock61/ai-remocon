@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.6</title>
+<title>AIリモコン v0.7</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -524,6 +524,25 @@ main { flex: 1; padding: 18px 14px 0; }
 }
 .mode-seg-btn:active { opacity: .75; }
 
+
+/* ─── 仕事・対人面 ─── */
+.social-lead {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.social-note {
+  font-size: 11px;
+  color: var(--sub);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,.04);
+  border-radius: 6px;
+}
+
 /* ─── 日記・記録面 ─── */
 .diary-lead {
   font-size: 13px;
@@ -612,7 +631,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.6</div>
+        <div class="top-lead-title">AIリモコン v0.7</div>
         <div class="top-lead-sub">書くの飽きた。<br>今いる場所を3タップするだけで、AIに貼る文章ができるリモコン。</div>
       </div>
 
@@ -621,6 +640,7 @@ main { flex: 1; padding: 18px 14px 0; }
       <div class="mode-seg" id="mode-seg">
         <button class="mode-seg-btn active" type="button" data-mode="default">通常</button>
         <button class="mode-seg-btn" type="button" data-mode="diary">日記・記録</button>
+        <button class="mode-seg-btn" type="button" data-mode="social">仕事・対人</button>
       </div>
 
       <div id="mode-default">
@@ -641,6 +661,15 @@ main { flex: 1; padding: 18px 14px 0; }
       <div id="mode-diary" style="display:none;">
         <p class="diary-lead">今日のことを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
         <div class="diary-list" id="diary-list">
+          <!-- JSで生成 -->
+        </div>
+      </div>
+
+      <!-- 仕事・対人面 -->
+      <div id="mode-social" style="display:none;">
+        <p class="social-lead">本音のままだと、社会と事故ることがある。<br>AIに一度、言葉のエアバッグを巻いてもらうためのリモコンです。</p>
+        <p class="social-note">このリモコン内には、本音の内容を入力・保存しません。<br>AIの返答はたたき台として、最後は自分の言葉に調整してください。</p>
+        <div class="diary-list" id="social-list">
           <!-- JSで生成 -->
         </div>
       </div>
@@ -1721,6 +1750,66 @@ main { flex: 1; padding: 18px 14px 0; }
       "remoteMode": "default"
     },
     {
+      "id": "social",
+      "remoteMode": "social",
+      "label": "💼 仕事・対人",
+      "screenTitle": "言う前に、一回クッション。",
+      "screenLead": "本音のままだと、社会と事故ることがある。AIに一度、言葉のエアバッグを巻いてもらうためのリモコンです。",
+      "scenarios": [
+        {
+          "id": "social_断り",
+          "label": "角なく断りたい",
+          "subLabel": "関係を壊さずに断りたい",
+          "actions": [
+            {
+              "id": "social_断り_action",
+              "label": "角が立たない断り文を作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "角が立ちにくい断り文",
+              "effectLabel": "AIに「状況の聞き取りと角が立ちにくい断り文づくり」を頼む文章を用意しました。",
+              "commonPrompt": "角が立ちにくい断り文を作りたいです。\nいきなり文章を作らずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、相手との関係、断りたい内容、今後も関係を続けたいか、どのくらい丁寧にしたいかです。\n質問は一度に詰め込みすぎず、答えやすい形にしてください。\n私が答えたら、その内容をもとに、短く自然で、角が立ちにくい断り文を作ってください。\n過剰なお世辞や、慇懃無礼な定型文にはしないでください。\nチャットやLINEでそのまま送れるような、血の通ったフラットな日本語にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "social_本音",
+          "label": "本音のままだと危ない",
+          "subLabel": "送る前に、一回言葉のエアバッグを巻く",
+          "actions": [
+            {
+              "id": "social_本音_action",
+              "label": "事故りにくい言い換えを作る",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 4,
+              "finalOutput": "社会と事故らない言い換え文",
+              "effectLabel": "AIに「本音の聞き取りと事故りにくい言い換え」を頼む文章を用意しました。",
+              "commonPrompt": "本音のままだと危ない言葉を、社会と事故りにくい言い方へ変えたいです。\nいきなり言い換えずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、本当は何と言いたいか、相手は誰か、怒りや不満の強さ、どれくらい柔らかくしたいかです。\n私が答えたら、本音の芯は消さず、言葉の角だけ削ってください。\n相手を刺激しにくく、でもこちらの言いたいことが消えない文にしてください。\n過剰なお世辞や、慇懃無礼なテンプレ敬語にはしないでください。\nチャットやLINEでそのまま送れるような、血の通ったフラットな日本語にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "social_言葉",
+          "label": "言われた言葉の分解",
+          "subLabel": "怒られ成分を仕分けして、自分を守る",
+          "actions": [
+            {
+              "id": "social_言葉_action",
+              "label": "言葉を分解して次の一手を出す",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 5,
+              "finalOutput": "反省しすぎ防止メモと次の一手",
+              "effectLabel": "AIに「言われたことの分解と次の一手づくり」を頼む文章を用意しました。",
+              "commonPrompt": "誰かに言われた言葉を分解したいです。\nいきなり結論を出さずに、まず私に5つまでヒアリングしてください。\n聞いてほしいことは、何を言われたか、事実として正しい部分、納得できない部分、相手が求めていそうなこと、次に必要な一手です。\n私が答えたら、相手を悪者に決めつけず、私のことも責めすぎずに整理してください。\n事実、相手の感情、自分の傷つき、本当に直すべき点、理不尽かもしれない点を分けてください。\n最後に「反省しすぎ防止メモ」と「次の一手」を短く出してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "diary",
       "remoteMode": "diary",
       "label": "📔 日記・記録",
@@ -1817,7 +1906,9 @@ const hearingCountText = document.getElementById('hearing-count-text');
 const hearingOutputText= document.getElementById('hearing-output-text');
 const diaryList        = document.getElementById('diary-list');
 const modeDiaryEl      = document.getElementById('mode-diary');
+const modeSocialEl     = document.getElementById('mode-social');
 const modeDefaultEl    = document.getElementById('mode-default');
+const socialList       = document.getElementById('social-list');
 
 const screens = {
   location: document.getElementById('screen-location'),
@@ -1881,6 +1972,30 @@ function buildDiaryList() {
 }
 buildDiaryList();
 
+/* ── 仕事・対人リスト生成 ── */
+function buildSocialList() {
+  if (!socialList) return;
+  const socialLoc = LOCATIONS.find(l => l.remoteMode === 'social');
+  if (!socialLoc) return;
+  socialList.innerHTML = '';
+  socialLoc.scenarios.forEach(sc => {
+    const act = sc.actions[0];
+    if (!act) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'diary-btn';
+    btn.innerHTML =
+      '<span class="diary-btn-main">' + sc.label + '</span>' +
+      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
+    btn.addEventListener('click', () => {
+      selectLocation(socialLoc);
+      selectScenario(sc);
+    });
+    socialList.appendChild(btn);
+  });
+}
+buildSocialList();
+
 document.querySelectorAll('.mode-seg-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.getAttribute('data-mode');
@@ -1889,12 +2004,15 @@ document.querySelectorAll('.mode-seg-btn').forEach(btn => {
     document.querySelectorAll('.mode-seg-btn').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-mode') === mode);
     });
+    modeDefaultEl.style.display = 'none';
+    modeDiaryEl.style.display   = 'none';
+    modeSocialEl.style.display  = 'none';
     if (mode === 'diary') {
-      modeDefaultEl.style.display = 'none';
-      modeDiaryEl.style.display   = 'block';
+      modeDiaryEl.style.display = 'block';
+    } else if (mode === 'social') {
+      modeSocialEl.style.display = 'block';
     } else {
       modeDefaultEl.style.display = 'block';
-      modeDiaryEl.style.display   = 'none';
     }
   });
 });
@@ -2075,12 +2193,15 @@ backBtn.addEventListener('click', () => {
     updateHeader();
     showScreen('location');
     // 面の表示を復元
+    modeDefaultEl.style.display = 'none';
+    modeDiaryEl.style.display   = 'none';
+    modeSocialEl.style.display  = 'none';
     if (state.currentMode === 'diary') {
-      modeDefaultEl.style.display = 'none';
-      modeDiaryEl.style.display   = 'block';
+      modeDiaryEl.style.display = 'block';
+    } else if (state.currentMode === 'social') {
+      modeSocialEl.style.display = 'block';
     } else {
       modeDefaultEl.style.display = 'block';
-      modeDiaryEl.style.display   = 'none';
     }
   }
 });
