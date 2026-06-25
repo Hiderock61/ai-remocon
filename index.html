@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.7</title>
+<title>AIリモコン v0.8</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -508,14 +508,14 @@ main { flex: 1; padding: 18px 14px 0; }
   background: none;
   border: none;
   border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 13px;
+  padding: 6px 6px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--sub);
   cursor: pointer;
   transition: background .15s, color .15s;
   min-height: 36px;
-  letter-spacing: -.1px;
+  letter-spacing: -.2px;
 }
 .mode-seg-btn.active {
   background: var(--card);
@@ -543,6 +543,24 @@ main { flex: 1; padding: 18px 14px 0; }
   border-radius: 6px;
 }
 
+
+/* ─── 変換面 ─── */
+.creative-lead {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.creative-note {
+  font-size: 11px;
+  color: var(--sub);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,.04);
+  border-radius: 6px;
+}
 /* ─── 日記・記録面 ─── */
 .diary-lead {
   font-size: 13px;
@@ -631,7 +649,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.7</div>
+        <div class="top-lead-title">AIリモコン v0.8</div>
         <div class="top-lead-sub">書くの飽きた。<br>今いる場所を3タップするだけで、AIに貼る文章ができるリモコン。</div>
       </div>
 
@@ -641,6 +659,7 @@ main { flex: 1; padding: 18px 14px 0; }
         <button class="mode-seg-btn active" type="button" data-mode="default">通常</button>
         <button class="mode-seg-btn" type="button" data-mode="diary">日記・記録</button>
         <button class="mode-seg-btn" type="button" data-mode="social">仕事・対人</button>
+        <button class="mode-seg-btn" type="button" data-mode="creative">変換</button>
       </div>
 
       <div id="mode-default">
@@ -656,6 +675,13 @@ main { flex: 1; padding: 18px 14px 0; }
 
 
       </div><!-- /mode-default -->
+
+      <!-- 変換面 -->
+      <div id="mode-creative" style="display:none;">
+        <p class="creative-lead">重いままだと、動けないから。<br>違和感を、笑える・読める・使える器へ移し替えるリモコンです。</p>
+        <p class="creative-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
+        <div class="diary-list" id="creative-list"></div>
+      </div>
 
       <!-- 日記・記録面 -->
       <div id="mode-diary" style="display:none;">
@@ -1869,6 +1895,66 @@ main { flex: 1; padding: 18px 14px 0; }
           ]
         }
       ]
+    },
+    {
+      "id": "creative",
+      "remoteMode": "creative",
+      "label": "変換",
+      "screenTitle": "重いものを、別の器へ。",
+      "screenLead": "重いままだと、動けないから。違和感を、笑える・読める・使える器へ移し替えるリモコンです。",
+      "scenarios": [
+        {
+          "id": "creative_lighten",
+          "label": "重い話の軽量化",
+          "subLabel": "意味はそのままで、くだらない器に移す",
+          "actions": [
+            {
+              "id": "creative_lighten_action",
+              "label": "重い話を軽くする",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 3,
+              "finalOutput": "くだらない変換文",
+              "effectLabel": "AIに「内容の聞き取りとくだらない変換」を頼む文章を用意しました。",
+              "commonPrompt": "重い話を、意味はそのままで少し軽い形に変換したいです。\nいきなり変換せずに、まず私に3つまでヒアリングしてください。\n聞いてほしいことは、何が起きたのか、どこが重いのか、どのくらいくだらなくしてよいかです。\n私が答えたら、話の本質や違和感は壊さず、重さだけ少し抜いてください。\nゼロから勝手に嘘のギャグを作らず、私が話した内容を材料にしてください。\n文体や例えや器だけをくだらなくして、少し笑える・読める・扱える形に変換してください。\n深刻にしすぎず、でもただふざけるだけにもせず、「中身はガチ、見た目はくだらない」くらいの温度にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "creative_skit",
+          "label": "日常の寸劇化",
+          "subLabel": "登場人物を立てて、客観的に転がす",
+          "actions": [
+            {
+              "id": "creative_skit_action",
+              "label": "日常を寸劇にする",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 3,
+              "finalOutput": "小さな寸劇",
+              "effectLabel": "AIに「内容の聞き取りと小さな寸劇化」を頼む文章を用意しました。",
+              "commonPrompt": "日常の出来事や違和感を、小さな寸劇に変換したいです。\nいきなり書かずに、まず私に3つまでヒアリングしてください。\n聞いてほしいことは、何が起きたのか、登場させたい要素や人物があるか、どのくらいくだらなくしてよいかです。\n私が答えたら、2〜3人くらいの登場人物が出る短い寸劇にしてください。\n話の本質や違和感は壊さず、登場人物を立てることで客観的に見える形にしてください。\nゼロから勝手に嘘の展開を増やしすぎず、私が話した内容を材料にしてください。\n少し笑えるか、少し「なるほど」と思える温度にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        },
+        {
+          "id": "creative_note",
+          "label": "違和感をnoteのタネに",
+          "subLabel": "いきなり書かず、記事の入口だけ作る",
+          "actions": [
+            {
+              "id": "creative_note_action",
+              "label": "noteのタネを作る",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 4,
+              "finalOutput": "noteの下書きタネ",
+              "effectLabel": "AIに「違和感の聞き取りとnoteのタネ化」を頼む文章を用意しました。",
+              "commonPrompt": "日常の違和感や会話の断片を、noteのタネにしたいです。\nいきなり完成記事を書かずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何に違和感があったのか、なぜ引っかかったのか、誰に向けた話になりそうか、どんな温度で書きたいかです。\n私が答えたら、完成記事ではなく、noteの入口になるタネとして整理してください。\n出してほしいものは、仮タイトル案、書き出し案、見出しの方向性、この記事で扱えそうな芯です。\n話の本質や違和感は壊さず、いきなりきれいにまとめすぎないでください。\n素材のザラつきや変な部分を残したまま、記事に育てられる入口を作ってください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -1907,8 +1993,10 @@ const hearingOutputText= document.getElementById('hearing-output-text');
 const diaryList        = document.getElementById('diary-list');
 const modeDiaryEl      = document.getElementById('mode-diary');
 const modeSocialEl     = document.getElementById('mode-social');
+const modeCreativeEl   = document.getElementById('mode-creative');
 const modeDefaultEl    = document.getElementById('mode-default');
 const socialList       = document.getElementById('social-list');
+const creativeList     = document.getElementById('creative-list');
 
 const screens = {
   location: document.getElementById('screen-location'),
@@ -1996,6 +2084,30 @@ function buildSocialList() {
 }
 buildSocialList();
 
+/* ── 変換リスト生成 ── */
+function buildCreativeList() {
+  if (!creativeList) return;
+  const creativeLoc = LOCATIONS.find(l => l.remoteMode === 'creative');
+  if (!creativeLoc) return;
+  creativeList.innerHTML = '';
+  creativeLoc.scenarios.forEach(sc => {
+    const act = sc.actions[0];
+    if (!act) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'diary-btn';
+    btn.innerHTML =
+      '<span class="diary-btn-main">' + sc.label + '</span>' +
+      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
+    btn.addEventListener('click', () => {
+      selectLocation(creativeLoc);
+      selectScenario(sc);
+    });
+    creativeList.appendChild(btn);
+  });
+}
+buildCreativeList();
+
 document.querySelectorAll('.mode-seg-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.getAttribute('data-mode');
@@ -2004,13 +2116,16 @@ document.querySelectorAll('.mode-seg-btn').forEach(btn => {
     document.querySelectorAll('.mode-seg-btn').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-mode') === mode);
     });
-    modeDefaultEl.style.display = 'none';
-    modeDiaryEl.style.display   = 'none';
-    modeSocialEl.style.display  = 'none';
+    modeDefaultEl.style.display  = 'none';
+    modeDiaryEl.style.display    = 'none';
+    modeSocialEl.style.display   = 'none';
+    modeCreativeEl.style.display = 'none';
     if (mode === 'diary') {
       modeDiaryEl.style.display = 'block';
     } else if (mode === 'social') {
       modeSocialEl.style.display = 'block';
+    } else if (mode === 'creative') {
+      modeCreativeEl.style.display = 'block';
     } else {
       modeDefaultEl.style.display = 'block';
     }
@@ -2193,13 +2308,16 @@ backBtn.addEventListener('click', () => {
     updateHeader();
     showScreen('location');
     // 面の表示を復元
-    modeDefaultEl.style.display = 'none';
-    modeDiaryEl.style.display   = 'none';
-    modeSocialEl.style.display  = 'none';
+    modeDefaultEl.style.display  = 'none';
+    modeDiaryEl.style.display    = 'none';
+    modeSocialEl.style.display   = 'none';
+    modeCreativeEl.style.display = 'none';
     if (state.currentMode === 'diary') {
       modeDiaryEl.style.display = 'block';
     } else if (state.currentMode === 'social') {
       modeSocialEl.style.display = 'block';
+    } else if (state.currentMode === 'creative') {
+      modeCreativeEl.style.display = 'block';
     } else {
       modeDefaultEl.style.display = 'block';
     }
