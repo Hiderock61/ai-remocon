@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.9.1</title>
+<title>AIリモコン v0.9.2</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -649,7 +649,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.9.1</div>
+        <div class="top-lead-title">AIリモコン v0.9.2</div>
         <div class="top-lead-sub">AIに話しかける前の重さを減らすリモコン。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
       </div>
 
@@ -678,24 +678,20 @@ main { flex: 1; padding: 18px 14px 0; }
       <div id="mode-creative" style="display:none;">
         <p class="creative-lead">日常の違和感を、AIに渡せる言葉へ。<br>軽くする・寸劇にする・言語化するための変換リモコンです。</p>
         <p class="creative-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
-        <div class="diary-list" id="creative-list"></div>
+        <div class="cat-grid" id="creative-grid"></div>
       </div>
 
       <!-- 日記・記録面 -->
       <div id="mode-diary" style="display:none;">
         <p class="diary-lead">今日のことを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
-        <div class="diary-list" id="diary-list">
-          <!-- JSで生成 -->
-        </div>
+        <div class="cat-grid" id="diary-grid"></div>
       </div>
 
       <!-- 仕事・対人面 -->
       <div id="mode-social" style="display:none;">
         <p class="social-lead">本音のままだと、社会と事故ることがある。<br>AIに一度、言葉のエアバッグを巻いてもらうためのリモコンです。</p>
         <p class="social-note">このリモコン内には、本音の内容を入力・保存しません。<br>AIの返答はたたき台として、最後は自分の言葉に調整してください。</p>
-        <div class="diary-list" id="social-list">
-          <!-- JSで生成 -->
-        </div>
+        <div class="cat-grid" id="social-grid"></div>
       </div>
 
       <div class="top-footer">by オノノケホールディングス😲©️</div>
@@ -781,6 +777,10 @@ main { flex: 1; padding: 18px 14px 0; }
 <!-- ─── データ ─── -->
 <script type="application/json" id="app-data">
 {
+  "locations": [
+    {
+      "id": "anywhere",
+      "label": "😵 どこでもいいか{
   "locations": [
     {
       "id": "anywhere",
@@ -1774,19 +1774,133 @@ main { flex: 1; padding: 18px 14px 0; }
       "remoteMode": "default"
     },
     {
-      "id": "social",
-      "remoteMode": "social",
-      "label": "💼 仕事・対人",
-      "screenTitle": "言う前に、一回クッション。",
-      "screenLead": "本音のままだと、社会と事故ることがある。AIに一度、言葉のエアバッグを巻いてもらうためのリモコンです。",
+      "id": "diary_reflect",
+      "label": "📔 今日を整理",
+      "role": "mode-category",
+      "remoteMode": "diary",
+      "screenTitle": "今日を整理する",
+      "screenLead": "今日あったことを、AIに聞いてもらいながら短く整理します。",
       "scenarios": [
         {
-          "id": "social_断り",
-          "label": "角なく断りたい",
-          "subLabel": "関係を壊さずに断りたい",
+          "id": "diary_reflect_today",
+          "label": "今日をふり返りたい",
+          "subLabel": "何があったか順番に聞いてほしい",
+          "tags": [],
           "actions": [
             {
-              "id": "social_断り_action",
+              "id": "diary_reflect_today_action",
+              "label": "今日のふり返りメモを作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 5,
+              "finalOutput": "今日のふり返りメモ",
+              "effectLabel": "AIに「今日の聞き取りとふり返りメモ化」を頼む文章を用意しました。",
+              "commonPrompt": "今日をふり返りたいです。\nいきなり日記を書かずに、まず私に5つまでヒアリングしてください。\n聞いてほしいことは、今日あったこと、印象に残ったこと、気分、身体の状態、最後に残っている感想です。\n質問は一度に詰め込みすぎず、答えやすい形にしてください。\n私が答えたら、その内容をもとに、時系列に近い形で「今日のふり返りメモ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diary_mood",
+      "label": "🌀 気持ちを整理",
+      "role": "mode-category",
+      "remoteMode": "diary",
+      "screenTitle": "気持ちを整理する",
+      "screenLead": "残っているモヤモヤや違和感を、責めずに分けます。",
+      "scenarios": [
+        {
+          "id": "diary_mood_sort",
+          "label": "今日のモヤモヤを整理したい",
+          "subLabel": "何が残っているか聞いてほしい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "diary_mood_sort_action",
+              "label": "モヤモヤ整理メモを作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "モヤモヤ整理メモ",
+              "effectLabel": "AIに「今日のモヤモヤの聞き取りと整理」を頼む文章を用意しました。",
+              "commonPrompt": "今日のモヤモヤを整理したいです。\nいきなり解決策を出さずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何が引っかかっているのか、どの場面が残っているのか、体や気分に残っている感じ、今すぐ解決したいのか一旦置きたいのかです。\n私が答えたら、責めずに「モヤモヤ整理メモ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diary_tomorrow",
+      "label": "🗓️ 明日に渡す",
+      "role": "mode-category",
+      "remoteMode": "diary",
+      "screenTitle": "明日に渡す",
+      "screenLead": "今日の残りを、明日の自分が読めるメモにします。",
+      "scenarios": [
+        {
+          "id": "diary_tomorrow_memo",
+          "label": "明日の自分にメモを残したい",
+          "subLabel": "明日の自分に渡す一言を作りたい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "diary_tomorrow_memo_action",
+              "label": "明日の自分へのメモを作る",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 4,
+              "finalOutput": "明日の自分へのメモ",
+              "effectLabel": "AIに「明日の自分へのメモづくり」を頼む文章を用意しました。",
+              "commonPrompt": "明日の自分にメモを残したいです。\nいきなり文章を書かずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、今日やったこと、今日残ったこと、明日の自分に忘れてほしくないこと、明日の最初の一手です。\n私が答えたら、その内容をもとに、短くて読みやすい「明日の自分へのメモ」にしてください。\n説教っぽくせず、明日の自分が読みやすい文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diary_life",
+      "label": "🍚 生活をメモ",
+      "role": "mode-category",
+      "remoteMode": "diary",
+      "screenTitle": "生活をメモする",
+      "screenLead": "体調・食事・睡眠などを、あとで見返せる形にします。",
+      "scenarios": [
+        {
+          "id": "diary_life_memo",
+          "label": "体調・生活をメモしたい",
+          "subLabel": "今日の生活を短く残したい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "diary_life_memo_action",
+              "label": "生活メモを作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "生活メモ",
+              "effectLabel": "AIに「体調・食事・睡眠などの生活メモ化」を頼む文章を用意しました。",
+              "commonPrompt": "体調・食事・睡眠など、今日の生活を短くメモしたいです。\nいきなりまとめずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、体調、食べたもの、睡眠や休憩、今日の生活で気になったことです。\n私が答えたら、あとで見返しやすい短い生活メモにしてください。\n医療的な診断ではなく、生活の記録として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "social_decline",
+      "label": "🙇 断る",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "断る",
+      "screenLead": "関係を壊しにくい断り方を、AIに聞きながら整えます。",
+      "scenarios": [
+        {
+          "id": "social_decline_soft",
+          "label": "角なく断りたい",
+          "subLabel": "関係を壊さずに断りたい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "social_decline_action",
               "label": "角が立たない断り文を作る",
               "mode": "standby",
               "interactionType": "hearing",
@@ -1796,14 +1910,25 @@ main { flex: 1; padding: 18px 14px 0; }
               "commonPrompt": "角が立ちにくい断り文を作りたいです。\nいきなり文章を作らずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、相手との関係、断りたい内容、今後も関係を続けたいか、どのくらい丁寧にしたいかです。\n質問は一度に詰め込みすぎず、答えやすい形にしてください。\n私が答えたら、その内容をもとに、短く自然で、角が立ちにくい断り文を作ってください。\n過剰なお世辞や、慇懃無礼な定型文にはしないでください。\nチャットやLINEでそのまま送れるような、血の通ったフラットな日本語にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "social_rephrase",
+      "label": "🛟 言い換える",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "言い換える",
+      "screenLead": "本音の芯は残しながら、言葉の角だけ削ります。",
+      "scenarios": [
         {
-          "id": "social_本音",
+          "id": "social_rephrase_honne",
           "label": "本音のままだと危ない",
           "subLabel": "送る前に、一回言葉のエアバッグを巻く",
+          "tags": [],
           "actions": [
             {
-              "id": "social_本音_action",
+              "id": "social_rephrase_action",
               "label": "事故りにくい言い換えを作る",
               "mode": "standby",
               "interactionType": "hearing_transform",
@@ -1813,14 +1938,25 @@ main { flex: 1; padding: 18px 14px 0; }
               "commonPrompt": "本音のままだと危ない言葉を、社会と事故りにくい言い方へ変えたいです。\nいきなり言い換えずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、本当は何と言いたいか、相手は誰か、怒りや不満の強さ、どれくらい柔らかくしたいかです。\n私が答えたら、本音の芯は消さず、言葉の角だけ削ってください。\n相手を刺激しにくく、でもこちらの言いたいことが消えない文にしてください。\n過剰なお世辞や、慇懃無礼なテンプレ敬語にはしないでください。\nチャットやLINEでそのまま送れるような、血の通ったフラットな日本語にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "social_receive",
+      "label": "🧩 言われたことを整理",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "言われたことを整理する",
+      "screenLead": "相手の言葉を、事実・感情・次の一手に分けます。",
+      "scenarios": [
         {
-          "id": "social_言葉",
+          "id": "social_receive_words",
           "label": "言われた言葉の分解",
           "subLabel": "怒られ成分を仕分けして、自分を守る",
+          "tags": [],
           "actions": [
             {
-              "id": "social_言葉_action",
+              "id": "social_words_sort_action",
               "label": "言葉を分解して次の一手を出す",
               "mode": "standby",
               "interactionType": "hearing",
@@ -1834,77 +1970,130 @@ main { flex: 1; padding: 18px 14px 0; }
       ]
     },
     {
-      "id": "diary",
-      "remoteMode": "diary",
-      "label": "📔 日記・記録",
-      "role": "日記リモコン",
-      "screenTitle": "今日のことを整理する",
-      "screenLead": "AIに先に聞いてもらいながら、今日を形にします。",
+      "id": "social_reply",
+      "label": "💬 返信する",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "返信する",
+      "screenLead": "返す言葉を、短く自然な文に整えます。",
       "scenarios": [
         {
-          "id": "diary_day_recap",
-          "label": "今日を回収したい",
-          "subLabel": "何があったか順番に聞いてほしい",
+          "id": "social_reply_text",
+          "label": "返信文を整えたい",
+          "subLabel": "丁寧すぎず、失礼すぎない文にしたい",
+          "tags": [],
           "actions": [
             {
-              "id": "diary_day_recap_action",
-              "label": "今日を回収する",
-              "mode": "standby",
-              "interactionType": "hearing",
-              "hearingCount": 5,
-              "finalOutput": "今日の回収ログ",
-              "effectLabel": "AIに「今日1日の聞き取りと回収ログ化」を頼む文章を用意しました。",
-              "commonPrompt": "今日1日を回収したいです。\nいきなり日記を書かずに、まず私に5つまでヒアリングしてください。\n聞いてほしいことは、今日あったこと、印象に残ったこと、気分、身体の状態、最後に残っている感想です。\n質問は一度に詰め込みすぎず、答えやすい形にしてください。\n私が答えたら、その内容をもとに、時系列に近い形で「今日の回収ログ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "diary_moyamoya",
-          "label": "今日のモヤモヤを成仏させたい",
-          "subLabel": "何が残っているか聞いてほしい",
-          "actions": [
-            {
-              "id": "diary_moyamoya_action",
-              "label": "モヤモヤを成仏させる",
+              "id": "social_reply_action",
+              "label": "返信文を整える",
               "mode": "standby",
               "interactionType": "hearing",
               "hearingCount": 4,
-              "finalOutput": "本日の未成仏リストと供養メモ",
-              "effectLabel": "AIに「今日のモヤモヤの聞き取りと供養メモ化」を頼む文章を用意しました。",
-              "commonPrompt": "今日のモヤモヤを整理したいです。\nいきなり解決策を出さずに、まず私に4つまでヒアリングしてください。\n何が引っかかっているのか、どの場面が残っているのか、体や気分に残っている感じ、今すぐ解決したいのか一旦置きたいのかを聞いてください。\n私が答えたら、責めずに「本日の未成仏リスト」と「供養メモ」として整理してください。\nまだ内容は送っていないので、次の入力を待ってください。"
-            }
-          ]
-        },
-        {
-          "id": "diary_letter",
-          "label": "明日の自分に置き手紙したい",
-          "subLabel": "今日の残り香を渡したい",
-          "actions": [
-            {
-              "id": "diary_letter_action",
-              "label": "置き手紙を作る",
-              "mode": "standby",
-              "interactionType": "hearing_transform",
-              "hearingCount": 4,
-              "finalOutput": "明日の自分への置き手紙",
-              "effectLabel": "AIに「明日の自分への置き手紙づくり」を頼む文章を用意しました。",
-              "commonPrompt": "明日の自分に置き手紙を作りたいです。\nいきなり文章を書かずに、まず私に4つまでヒアリングしてください。\n今日やったこと、今日残ったこと、明日の自分に忘れてほしくないこと、明日の最初の一手を聞いてください。\n私が答えたら、その内容をもとに、短くてやさしい「明日の自分への置き手紙」にしてください。\n説教っぽくせず、明日の自分が読みやすい文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+              "finalOutput": "自然な返信文",
+              "effectLabel": "AIに「状況の聞き取りと返信文づくり」を頼む文章を用意しました。",
+              "commonPrompt": "返信文を整えたいです。\nいきなり文章を作らずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、相手との関係、相手から来た内容、こちらが伝えたいこと、どのくらい丁寧にしたいかです。\n私が答えたら、丁寧すぎず、でも失礼にならない返信文を作ってください。\n短めで自然な文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
         }
       ]
     },
     {
-      "id": "creative",
-      "remoteMode": "creative",
-      "label": "変換",
-      "screenTitle": "重いものを、別の器へ。",
-      "screenLead": "日常の違和感を、AIに渡せる言葉へ。軽くする・寸劇にする・言語化するための変換リモコンです。",
+      "id": "social_confirm",
+      "label": "✅ 確認する",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "確認する",
+      "screenLead": "聞きたいことを、相手に伝わる確認文にします。",
       "scenarios": [
         {
-          "id": "creative_lighten",
+          "id": "social_confirm_text",
+          "label": "確認だけしたい",
+          "subLabel": "責めずに、必要なことだけ聞きたい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "social_confirm_action",
+              "label": "確認文を作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "確認文",
+              "effectLabel": "AIに「相手に確認する文の作成」を頼む文章を用意しました。",
+              "commonPrompt": "相手に何かを確認したいです。\nいきなり文章を作らずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、確認したい内容、相手との関係、急ぎ具合、どのくらい柔らかく言いたいかです。\n私が答えたら、相手を責めずに、必要な確認だけが伝わる短い文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "social_explain",
+      "label": "📝 説明する",
+      "role": "mode-category",
+      "remoteMode": "social",
+      "screenTitle": "説明する",
+      "screenLead": "事情や背景を、言い訳っぽくならない文にします。",
+      "scenarios": [
+        {
+          "id": "social_explain_text",
+          "label": "事情を説明したい",
+          "subLabel": "必要なことを落ち着いて伝えたい",
+          "tags": [],
+          "actions": [
+            {
+              "id": "social_explain_action",
+              "label": "事情説明メモを作る",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 4,
+              "finalOutput": "事情説明メモ",
+              "effectLabel": "AIに「事情の聞き取りと説明文づくり」を頼む文章を用意しました。",
+              "commonPrompt": "自分の事情を相手に説明したいです。\nいきなり文章を作らずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何を説明したいか、相手は誰か、どこまで詳しく伝える必要があるか、どんな温度で伝えたいかです。\n私が答えたら、言い訳っぽくなりすぎず、でも必要な事情が伝わる文にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creative_words",
+      "label": "💡 違和感を言葉にする",
+      "role": "mode-category",
+      "remoteMode": "creative",
+      "screenTitle": "違和感を言葉にする",
+      "screenLead": "なんで引っかかったのかを、AIに聞きながら整理します。",
+      "scenarios": [
+        {
+          "id": "creative_words_discomfort",
+          "label": "違和感の言語化",
+          "subLabel": "なんで引っかかったのか整理する",
+          "tags": [],
+          "actions": [
+            {
+              "id": "creative_words_action",
+              "label": "違和感を言葉にする",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 4,
+              "finalOutput": "違和感の整理メモ",
+              "effectLabel": "AIに「違和感の聞き取りと言語化」を頼む文章を用意しました。",
+              "commonPrompt": "日常の違和感や会話の断片を、言葉にしたいです。\nいきなり結論を出さずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何に違和感があったのか、どの場面が引っかかったのか、体感としてどんな感じだったのか、何をはっきりさせたいのかです。\n私が答えたら、無理に正解へまとめず、違和感の芯が見えるように整理してください。\n出してほしいものは、短い仮タイトル、引っかかった理由、まだ言い切れない部分、AIに渡せる一文です。\n話の本質やザラつきは壊さず、きれいにまとめすぎないでください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creative_lighten",
+      "label": "🪶 重い話を軽くする",
+      "role": "mode-category",
+      "remoteMode": "creative",
+      "screenTitle": "重い話を軽くする",
+      "screenLead": "意味はそのままで、少し扱いやすい器に移します。",
+      "scenarios": [
+        {
+          "id": "creative_lighten_heavy",
           "label": "重い話の軽量化",
           "subLabel": "意味はそのままで、くだらない器に移す",
+          "tags": [],
           "actions": [
             {
               "id": "creative_lighten_action",
@@ -1917,11 +2106,22 @@ main { flex: 1; padding: 18px 14px 0; }
               "commonPrompt": "重い話を、意味はそのままで少し軽い形に変換したいです。\nいきなり変換せずに、まず私に3つまでヒアリングしてください。\n聞いてほしいことは、何が起きたのか、どこが重いのか、どのくらいくだらなくしてよいかです。\n私が答えたら、話の本質や違和感は壊さず、重さだけ少し抜いてください。\nゼロから勝手に嘘のギャグを作らず、私が話した内容を材料にしてください。\n文体や例えや器だけをくだらなくして、少し笑える・読める・扱える形に変換してください。\n深刻にしすぎず、でもただふざけるだけにもせず、「中身はガチ、見た目はくだらない」くらいの温度にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "creative_skit",
+      "label": "🎭 寸劇にする",
+      "role": "mode-category",
+      "remoteMode": "creative",
+      "screenTitle": "寸劇にする",
+      "screenLead": "登場人物を立てて、出来事を少し客観的に転がします。",
+      "scenarios": [
         {
-          "id": "creative_skit",
+          "id": "creative_skit_daily",
           "label": "日常の寸劇化",
           "subLabel": "登場人物を立てて、客観的に転がす",
+          "tags": [],
           "actions": [
             {
               "id": "creative_skit_action",
@@ -1934,34 +2134,67 @@ main { flex: 1; padding: 18px 14px 0; }
               "commonPrompt": "日常の出来事や違和感を、小さな寸劇に変換したいです。\nいきなり書かずに、まず私に3つまでヒアリングしてください。\n聞いてほしいことは、何が起きたのか、登場させたい要素や人物があるか、どのくらいくだらなくしてよいかです。\n私が答えたら、2〜3人くらいの登場人物が出る短い寸劇にしてください。\n話の本質や違和感は壊さず、登場人物を立てることで客観的に見える形にしてください。\nゼロから勝手に嘘の展開を増やしすぎず、私が話した内容を材料にしてください。\n少し笑えるか、少し「なるほど」と思える温度にしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "creative_metaphor",
+      "label": "🥒 変な例えにする",
+      "role": "mode-category",
+      "remoteMode": "creative",
+      "screenTitle": "変な例えにする",
+      "screenLead": "ずれた例えで、見方を少し変えます。",
+      "scenarios": [
         {
-          "id": "creative_discomfort_words",
-          "label": "違和感の言語化",
-          "subLabel": "なんで引っかかったのか整理する",
+          "id": "creative_metaphor_odd",
+          "label": "変な例えにしたい",
+          "subLabel": "なんでそれ？くらいの例えにする",
+          "tags": [],
           "actions": [
             {
-              "id": "creative_discomfort_words_action",
-              "label": "違和感を言葉にする",
+              "id": "creative_metaphor_action",
+              "label": "変な例えにする",
+              "mode": "standby",
+              "interactionType": "hearing_transform",
+              "hearingCount": 3,
+              "finalOutput": "変な例え",
+              "effectLabel": "AIに「内容の聞き取りと変な例え化」を頼む文章を用意しました。",
+              "commonPrompt": "今考えていることや出来事を、変な例えにしたいです。\nいきなり例えずに、まず私に3つまでヒアリングしてください。\n聞いてほしいことは、何について考えているのか、どこが変だと思うのか、どのくらいくだらなくしてよいかです。\n私が答えたら、話の本質は残したまま、少しずれた例えをいくつか出してください。\n正確すぎなくていいので、見方が少し変わる例えにしてください。\nまだ内容は送っていないので、次の入力を待ってください。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creative_idea",
+      "label": "🧪 アイデアにする",
+      "role": "mode-category",
+      "remoteMode": "creative",
+      "screenTitle": "アイデアにする",
+      "screenLead": "違和感や断片を、育てられる入口にします。",
+      "scenarios": [
+        {
+          "id": "creative_idea_seed",
+          "label": "アイデアの入口にしたい",
+          "subLabel": "完成案ではなく、育つ入口を作る",
+          "tags": [],
+          "actions": [
+            {
+              "id": "creative_idea_action",
+              "label": "アイデアの入口を作る",
               "mode": "standby",
               "interactionType": "hearing_transform",
               "hearingCount": 4,
-              "finalOutput": "違和感の整理メモ",
-              "effectLabel": "AIに「違和感の聞き取りと言語化」を頼む文章を用意しました。",
-              "commonPrompt": "日常の違和感や会話の断片を、言葉にしたいです。\nいきなり結論を出さずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何に違和感があったのか、どの場面が引っかかったのか、体感としてどんな感じだったのか、何をはっきりさせたいのかです。\n私が答えたら、無理に正解へまとめず、違和感の芯が見えるように整理してください。\n出してほしいものは、短い仮タイトル、引っかかった理由、まだ言い切れない部分、AIに渡せる一文です。\n話の本質やザラつきは壊さず、きれいにまとめすぎないでください。\nまだ内容は送っていないので、次の入力を待ってください。"
+              "finalOutput": "アイデアの入口",
+              "effectLabel": "AIに「違和感や断片からアイデアの入口を作ること」を頼む文章を用意しました。",
+              "commonPrompt": "日常の違和感や思いつきから、アイデアの入口を作りたいです。\nいきなり企画にせずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何が気になったのか、どこが面白そうか、誰に関係しそうか、どんな形にできそうかです。\n私が答えたら、完成案ではなく、育てられそうな入口を3つ出してください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
         }
       ]
     }
   ]
-}
-</script>
-
-<!-- ─── ロジック ─── -->
-<script>
-/* ── データ読み込み ── */
-const APP_DATA = JSON.parse(document.getElementById('app-data').textContent);
+}ATA = JSON.parse(document.getElementById('app-data').textContent);
 const LOCATIONS = APP_DATA.locations;
 const LOC_MAP = {};
 LOCATIONS.forEach(l => { LOC_MAP[l.id] = l; });
@@ -1988,13 +2221,13 @@ const customCloseBtn = document.getElementById('custom-close-btn');
 const hearingInfo      = document.getElementById('hearing-info');
 const hearingCountText = document.getElementById('hearing-count-text');
 const hearingOutputText= document.getElementById('hearing-output-text');
-const diaryList        = document.getElementById('diary-list');
+const diaryGrid        = document.getElementById('diary-grid');
 const modeDiaryEl      = document.getElementById('mode-diary');
 const modeSocialEl     = document.getElementById('mode-social');
 const modeCreativeEl   = document.getElementById('mode-creative');
 const modeDefaultEl    = document.getElementById('mode-default');
-const socialList       = document.getElementById('social-list');
-const creativeList     = document.getElementById('creative-list');
+const socialGrid       = document.getElementById('social-grid');
+const creativeGrid     = document.getElementById('creative-grid');
 
 const screens = {
   location: document.getElementById('screen-location'),
@@ -2034,77 +2267,27 @@ GRID_LOCS.forEach(loc => {
 
 
 /* ── セグメント切り替え ── */
-function buildDiaryList() {
-  if (!diaryList) return;
-  const diaryLoc = LOCATIONS.find(l => l.remoteMode === 'diary');
-  if (!diaryLoc) return;
-  diaryList.innerHTML = '';
-  diaryLoc.scenarios.forEach(sc => {
-    const act = sc.actions[0];
-    if (!act) return;
+function buildModeGrid(mode, gridEl) {
+  if (!gridEl) return;
+  const locs = LOCATIONS.filter(l => l.remoteMode === mode);
+  gridEl.innerHTML = '';
+  locs.forEach(loc => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'diary-btn';
+    btn.className = 'cat-btn';
+    const parts = loc.label.match(/^(\S+)\s(.+)$/);
+    const icon  = parts ? parts[1] : '';
+    const label = parts ? parts[2] : loc.label;
     btn.innerHTML =
-      '<span class="diary-btn-main">' + sc.label + '</span>' +
-      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
-    btn.addEventListener('click', () => {
-      // diary は selectLocation → selectScenario の流れを踏む
-      selectLocation(diaryLoc);
-      selectScenario(sc);
-    });
-    diaryList.appendChild(btn);
+      (icon ? `<span class="cat-icon">${icon}</span>` : '') +
+      `<span class="cat-label">${label}</span>`;
+    btn.addEventListener('click', () => selectLocation(loc));
+    gridEl.appendChild(btn);
   });
 }
-buildDiaryList();
-
-/* ── 仕事・対人リスト生成 ── */
-function buildSocialList() {
-  if (!socialList) return;
-  const socialLoc = LOCATIONS.find(l => l.remoteMode === 'social');
-  if (!socialLoc) return;
-  socialList.innerHTML = '';
-  socialLoc.scenarios.forEach(sc => {
-    const act = sc.actions[0];
-    if (!act) return;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'diary-btn';
-    btn.innerHTML =
-      '<span class="diary-btn-main">' + sc.label + '</span>' +
-      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
-    btn.addEventListener('click', () => {
-      selectLocation(socialLoc);
-      selectScenario(sc);
-    });
-    socialList.appendChild(btn);
-  });
-}
-buildSocialList();
-
-/* ── 変換リスト生成 ── */
-function buildCreativeList() {
-  if (!creativeList) return;
-  const creativeLoc = LOCATIONS.find(l => l.remoteMode === 'creative');
-  if (!creativeLoc) return;
-  creativeList.innerHTML = '';
-  creativeLoc.scenarios.forEach(sc => {
-    const act = sc.actions[0];
-    if (!act) return;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'diary-btn';
-    btn.innerHTML =
-      '<span class="diary-btn-main">' + sc.label + '</span>' +
-      (sc.subLabel ? '<span class="diary-btn-sub">' + sc.subLabel + '</span>' : '');
-    btn.addEventListener('click', () => {
-      selectLocation(creativeLoc);
-      selectScenario(sc);
-    });
-    creativeList.appendChild(btn);
-  });
-}
-buildCreativeList();
+buildModeGrid('diary', diaryGrid);
+buildModeGrid('social', socialGrid);
+buildModeGrid('creative', creativeGrid);
 
 document.querySelectorAll('.mode-seg-btn').forEach(btn => {
   btn.addEventListener('click', () => {
