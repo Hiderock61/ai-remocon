@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.9</title>
+<title>AIリモコン v0.9.1</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -649,7 +649,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.9</div>
+        <div class="top-lead-title">AIリモコン v0.9.1</div>
         <div class="top-lead-sub">AIに話しかける前の重さを減らすリモコン。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
       </div>
 
@@ -665,8 +665,6 @@ main { flex: 1; padding: 18px 14px 0; }
       <div id="mode-default">
       <button class="wide-btn" type="button" data-loc="anywhere">😵 どこでもいいから困ってる</button>
 
-      <div class="section-label">今どこ？</div>
-
       <div class="cat-grid" id="cat-grid">
         <!-- JSで生成 -->
       </div>
@@ -678,7 +676,7 @@ main { flex: 1; padding: 18px 14px 0; }
 
       <!-- 変換面 -->
       <div id="mode-creative" style="display:none;">
-        <p class="creative-lead">重いままだと、動けないから。<br>違和感を、笑える・読める・使える器へ移し替えるリモコンです。</p>
+        <p class="creative-lead">日常の違和感を、AIに渡せる言葉へ。<br>軽くする・寸劇にする・言語化するための変換リモコンです。</p>
         <p class="creative-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
         <div class="diary-list" id="creative-list"></div>
       </div>
@@ -1901,7 +1899,7 @@ main { flex: 1; padding: 18px 14px 0; }
       "remoteMode": "creative",
       "label": "変換",
       "screenTitle": "重いものを、別の器へ。",
-      "screenLead": "重いままだと、動けないから。違和感を、笑える・読める・使える器へ移し替えるリモコンです。",
+      "screenLead": "日常の違和感を、AIに渡せる言葉へ。軽くする・寸劇にする・言語化するための変換リモコンです。",
       "scenarios": [
         {
           "id": "creative_lighten",
@@ -1938,19 +1936,19 @@ main { flex: 1; padding: 18px 14px 0; }
           ]
         },
         {
-          "id": "creative_note",
-          "label": "違和感をnoteのタネに",
-          "subLabel": "いきなり書かず、記事の入口だけ作る",
+          "id": "creative_discomfort_words",
+          "label": "違和感の言語化",
+          "subLabel": "なんで引っかかったのか整理する",
           "actions": [
             {
-              "id": "creative_note_action",
-              "label": "noteのタネを作る",
+              "id": "creative_discomfort_words_action",
+              "label": "違和感を言葉にする",
               "mode": "standby",
               "interactionType": "hearing_transform",
               "hearingCount": 4,
-              "finalOutput": "noteの下書きタネ",
-              "effectLabel": "AIに「違和感の聞き取りとnoteのタネ化」を頼む文章を用意しました。",
-              "commonPrompt": "日常の違和感や会話の断片を、noteのタネにしたいです。\nいきなり完成記事を書かずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何に違和感があったのか、なぜ引っかかったのか、誰に向けた話になりそうか、どんな温度で書きたいかです。\n私が答えたら、完成記事ではなく、noteの入口になるタネとして整理してください。\n出してほしいものは、仮タイトル案、書き出し案、見出しの方向性、この記事で扱えそうな芯です。\n話の本質や違和感は壊さず、いきなりきれいにまとめすぎないでください。\n素材のザラつきや変な部分を残したまま、記事に育てられる入口を作ってください。\nまだ内容は送っていないので、次の入力を待ってください。"
+              "finalOutput": "違和感の整理メモ",
+              "effectLabel": "AIに「違和感の聞き取りと言語化」を頼む文章を用意しました。",
+              "commonPrompt": "日常の違和感や会話の断片を、言葉にしたいです。\nいきなり結論を出さずに、まず私に4つまでヒアリングしてください。\n聞いてほしいことは、何に違和感があったのか、どの場面が引っかかったのか、体感としてどんな感じだったのか、何をはっきりさせたいのかです。\n私が答えたら、無理に正解へまとめず、違和感の芯が見えるように整理してください。\n出してほしいものは、短い仮タイトル、引っかかった理由、まだ言い切れない部分、AIに渡せる一文です。\n話の本質やザラつきは壊さず、きれいにまとめすぎないでください。\nまだ内容は送っていないので、次の入力を待ってください。"
             }
           ]
         }
@@ -2231,17 +2229,9 @@ function selectAction(act) {
     '<strong>' + state.location.label + '</strong>' +
     ' › ' + state.scenario.label;
 
-  // ヒアリング情報の表示
-  const itype = act.interactionType;
-  if (itype === 'hearing' || itype === 'hearing_transform') {
-    const count = act.hearingCount || '';
-    const output = act.finalOutput || '';
-    hearingCountText.textContent  = 'AIが先に' + count + 'つまで聞きます。';
-    hearingOutputText.textContent = '最後に、' + output + 'にします。';
-    hearingInfo.classList.remove('hidden');
-  } else {
-    hearingInfo.classList.add('hidden');
-  }
+  // v0.9.1: prompt画面はシンプル方式に統一
+  // ヒアリング回数や最終出力はcommonPrompt本文に含めるため、画面上の補足枠は常に非表示。
+  hearingInfo.classList.add('hidden');
 
   // カスタムエリアを閉じる
   customArea.classList.remove('open');
