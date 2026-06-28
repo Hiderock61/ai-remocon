@@ -780,10 +780,6 @@ main { flex: 1; padding: 18px 14px 0; }
   "locations": [
     {
       "id": "anywhere",
-      "label": "😵 どこでもいいか{
-  "locations": [
-    {
-      "id": "anywhere",
       "label": "😵 どこでもいいから困ってる",
       "role": "wide",
       "scenarios": [
@@ -2194,7 +2190,13 @@ main { flex: 1; padding: 18px 14px 0; }
       ]
     }
   ]
-}ATA = JSON.parse(document.getElementById('app-data').textContent);
+}
+</script>
+
+<!-- ─── ロジック ─── -->
+<script>
+/* ── データ読み込み ── */
+const APP_DATA = JSON.parse(document.getElementById('app-data').textContent);
 const LOCATIONS = APP_DATA.locations;
 const LOC_MAP = {};
 LOCATIONS.forEach(l => { LOC_MAP[l.id] = l; });
