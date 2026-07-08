@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.9.3</title>
+<title>AIリモコン v0.9.4</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -533,6 +533,7 @@ main { flex: 1; padding: 18px 14px 0; }
   margin-bottom: 8px;
   font-weight: 500;
 }
+.diary-note,
 .social-note {
   font-size: 11px;
   color: var(--sub);
@@ -649,7 +650,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.9.3</div>
+        <div class="top-lead-title">AIリモコン v0.9.4</div>
         <div class="top-lead-sub">AIに話しかける前の重さを減らすリモコン。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
       </div>
 
@@ -683,7 +684,8 @@ main { flex: 1; padding: 18px 14px 0; }
 
       <!-- 日記・記録面 -->
       <div id="mode-diary" style="display:none;">
-        <p class="diary-lead">今日のことを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
+        <p class="diary-lead">今日のことや気持ちを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
+        <p class="diary-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
         <div class="cat-grid" id="diary-grid"></div>
       </div>
 
