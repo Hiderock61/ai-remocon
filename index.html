@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v0.9.4</title>
+<title>AIリモコン v1.0</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -124,6 +124,16 @@ main { flex: 1; padding: 18px 14px 0; }
   color: var(--sub);
   margin-top: 4px;
   line-height: 1.6;
+}
+.top-guide {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,122,255,.08);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 /* ワイドボタン */
@@ -650,8 +660,9 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v0.9.4</div>
-        <div class="top-lead-sub">AIに話しかける前の重さを減らすリモコン。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
+        <div class="top-lead-title">AIリモコン v1.0</div>
+        <div class="top-lead-sub">AIに話しかける最初の一歩が重い人のための道具。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
+        <div class="top-guide">使い方：選ぶ → コピー → AIに貼る</div>
       </div>
 
 
@@ -660,7 +671,7 @@ main { flex: 1; padding: 18px 14px 0; }
         <button class="mode-seg-btn active" type="button" data-mode="default">通常</button>
         <button class="mode-seg-btn" type="button" data-mode="diary">日記・記録</button>
         <button class="mode-seg-btn" type="button" data-mode="social">仕事・対人</button>
-        <button class="mode-seg-btn" type="button" data-mode="creative">変換</button>
+        <button class="mode-seg-btn" type="button" data-mode="creative">変換・アイデア</button>
       </div>
 
       <div id="mode-default">
@@ -677,22 +688,22 @@ main { flex: 1; padding: 18px 14px 0; }
 
       <!-- 変換面 -->
       <div id="mode-creative" style="display:none;">
-        <p class="creative-lead">日常の違和感を、AIに渡せる言葉へ。<br>軽くする・寸劇にする・言語化するための変換リモコンです。</p>
+        <p class="creative-lead">日常の違和感や重い話を、AIに渡せる言葉へ。<br>言語化・寸劇化・アイデア化の入口を作ります。</p>
         <p class="creative-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
         <div class="cat-grid" id="creative-grid"></div>
       </div>
 
       <!-- 日記・記録面 -->
       <div id="mode-diary" style="display:none;">
-        <p class="diary-lead">今日のことや気持ちを、AIに聞いてもらいながら整理します。<br>ボタンを押してプロンプトをコピーし、外部AIに貼ってください。</p>
+        <p class="diary-lead">今日のこと・気持ち・生活ログを、AIに聞いてもらいながら整理します。<br>ボタンを押して、AIに貼る最初の文章をコピーします。</p>
         <p class="diary-note">このリモコン内には、あなたの内容を入力・保存しません。<br>出てきた文章はたたき台として、最後は自分の感覚で調整してください。</p>
         <div class="cat-grid" id="diary-grid"></div>
       </div>
 
       <!-- 仕事・対人面 -->
       <div id="mode-social" style="display:none;">
-        <p class="social-lead">本音のままだと、社会と事故ることがある。<br>AIに一度、言葉のエアバッグを巻いてもらうためのリモコンです。</p>
-        <p class="social-note">このリモコン内には、本音の内容を入力・保存しません。<br>AIの返答はたたき台として、最後は自分の言葉に調整してください。</p>
+        <p class="social-lead">断る・返信する・確認するなど、人との言葉を整えます。<br>本音の芯は残しつつ、社会と事故りにくい文章にします。</p>
+        <p class="social-note">このリモコン内には、あなたの内容を入力・保存しません。<br>AIの返答はたたき台として、最後は自分の言葉に調整してください。</p>
         <div class="cat-grid" id="social-grid"></div>
       </div>
 
