@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v1.0</title>
+<title>AIリモコン v1.1</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -660,7 +660,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v1.0</div>
+        <div class="top-lead-title">AIリモコン v1.1</div>
         <div class="top-lead-sub">AIに話しかける最初の一歩が重い人のための道具。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
         <div class="top-guide">使い方：選ぶ → コピー → AIに貼る</div>
       </div>
@@ -885,6 +885,36 @@ main { flex: 1; padding: 18px 14px 0; }
       ],
       "screenTitle": "今、脳内で何が起きてる？",
       "screenLead": "場所を選ぶ余裕がない時の、最初の避難口です。",
+      "remoteMode": "default"
+    },
+    {
+      "id": "search_start",
+      "label": "🔍 調べたい",
+      "role": "調べものリモコン",
+      "scenarios": [
+        {
+          "id": "search_hearing",
+          "label": "調べものを始めたい",
+          "tags": [
+            "🔍 ピンポイントに調べる"
+          ],
+          "actions": [
+            {
+              "id": "search_hearing_start",
+              "label": "調べものモードを起動する",
+              "mode": "standby",
+              "interactionType": "hearing",
+              "hearingCount": 3,
+              "finalOutput": "調べものの要点整理",
+              "commonPrompt": "これからあなたに、調べたいことを送ります。\n\nいきなり答えを出さずに、まず何を知りたいのかを整理する準備をしてください。\n\nこのプロンプトに対しては、まだ調査や説明を始めないでください。\n\nまず、\n「調べものモードを起動しました。何について調べますか？」\nとだけ返答してください。\n\n私が調べたい言葉・テーマ・場所・商品・ニュースなどを送ったら、必要に応じて確認質問をしてから、以下の形で整理してください。\n\n1. まず一言でいうと\n何についての話かを短く説明してください。\n\n2. 知りたい目的の整理\n私は何を知りたがっているのかを、必要なら候補に分けてください。\n例：意味を知りたい / 日程を知りたい / 比較したい / 行き先を探したい / 背景を知りたい\n\n3. 重要なポイント\n今知るべきことを3つ以内に絞ってください。\n\n4. 注意点・よくある勘違い\n誤解しやすい点や、古い情報に注意すべき点があれば教えてください。\n\n5. 次に調べるとよいこと\n関連する言葉、検索キーワード、確認すべき条件を出してください。\n\n最新情報が必要な話題の場合は、最新確認が必要だと明記してください。",
+              "effectLabel": "AIに「調べものモードの起動」を頼む文章を用意しました。"
+            }
+          ],
+          "subLabel": "知りたいことを、目的に合わせてピンポイントに調べたい。"
+        }
+      ],
+      "screenTitle": "何を調べたい？",
+      "screenLead": "知りたいことを、目的に合わせてピンポイントに調べる入口です。",
       "remoteMode": "default"
     },
     {
