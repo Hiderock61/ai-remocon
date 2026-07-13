@@ -3,28 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v1.1</title>
+<title>AIリモコン v1.1.1</title>
 <style>
 /* ─── 変数 ─── */
 :root {
-  --bg: #f0f1f3;
-  --text: #1a1a1c;
-  --sub: #6e6e73;
-  --card: #fafafa;
-  --border: #d8d8de;
-  --primary: #0057c2;
-  --primary-dk: #004aaa;
-  --primary-light: rgba(0,87,194,.08);
-  --wide-bg: #edf1fb;
-  --wide-border: #b8caf5;
-  --silly-bg: #edfaf3;
-  --silly-border: #a8dfc0;
-  --radius: 12px;
-  --radius-sm: 9px;
-  --pill: 24px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-btn: 0 3px 10px rgba(0,87,194,.24);
-  --ready-color: #0057c2;
+  --bg: #f3f5f7;
+  --text: #212427;
+  --sub: #707c87;
+  --card: #fdfefe;
+  --border: rgba(44, 48, 51, 0.09);
+  --primary: #2b5c8f;
+  --primary-dk: #234c77;
+  --primary-light: rgba(43, 92, 143, 0.09);
+  --wide-bg: #edeef5;
+  --wide-border: rgba(101, 105, 139, 0.20);
+  --silly-bg: #e6f0f0;
+  --silly-border: rgba(73, 123, 120, 0.20);
+  --radius: 14px;
+  --radius-sm: 11px;
+  --pill: 999px;
+  --shadow: 0 5px 16px rgba(80, 96, 110, 0.09);
+  --shadow-btn: 0 6px 18px rgba(43, 92, 143, 0.20);
+  --ready-color: #2b5c8f;
 }
 
 /* ─── リセット ─── */
@@ -644,6 +644,216 @@ main { flex: 1; padding: 18px 14px 0; }
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ─── v1.1.1 見た目ヤスリ試作 ─── */
+body {
+  background:
+    radial-gradient(circle at 50% -120px, rgba(126, 148, 166, 0.10), transparent 330px),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.58;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  padding-top: 20px;
+}
+
+.top-lead {
+  margin-bottom: 20px;
+}
+.top-lead-title {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.35px;
+}
+.top-lead-sub {
+  color: var(--sub);
+  line-height: 1.68;
+  letter-spacing: 0.02px;
+}
+.top-guide {
+  margin-top: 11px;
+  padding: 6px 11px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid rgba(43, 92, 143, 0.10);
+  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.05);
+}
+
+/* タブは現行セグメント構造を維持し、質感だけ更新 */
+.mode-seg {
+  background: rgba(112, 124, 135, 0.14);
+  border: 1px solid rgba(44, 48, 51, 0.05);
+  border-radius: 13px;
+  padding: 3px;
+  margin-bottom: 17px;
+  box-shadow: inset 0 1px 2px rgba(44, 48, 51, 0.04);
+}
+.mode-seg-btn {
+  border-radius: 10px;
+  min-height: 38px;
+  padding: 6px 5px;
+  color: #66737f;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  transition: background .14s ease, color .14s ease, transform .1s ease, box-shadow .14s ease;
+}
+.mode-seg-btn.active {
+  background: rgba(253, 254, 254, 0.96);
+  color: var(--primary);
+  box-shadow: 0 3px 10px rgba(80, 96, 110, 0.11);
+}
+.mode-seg-btn:active {
+  transform: scale(.98);
+  opacity: .92;
+}
+
+/* 上下の特別ボタン */
+.wide-btn {
+  min-height: 58px;
+  padding: 16px 18px;
+  border-width: 1px;
+  border-radius: 16px;
+  color: var(--text);
+  letter-spacing: -0.12px;
+  box-shadow: 0 5px 16px rgba(88, 91, 126, 0.08);
+  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+}
+.wide-btn.silly {
+  box-shadow: 0 5px 16px rgba(73, 123, 120, 0.08);
+}
+.wide-btn:active {
+  transform: scale(.975);
+  opacity: .94;
+  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+}
+
+/* 中央カテゴリ */
+.section-label {
+  margin: 15px 0 10px;
+  color: #7b8791;
+  letter-spacing: .55px;
+}
+.cat-grid {
+  gap: 10px;
+}
+.cat-btn {
+  min-height: 92px;
+  padding: 13px 13px 11px;
+  background: rgba(253, 254, 254, 0.97);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+}
+.cat-btn:active {
+  transform: scale(.97);
+  opacity: .94;
+  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+}
+.cat-icon {
+  font-size: 27px;
+  margin-bottom: 8px;
+  filter: saturate(.94);
+}
+.cat-label {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.08px;
+}
+
+/* 一覧・日記カードも同じ空気に統一 */
+.list-item,
+.diary-btn {
+  background: rgba(253, 254, 254, 0.97);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+}
+.list-item:active,
+.diary-btn:active {
+  transform: scale(.975);
+  opacity: .94;
+  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+}
+.scenario-main,
+.diary-btn-main {
+  color: var(--text);
+  font-weight: 700;
+}
+.scenario-sub,
+.diary-btn-sub,
+.screen-lead {
+  color: var(--sub);
+}
+
+/* 各タブの説明・注意枠 */
+.social-lead,
+.creative-lead {
+  color: var(--text);
+  font-weight: 500;
+}
+.diary-note,
+.social-note,
+.creative-note {
+  color: var(--sub);
+  background: rgba(232, 235, 241, 0.70);
+  border: 1px solid rgba(74, 82, 94, 0.06);
+  border-radius: 10px;
+}
+
+/* プロンプト画面 */
+#header {
+  background: rgba(243, 245, 247, 0.92);
+  border-bottom-color: rgba(44, 48, 51, 0.08);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.ready-badge {
+  color: var(--ready-color);
+}
+.copy-btn {
+  border-radius: var(--pill);
+  box-shadow: var(--shadow-btn);
+}
+.copy-btn:active {
+  transform: scale(.98);
+}
+.custom-area {
+  border-width: 1px;
+  box-shadow: var(--shadow);
+}
+.custom-textarea {
+  background: rgba(243, 245, 247, 0.90);
+}
+.ai-btn {
+  border-color: var(--border);
+  background: rgba(253, 254, 254, 0.95);
+  box-shadow: 0 3px 10px rgba(80, 96, 110, 0.06);
+}
+.ai-btn:active {
+  transform: scale(.97);
+  opacity: .94;
+  background: #f1f4f6;
+}
+
+/* フッターとトースト */
+.top-footer {
+  color: #97a1aa;
+}
+#toast {
+  background: rgba(33, 36, 39, .90);
+  box-shadow: 0 8px 24px rgba(33, 36, 39, .16);
+}
+
 </style>
 </head>
 <body>
@@ -660,7 +870,7 @@ main { flex: 1; padding: 18px 14px 0; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v1.1</div>
+        <div class="top-lead-title">AIリモコン v1.1.1</div>
         <div class="top-lead-sub">AIに話しかける最初の一歩が重い人のための道具。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
         <div class="top-guide">使い方：選ぶ → コピー → AIに貼る</div>
       </div>
