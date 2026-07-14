@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v1.1.1</title>
+<title>AIリモコン v1.1.1-B</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -645,213 +645,206 @@ main { flex: 1; padding: 18px 14px 0; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── v1.1.1 見た目ヤスリ試作 ─── */
+/* ─── v1.1.1-B 視覚差ヤスリ試作 ─── */
 body {
-  background:
-    radial-gradient(circle at 50% -120px, rgba(126, 148, 166, 0.10), transparent 330px),
-    var(--bg);
-  color: var(--text);
-  line-height: 1.58;
+  background: #EEF0F2;
+  color: #1F2328;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-main {
-  padding-top: 20px;
-}
+main { padding-top: 18px; }
 
-.top-lead {
-  margin-bottom: 20px;
-}
+.top-lead { margin-bottom: 18px; }
 .top-lead-title {
-  color: var(--text);
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.35px;
+  color: #1F2328;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: .025em;
 }
 .top-lead-sub {
-  color: var(--sub);
-  line-height: 1.68;
-  letter-spacing: 0.02px;
+  color: #6B7280;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
 }
 .top-guide {
-  margin-top: 11px;
-  padding: 6px 11px;
-  background: var(--primary-light);
-  color: var(--primary);
-  border: 1px solid rgba(43, 92, 143, 0.10);
-  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.05);
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(62, 111, 166, 0.08);
+  color: #3E6FA6;
+  border: 1px solid rgba(62, 111, 166, 0.10);
+  border-radius: 999px;
+  font-weight: 600;
+  box-shadow: none;
 }
 
-/* タブは現行セグメント構造を維持し、質感だけ更新 */
 .mode-seg {
-  background: rgba(112, 124, 135, 0.14);
-  border: 1px solid rgba(44, 48, 51, 0.05);
-  border-radius: 13px;
-  padding: 3px;
-  margin-bottom: 17px;
-  box-shadow: inset 0 1px 2px rgba(44, 48, 51, 0.04);
+  background: #E2E5E9;
+  border: 0;
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 18px;
+  box-shadow: inset 0 1px 2px rgba(31, 35, 40, 0.05);
 }
 .mode-seg-btn {
-  border-radius: 10px;
   min-height: 38px;
-  padding: 6px 5px;
-  color: #66737f;
+  padding: 6px 4px;
+  border-radius: 11px;
+  background: transparent;
+  color: #6B7280;
   font-size: 11.5px;
-  font-weight: 600;
-  line-height: 1.25;
+  font-weight: 400;
+  line-height: 1.2;
   white-space: nowrap;
-  transition: background .14s ease, color .14s ease, transform .1s ease, box-shadow .14s ease;
+  transition: transform .10s ease, background .14s ease, color .14s ease, box-shadow .14s ease;
 }
 .mode-seg-btn.active {
-  background: rgba(253, 254, 254, 0.96);
-  color: var(--primary);
-  box-shadow: 0 3px 10px rgba(80, 96, 110, 0.11);
+  background: #FFFFFF;
+  color: #3E6FA6;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(30,30,40,.12), 0 1px 2px rgba(30,30,40,.08);
 }
-.mode-seg-btn:active {
-  transform: scale(.98);
-  opacity: .92;
-}
+.mode-seg-btn:active { transform: scale(.97); }
 
-/* 上下の特別ボタン */
 .wide-btn {
+  position: relative;
+  overflow: hidden;
   min-height: 58px;
-  padding: 16px 18px;
-  border-width: 1px;
-  border-radius: 16px;
-  color: var(--text);
-  letter-spacing: -0.12px;
-  box-shadow: 0 5px 16px rgba(88, 91, 126, 0.08);
-  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+  padding: 16px 18px 16px 22px;
+  border: 0;
+  border-radius: 14px;
+  color: #1F2328;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(20,20,30,.07);
+  transition: transform .10s ease, box-shadow .12s ease;
 }
-.wide-btn.silly {
-  box-shadow: 0 5px 16px rgba(73, 123, 120, 0.08);
+.wide-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
 }
+.wide-btn:not(.silly) { background: #E9E5F3; }
+.wide-btn:not(.silly)::before { background: #6B5B95; }
+.wide-btn.silly { background: #DFF1EC; }
+.wide-btn.silly::before { background: #2F8F7C; }
 .wide-btn:active {
-  transform: scale(.975);
-  opacity: .94;
-  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+  transform: scale(.97);
+  box-shadow: 0 1px 3px rgba(20,20,30,.06);
 }
 
-/* 中央カテゴリ */
 .section-label {
   margin: 15px 0 10px;
-  color: #7b8791;
-  letter-spacing: .55px;
+  color: #7B8188;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
 }
-.cat-grid {
-  gap: 10px;
-}
+.cat-grid { gap: 10px; }
 .cat-btn {
   min-height: 92px;
-  padding: 13px 13px 11px;
-  background: rgba(253, 254, 254, 0.97);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+  padding: 14px 13px 12px;
+  background: #FFFFFF;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(20,20,30,.08), inset 0 1px 0 rgba(255,255,255,.95);
+  transition: transform .10s ease, box-shadow .12s ease;
 }
 .cat-btn:active {
   transform: scale(.97);
-  opacity: .94;
-  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+  box-shadow: 0 1px 3px rgba(20,20,30,.06);
 }
 .cat-icon {
-  font-size: 27px;
-  margin-bottom: 8px;
-  filter: saturate(.94);
+  font-size: 28px;
+  margin-bottom: 9px;
 }
 .cat-label {
-  color: var(--text);
+  color: #1F2328;
   font-size: 12px;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: -0.08px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: .01em;
 }
 
-/* 一覧・日記カードも同じ空気に統一 */
 .list-item,
 .diary-btn {
-  background: rgba(253, 254, 254, 0.97);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: transform .1s ease, box-shadow .12s ease, opacity .1s ease;
+  background: #FFFFFF;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(20,20,30,.08);
+  transition: transform .10s ease, box-shadow .12s ease;
 }
 .list-item:active,
 .diary-btn:active {
-  transform: scale(.975);
-  opacity: .94;
-  box-shadow: 0 2px 8px rgba(80, 96, 110, 0.08);
+  transform: scale(.97);
+  box-shadow: 0 1px 3px rgba(20,20,30,.06);
 }
 .scenario-main,
 .diary-btn-main {
-  color: var(--text);
-  font-weight: 700;
+  color: #1F2328;
+  font-weight: 600;
+  line-height: 1.3;
 }
 .scenario-sub,
 .diary-btn-sub,
 .screen-lead {
-  color: var(--sub);
+  color: #6B7280;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
-/* 各タブの説明・注意枠 */
 .social-lead,
 .creative-lead {
-  color: var(--text);
-  font-weight: 500;
+  color: #1F2328;
+  font-weight: 400;
+  line-height: 1.65;
 }
 .diary-note,
 .social-note,
 .creative-note {
-  color: var(--sub);
-  background: rgba(232, 235, 241, 0.70);
-  border: 1px solid rgba(74, 82, 94, 0.06);
-  border-radius: 10px;
+  color: #6B7280;
+  background: #E7EAEE;
+  border: 0;
+  border-radius: 12px;
 }
 
-/* プロンプト画面 */
 #header {
-  background: rgba(243, 245, 247, 0.92);
-  border-bottom-color: rgba(44, 48, 51, 0.08);
+  background: rgba(238, 240, 242, 0.94);
+  border-bottom-color: rgba(31, 35, 40, 0.08);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
-.ready-badge {
-  color: var(--ready-color);
-}
+.ready-badge { color: #3E6FA6; }
 .copy-btn {
-  border-radius: var(--pill);
-  box-shadow: var(--shadow-btn);
+  border-radius: 999px;
+  box-shadow: 0 5px 14px rgba(62, 111, 166, .20);
 }
-.copy-btn:active {
-  transform: scale(.98);
-}
+.copy-btn:active { transform: scale(.97); }
 .custom-area {
   border-width: 1px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 6px rgba(20,20,30,.08);
 }
-.custom-textarea {
-  background: rgba(243, 245, 247, 0.90);
-}
+.custom-textarea { background: #F4F5F6; }
 .ai-btn {
-  border-color: var(--border);
-  background: rgba(253, 254, 254, 0.95);
-  box-shadow: 0 3px 10px rgba(80, 96, 110, 0.06);
+  border: 0;
+  background: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(20,20,30,.07);
 }
 .ai-btn:active {
   transform: scale(.97);
-  opacity: .94;
-  background: #f1f4f6;
+  background: #F7F8F9;
 }
-
-/* フッターとトースト */
-.top-footer {
-  color: #97a1aa;
-}
+.top-footer { color: #969CA3; }
 #toast {
-  background: rgba(33, 36, 39, .90);
-  box-shadow: 0 8px 24px rgba(33, 36, 39, .16);
+  background: rgba(31, 35, 40, .92);
+  box-shadow: 0 8px 24px rgba(31, 35, 40, .18);
 }
 
 </style>
@@ -870,7 +863,7 @@ main {
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v1.1.1</div>
+        <div class="top-lead-title">AIリモコン v1.1.1-B</div>
         <div class="top-lead-sub">AIに話しかける最初の一歩が重い人のための道具。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
         <div class="top-guide">使い方：選ぶ → コピー → AIに貼る</div>
       </div>
