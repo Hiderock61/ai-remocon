@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIリモコン v1.1.1-B</title>
+<title>AIリモコン v1.1.2</title>
 <style>
 /* ─── 変数 ─── */
 :root {
@@ -645,206 +645,263 @@ main { flex: 1; padding: 18px 14px 0; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── v1.1.1-B 視覚差ヤスリ試作 ─── */
+/* ─── v1.1.2 白黒締め版 ─── */
 body {
-  background: #EEF0F2;
-  color: #1F2328;
-  line-height: 1.6;
+  background: #f7f7f7;
+  color: #171717;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-main { padding-top: 18px; }
+main {
+  padding-top: 12px;
+}
 
-.top-lead { margin-bottom: 18px; }
+/* 上半分を圧縮 */
+.top-lead {
+  margin-bottom: 14px;
+}
 .top-lead-title {
-  color: #1F2328;
-  font-size: 19px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: .025em;
+  color: #111111;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 .top-lead-sub {
-  color: #6B7280;
-  font-size: 13px;
+  color: #6b7280;
+  font-size: 12.5px;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.55;
   letter-spacing: 0;
 }
 .top-guide {
-  margin-top: 10px;
-  padding: 6px 10px;
-  background: rgba(62, 111, 166, 0.08);
-  color: #3E6FA6;
-  border: 1px solid rgba(62, 111, 166, 0.10);
+  margin-top: 8px;
+  padding: 5px 10px;
+  background: #ffffff;
+  color: #292929;
+  border: 1px solid rgba(17,17,17,.10);
   border-radius: 999px;
   font-weight: 600;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
 }
 
+/* 強いセグメントタブ */
 .mode-seg {
-  background: #E2E5E9;
-  border: 0;
-  border-radius: 14px;
+  background: #ececec;
+  border: 1px solid rgba(17,17,17,.05);
+  border-radius: 15px;
   padding: 4px;
-  margin-bottom: 18px;
-  box-shadow: inset 0 1px 2px rgba(31, 35, 40, 0.05);
+  margin-bottom: 14px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.05);
 }
 .mode-seg-btn {
-  min-height: 38px;
-  padding: 6px 4px;
+  min-height: 36px;
+  padding: 5px 4px;
   border-radius: 11px;
   background: transparent;
-  color: #6B7280;
-  font-size: 11.5px;
-  font-weight: 400;
-  line-height: 1.2;
+  color: #5d6268;
+  font-size: 11.2px;
+  font-weight: 500;
+  line-height: 1.15;
   white-space: nowrap;
   transition: transform .10s ease, background .14s ease, color .14s ease, box-shadow .14s ease;
 }
 .mode-seg-btn.active {
-  background: #FFFFFF;
-  color: #3E6FA6;
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(30,30,40,.12), 0 1px 2px rgba(30,30,40,.08);
+  background: #ffffff;
+  color: #111111;
+  font-weight: 700;
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.12),
+    0 1px 3px rgba(0,0,0,.08);
 }
-.mode-seg-btn:active { transform: scale(.97); }
+.mode-seg-btn:active {
+  transform: scale(.97);
+}
 
+/* 特別ボタンも白黒へ */
 .wide-btn {
   position: relative;
-  overflow: hidden;
-  min-height: 58px;
-  padding: 16px 18px 16px 22px;
+  min-height: 52px;
+  padding: 13px 42px 13px 18px;
   border: 0;
-  border-radius: 14px;
-  color: #1F2328;
+  border-radius: 16px;
+  background: #ffffff !important;
+  color: #111111;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(20,20,30,.07);
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
   transition: transform .10s ease, box-shadow .12s ease;
 }
 .wide-btn::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 10px;
-  bottom: 10px;
-  width: 4px;
-  border-radius: 0 4px 4px 0;
+  content: none !important;
 }
-.wide-btn:not(.silly) { background: #E9E5F3; }
-.wide-btn:not(.silly)::before { background: #6B5B95; }
-.wide-btn.silly { background: #DFF1EC; }
-.wide-btn.silly::before { background: #2F8F7C; }
+.wide-btn::after {
+  content: "›";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-53%);
+  color: #4b4b4b;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+}
 .wide-btn:active {
   transform: scale(.97);
-  box-shadow: 0 1px 3px rgba(20,20,30,.06);
+  box-shadow: 0 3px 10px rgba(0,0,0,.10);
 }
 
+/* 2列カードを小さく・中央寄せ・右矢印 */
 .section-label {
-  margin: 15px 0 10px;
-  color: #7B8188;
-  font-size: 11px;
+  margin: 12px 0 8px;
+  color: #7a7a7a;
+  font-size: 10.5px;
   font-weight: 500;
   letter-spacing: .08em;
 }
-.cat-grid { gap: 10px; }
+.cat-grid {
+  gap: 8px;
+}
 .cat-btn {
-  min-height: 92px;
-  padding: 14px 13px 12px;
-  background: #FFFFFF;
+  position: relative;
+  min-height: 78px;
+  padding: 11px 30px 10px 12px;
+  background: #ffffff;
   border: 0;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(20,20,30,.08), inset 0 1px 0 rgba(255,255,255,.95);
+  border-radius: 15px;
+  box-shadow: 0 5px 14px rgba(0,0,0,.11);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
   transition: transform .10s ease, box-shadow .12s ease;
+}
+.cat-btn::after {
+  content: "›";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-52%);
+  color: #555555;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
 }
 .cat-btn:active {
   transform: scale(.97);
-  box-shadow: 0 1px 3px rgba(20,20,30,.06);
+  box-shadow: 0 3px 9px rgba(0,0,0,.10);
 }
 .cat-icon {
-  font-size: 28px;
-  margin-bottom: 9px;
+  font-size: 25px;
+  margin-bottom: 5px;
 }
 .cat-label {
-  color: #1F2328;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: .01em;
+  color: #111111;
+  font-size: 11.6px;
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0;
+  text-align: center;
 }
 
+/* シナリオ・日記・他画面も同じ白黒ルールへ */
 .list-item,
 .diary-btn {
-  background: #FFFFFF;
+  position: relative;
+  background: #ffffff;
   border: 0;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(20,20,30,.08);
+  border-radius: 15px;
+  box-shadow: 0 5px 14px rgba(0,0,0,.11);
   transition: transform .10s ease, box-shadow .12s ease;
 }
 .list-item:active,
 .diary-btn:active {
   transform: scale(.97);
-  box-shadow: 0 1px 3px rgba(20,20,30,.06);
+  box-shadow: 0 3px 9px rgba(0,0,0,.10);
 }
 .scenario-main,
 .diary-btn-main {
-  color: #1F2328;
-  font-weight: 600;
+  color: #111111;
+  font-weight: 700;
   line-height: 1.3;
 }
 .scenario-sub,
 .diary-btn-sub,
 .screen-lead {
-  color: #6B7280;
+  color: #6b7280;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 .social-lead,
 .creative-lead {
-  color: #1F2328;
+  color: #171717;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.6;
 }
 .diary-note,
 .social-note,
 .creative-note {
-  color: #6B7280;
-  background: #E7EAEE;
+  color: #686868;
+  background: #f0f0f0;
   border: 0;
   border-radius: 12px;
 }
 
+/* プロンプト画面 */
 #header {
-  background: rgba(238, 240, 242, 0.94);
-  border-bottom-color: rgba(31, 35, 40, 0.08);
+  background: rgba(247,247,247,.94);
+  border-bottom-color: rgba(17,17,17,.08);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
-.ready-badge { color: #3E6FA6; }
+.ready-badge {
+  color: #111111;
+}
 .copy-btn {
   border-radius: 999px;
-  box-shadow: 0 5px 14px rgba(62, 111, 166, .20);
+  box-shadow: 0 6px 18px rgba(0,0,0,.16);
 }
-.copy-btn:active { transform: scale(.97); }
+.copy-btn:active {
+  transform: scale(.97);
+}
 .custom-area {
   border-width: 1px;
-  box-shadow: 0 2px 6px rgba(20,20,30,.08);
+  box-shadow: 0 5px 14px rgba(0,0,0,.10);
 }
-.custom-textarea { background: #F4F5F6; }
+.custom-textarea {
+  background: #f5f5f5;
+}
 .ai-btn {
   border: 0;
-  background: #FFFFFF;
-  box-shadow: 0 2px 6px rgba(20,20,30,.07);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.09);
 }
 .ai-btn:active {
   transform: scale(.97);
-  background: #F7F8F9;
+  background: #f6f6f6;
 }
-.top-footer { color: #969CA3; }
+
+.top-footer {
+  color: #9a9a9a;
+  margin-top: 20px;
+}
 #toast {
-  background: rgba(31, 35, 40, .92);
-  box-shadow: 0 8px 24px rgba(31, 35, 40, .18);
+  background: rgba(17,17,17,.92);
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+
+/* 狭いiPhoneでも4タブと長文カードを崩さない */
+@media (max-width: 390px) {
+  .mode-seg-btn {
+    font-size: 10.8px;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  .cat-label {
+    font-size: 11.2px;
+  }
 }
 
 </style>
@@ -863,7 +920,7 @@ main { padding-top: 18px; }
     <!-- 画面1: location -->
     <section id="screen-location" class="screen active">
       <div class="top-lead">
-        <div class="top-lead-title">AIリモコン v1.1.1-B</div>
+        <div class="top-lead-title">AIリモコン v1.1.2</div>
         <div class="top-lead-sub">AIに話しかける最初の一歩が重い人のための道具。<br>押すだけで、AIに貼る最初の文章を用意します。</div>
         <div class="top-guide">使い方：選ぶ → コピー → AIに貼る</div>
       </div>
